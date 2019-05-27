@@ -1,0 +1,7 @@
+dist/
+build/
+.pytest_cache/
+**/__pycache__/
+gravitee.egg-info/
+.idea/*
+.vscode/*

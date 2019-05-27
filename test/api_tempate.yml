@@ -1,0 +1,85 @@
+{% set default_load_balancing = 'ROUND_ROBIN' -%}
+{% set default_endpoints_type = 'HTTP' -%}
+{% set default_endpoints_weight = 1 -%}
+{% set default_http_connection_timeout = 5000 -%}
+{% set default_http_idle_timeout = 60000 -%}
+{% set default_http_keepAlive = True -%}
+{% set default_http_read_timeout = 11111 -%}
+{% set default_http_pipelining = False -%}
+{% set default_http_max_concurrent_connections = 100 -%}
+{% set default_http_use_compression = True -%}
+{% set default_http_follow_redirects = False -%}
+
+{% macro http_config(http) -%}
+      {% set http_connection_timeout = default_http_connection_timeout -%}
+      {% set http_idle_timeout = default_http_idle_timeout -%}
+      {% set http_keepAlive = default_http_keepAlive -%}
+      {% set http_read_timeout = default_http_read_timeout -%}
+      {% set http_pipelining = default_http_pipelining -%}
+      {% set http_max_concurrent_connections = default_http_max_concurrent_connections -%}
+      {% set http_use_compression = default_http_use_compression -%}
+      {% set http_follow_redirects = default_http_follow_redirects -%}
+      {% if http -%}
+      {% set http_connection_timeout = http.connectTimeout | default(default_http_connection_timeout) -%}
+      {% set http_idle_timeout = http.idleTimeout | default(default_http_idle_timeout) -%}
+      {% set http_keepAlive = http.keepAlive | default(default_http_keepAlive) -%}
+      {% set http_read_timeout = http.readTimeout | default(default_http_read_timeout) -%}
+      {% set http_pipelining = http.pipelining | default(default_http_pipelining) -%}
+      {% set http_max_concurrent_connections = http.maxConcurrentConnections | default(default_http_max_concurrent_connections) -%}
+      {% set http_use_compression = http.useCompression | default(default_http_use_compression) -%}
+      {% set http_follow_redirects = http.followRedirects | default(default_http_follow_redirects) -%}
+      {% endif -%}
+      http:
+        connectTimeout: {{http_connection_timeout}}
+        idleTimeout: {{http_idle_timeout}}
+        keepAlive: {{http_keepAlive}}
+        readTimeout: {{http_read_timeout}}
+        pipelining: {{http_pipelining}}
+        maxConcurrentConnections: {{http_max_concurrent_connections}}
+        useCompression: {{http_use_compression}}
+        followRedirects: {{http_follow_redirects}}
+{% endmacro %}
+
+version: {{api.version}}
+name: {{api.name}}
+description: {{api.description}}
+visibility: {{api.visibility}}
+{% if api.proxy -%}
+proxy:
+  context_path: {{api.proxy.context_path}}
+  {% if api.proxy.groups -%}
+  groups: 
+  {% for group in api.proxy.groups %}
+    - name: {{group.name}}
+      {% if group.endpoints -%}
+      endpoints:
+        {% for endpoint in group.endpoints %}
+        - name: {{endpoint.name}}
+          target: {{endpoint.target}}
+          {% set default_endpoints_weight = endpoint.weight | default(default_endpoints_weight) -%}
+          weight: {{default_endpoints_weight}}
+          {% if 'backup' not in endpoint -%}
+          backup: false
+          {% endif -%}
+          type: {{default_endpoints_type}}
+          {% if 'http' not in endpoint -%}
+          inherit: true
+          {% else -%}
+          inherit: false
+          {{ http_config(endpoint.http) | indent(4)}}
+          {% endif -%}
+        {% endfor %}
+      {% endif -%}
+      {% if group.load_balancing and group.load_balancing.type -%}
+      load_balancing:
+          type: {{group.load_balancing.type}}
+      {% else %}
+      load_balancing:
+          type: {{default_load_balancing}}
+      {% endif %}
+      {{ http_config(group.http) }}
+  {% endfor %}
+  {% endif -%}
+{% else %}
+proxy: {}
+{% endif %}
