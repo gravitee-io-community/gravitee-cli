@@ -8,14 +8,18 @@ A command line client for Api Mangement tool - [Gravitee.io](https://gravitee.io
 ## Installation
 
 (not available yet)
-Install via `pip <https://pypi.python.org/pypi/pip>`__:
+
+Install via `pip <https://pypi.python.org/pypi/pip>`
 
 Use pip to install the latest stable version:
-`$ pip install gravitee`
 
-Install via wheel
+`$ pip3 install graviteeio`
+
+Install via wheel:
+
 `$ python setup.py bdist_wheel`
-`$ pip install dist/my-project.whl`
+
+`$ pip3 install dist/graviteeio_cli-0.1.0-py3-none-any.whl`
 
 ## Requirements
 
@@ -38,4 +42,15 @@ Gravitee-cli need to know the gravitee APIm host. The default values are congure
         --env TEXT   Config environement
         --load TEXT  Load an environement saved
         --help       Show this message and exit.
+
+## Docker
+Run Gravitee-cli with docker
+
+Build:
+
+`$ docker build -t graviteeio_cli .`
+
+Run:
+
+`$ docker run -v $(pwd):/graviteeio/conf graviteeio_cli`
 

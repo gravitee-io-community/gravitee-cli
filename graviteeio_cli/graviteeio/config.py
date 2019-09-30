@@ -9,9 +9,9 @@ from ..exeptions import GraviteeioError
 @click.command()
 @click.option('--user', help='authentication user')
 @click.option('--pwd', help='authentication password')
-@click.option('--url', help='Gravitee Rest Management Url')
-@click.option('--env', help='Config environement')
-@click.option('--load', help='Load an environement saved')
+@click.option('--url', help='gravitee Rest Management Url')
+@click.option('--env', help='config environement')
+@click.option('--load', help='load an environement saved')
 def config(user, pwd, url, env, load):
     """Graviteeio cli configuration"""
         
@@ -36,7 +36,7 @@ class Graviteeio_configuration:
         def __init__(self): 
 
             self.config = configparser.ConfigParser()
-
+            
             if not os.path.isfile(environments.GRAVITEEIO_CONF_FILE):
                 self.env = "DEFAULT"
                 #elf.config.add_section(self.env)

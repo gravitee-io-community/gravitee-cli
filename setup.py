@@ -1,5 +1,6 @@
 """Packaging settings."""
-
+import os
+import sys
 
 from codecs import open
 from os.path import abspath, dirname, join
@@ -31,38 +32,119 @@ class RunTests(Command):
         errno = call(['py.test', '--cov=skele', '--cov-report=term-missing'])
         raise SystemExit(errno)
 
+def get_install_requires():
+    res = ['elasticsearch>=7.0.4,<8.0.0' ]
+    res.append('urllib3>=1.24.2,<1.25')
+    res.append('requests>=2.20.0')
+    res.append('boto3>=1.9.142')
+    res.append('requests_aws4auth>=0.9')
+    res.append('click>=6.7,<7.0')
+    res.append('pyyaml==3.13')
+    res.append('voluptuous>=0.9.3')
+    res.append('certifi>=2019.6.16')
+    res.append('six>=1.11.0')
+    return res
 
-setup(
-    name = 'graviteeio-cli',
-    version = __version__,
-    description = 'Command line Client program in Python for graviteeio plateform',
-    long_description = long_description,
-    long_description_content_type="text/markdown",
-    url = 'https://github.com/gravitee-io/graviteeio-cli',
-    author = 'Guillaume Gillon',
-    author_email = 'guillaume.gillon@outlook.com',
-    license = 'Apache License Version 2.0',
-    classifiers = [
-        'Intended Audience :: Developers',
-        'Topic :: Utilities',
-        'License :: Apache License Version 2.0',
-        'Natural Language :: English',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-    ],
-    keywords = ["Swagger", "OpenAPI", "Graviteeio"],
-    packages = find_packages(exclude=['docs', 'tests*']),
-    install_requires = ['click', 'configparser', 'requests', 'click-completion', 'terminaltables', 'pyyaml', 'jinja2'],
-    extras_require = {
-        'test': ['coverage', 'pytest', 'pytest-cov'],
-    },
-    entry_points = {
-        'console_scripts': [
-            'graviteeio=graviteeio_cli.cli:main',
+try:
+    from cx_Freeze import setup, Executable
+
+    base = 'Console'
+
+    icon = None
+    if os.path.exists('Graviteeio.ico'):
+        icon = 'Elastic.ico'
+
+    graviteeio_exe = Executable(
+        "run_graviteeio.py",
+        base=base,
+        targetName = "graviteeio"
+    )
+
+    buildOptions = dict(packages=["asyncio","ctypes"], excludes=[], includes=["idna.idnadata"])
+
+    if sys.platform == "win32":
+        graviteeio_exe = Executable(
+            "run_curator.py",
+            base=base,
+            targetName = "graviteeio.exe",
+            icon = icon
+        )
+
+    setup(
+        name = 'graviteeio-cli',
+        version = __version__,
+        description = 'Command line Client program in Python for graviteeio plateform',
+        long_description = long_description,
+        long_description_content_type="text/markdown",
+        url = 'https://github.com/gravitee-io/graviteeio-cli',
+        author = 'Guillaume Gillon',
+        author_email = 'guillaume.gillon@outlook.com',
+        license = 'Apache License Version 2.0',
+        classifiers = [
+            'Intended Audience :: Developers',
+            'Topic :: Utilities',
+            'License :: Apache License Version 2.0',
+            'Natural Language :: English',
+            'Operating System :: OS Independent',
+            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
+            'Programming Language :: Python :: 3.7'
         ],
-    },
-    cmdclass = {'test': RunTests},
-)
+        keywords = ["Swagger", "OpenAPI", "Graviteeio"],
+        packages = ["graviteeio_cli"],
+        #packages = find_packages(exclude=['docs', 'tests*']),
+        install_requires = ['click>=7.0,<8.0', 'configparser==3.8.1', 'requests>=2.22.0', 'click-completion>=0.5.1', 'terminaltables>=3.1.0', 'pyyaml>=5.1.2', 'jinja2>=2.10.1'],
+        extras_require = {
+            'test': ['coverage', 'pytest', 'pytest-cov'],
+        },
+        include_package_data=True,
+        entry_points = {
+            'console_scripts': [
+                'graviteeio = graviteeio_cli.cli:main',
+            ],
+        },
+        cmdclass = {'test': RunTests},
+        options = {'build_exe' : buildOptions},
+        executables = [graviteeio_exe]
+    )
+
+
+
+except ImportError:
+
+    setup(
+        name = 'graviteeio-cli',
+        version = __version__,
+        description = 'Command line Client program in Python for graviteeio plateform',
+        long_description = long_description,
+        long_description_content_type="text/markdown",
+        url = 'https://github.com/gravitee-io/graviteeio-cli',
+        author = 'Guillaume Gillon',
+        author_email = 'guillaume.gillon@outlook.com',
+        license = 'Apache License Version 2.0',
+        classifiers = [
+            'Intended Audience :: Developers',
+            'Topic :: Utilities',
+            'License :: Apache License Version 2.0',
+            'Natural Language :: English',
+            'Operating System :: OS Independent',
+            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
+            'Programming Language :: Python :: 3.7'
+        ],
+        keywords = ["Swagger", "OpenAPI", "Graviteeio"],
+        packages = ["graviteeio_cli"],
+        #packages = find_packages(exclude=['docs', 'tests*']),
+        install_requires = ['click>=7.0,<8.0', 'configparser==3.8.1', 'requests>=2.22.0', 'click-completion>=0.5.1', 'terminaltables>=3.1.0', 'pyyaml>=5.1.2', 'jinja2>=2.10.1'],
+        extras_require = {
+            'test': ['coverage', 'pytest', 'pytest-cov'],
+        },
+        entry_points = {
+            'console_scripts': [
+                'graviteeio = graviteeio_cli.cli:main',
+            ],
+        },
+        cmdclass = {'test': RunTests},
+    )

@@ -12,7 +12,7 @@ APIM_API_VALUE_FILE_NAME="apim_api_value.yml"
 APIM_API_TEMPLATE_FILE="apim_api_template.yml.j2"
 APIM_API_URL_GITHUB="https://raw.githubusercontent.com/gravitee-io/graviteeio-cli/master/templates/apim_api_template.yml.j2"
 
-GRAVITEEIO_CONF_FILE = os.getenv("GRAVITEEIO_CONF_FILE", os.path.expanduser("~") + "/.gravitee")
+GRAVITEEIO_CONF_FILE = os.getenv("GRAVITEEIO_CONF_FILE", os.path.expanduser("~") + "/.graviteeio")
 
 APIM_HTTP_CONNECTION_TIMEOUT = int(os.getenv("APIM_HTTP_CONNECTION_TIMEOUT", 5000))
 APIM_HTTP_IDLE_TIMEOUT = int(os.getenv("APIM_HTTP_IDLE_TIMEOUT", 60000))

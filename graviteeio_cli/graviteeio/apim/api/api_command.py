@@ -23,7 +23,6 @@ def apis(ctx):
 def ps(apim_api, deploy_state):
         """APIs list"""
         resp =  apim_api.get_apis()
-        
         if not resp:
                 click.echo("No Api(s) found ")
         else:
