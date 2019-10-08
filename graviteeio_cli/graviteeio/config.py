@@ -6,26 +6,41 @@ from ..exeptions import GraviteeioError
 
 #texttable
 
+@click.group()
+def config():
+    pass
+
 @click.command()
 @click.option('--user', help='authentication user')
 @click.option('--pwd', help='authentication password')
 @click.option('--url', help='gravitee Rest Management Url')
-@click.option('--env', help='config environement')
-@click.option('--load', help='load an environement saved')
-def config(user, pwd, url, env, load):
-    """Graviteeio cli configuration"""
-        
-    config = Graviteeio_configuration()
-    
+@click.option('--env', help='config environment')
+@click.option('--load', help='load an environment saved')
+def update(user, pwd, url, env, load):
+    """update configuration"""
+
     try:
-        config.save(user, pwd, url, env, load)
-
         if user or pwd or url or env or load:
+            config = Graviteeio_configuration()
+            old_env = config.env
+            config.save(user, pwd, url, env, load)
+            
             click.echo("Save")
-        click.echo("Current environnement config -> %s" % config.env)
+            if env:
+                click.echo("Switch env from {} to {}".format(old_env, env))
+        
     except GraviteeioError as error:
-        click.echo(click.style("Error: ", fg='red') + 'No environement " %s " found' % load , err=True)
+        click.echo(click.style("Error: ", fg='red') + 'No environment " %s " found' % load , err=True)
 
+@click.command()
+def show():
+    """display current configuration"""
+    config = Graviteeio_configuration()
+    click.echo("Current Config:")
+    click.echo("{}".format(config.display_current_env()))
+
+config.add_command(update)
+config.add_command(show)
 
 class Graviteeio_configuration:
         user = environments.DEFAULT_USER
@@ -85,7 +100,7 @@ class Graviteeio_configuration:
                 self.address_url = self.config[self.env]['address_url']
                 self.config['DEFAULT']['env'] = load
             else:
-                raise GraviteeioError('No environement " %s " found' % load)
+                raise GraviteeioError('No environment " %s " found' % load)
 
 
         def save(self, user, password, url, env, load):
@@ -129,4 +144,17 @@ class Graviteeio_configuration:
                 http['useCompression'] = self.config.getboolean("HTTP", "useCompression", fallback = environments.GRAVITEE_CLI_HTTP_USE_COMPRESSION)
             if 'followRedirects' not in http:
                 http['followRedirects'] = self.config.getboolean("HTTP", "followRedirects", fallback = environments.GRAVITEE_CLI_HTTP_FOLLOW_REDIRECTS)
+        
+        def display_current_env(self):
+            toreturn = []
+
+            toreturn.append(" - URL: {}\n".format(self.address_url))
+            toreturn.append(" - User: {}\n".format(self.user))
+            toreturn.append(" - Password: {}\n".format(self.password))
+            toreturn.append(" - Environment: %s\n" % self.env)
+            if self.http_proxy:
+                toreturn.append(" - http_proxy: %s\n" % self.http_proxy)
+            if self.http_proxy:
+                toreturn.append(" - https_proxy: %s\n" % self.https_proxy)
+            return ''.join(toreturn)
 
