@@ -1,0 +1,284 @@
+{% set default_load_balancing = 'ROUND_ROBIN' -%}
+{% set default_endpoints_type = 'HTTP' -%}
+{% set default_http_connection_timeout = 5000 -%}
+{% set default_http_idle_timeout = 60000 -%}
+{% set default_http_keepAlive = True -%}
+{% set default_http_read_timeout = 11111 -%}
+{% set default_http_pipelining = False -%}
+{% set default_http_max_concurrent_connections = 100 -%}
+{% set default_http_use_compression = True -%}
+{% set default_http_follow_redirects = False -%}
+{% set default_ssl_trust_all = False -%}
+
+{% macro http_config(http) -%}
+      {% set http_connection_timeout = default_http_connection_timeout -%}
+      {% set http_idle_timeout = default_http_idle_timeout -%}
+      {% set http_keepAlive = default_http_keepAlive -%}
+      {% set http_read_timeout = default_http_read_timeout -%}
+      {% set http_pipelining = default_http_pipelining -%}
+      {% set http_max_concurrent_connections = default_http_max_concurrent_connections -%}
+      {% set http_use_compression = default_http_use_compression -%}
+      {% set http_follow_redirects = default_http_follow_redirects -%}
+      {% if http -%}
+      {% set http_connection_timeout = http.connectTimeout | default(default_http_connection_timeout) -%}
+      {% set http_idle_timeout = http.idleTimeout | default(default_http_idle_timeout) -%}
+      {% set http_keepAlive = http.keepAlive | default(default_http_keepAlive) -%}
+      {% set http_read_timeout = http.readTimeout | default(default_http_read_timeout) -%}
+      {% set http_pipelining = http.pipelining | default(default_http_pipelining) -%}
+      {% set http_max_concurrent_connections = http.maxConcurrentConnections | default(default_http_max_concurrent_connections) -%}
+      {% set http_use_compression = http.useCompression | default(default_http_use_compression) -%}
+      {% set http_follow_redirects = http.followRedirects | default(default_http_follow_redirects) -%}
+      {% endif -%}
+      http:
+        connectTimeout: {{http_connection_timeout}}
+        idleTimeout: {{http_idle_timeout}}
+        keepAlive: {{http_keepAlive}}
+        readTimeout: {{http_read_timeout}}
+        pipelining: {{http_pipelining}}
+        maxConcurrentConnections: {{http_max_concurrent_connections}}
+        useCompression: {{http_use_compression}}
+        followRedirects: {{http_follow_redirects}}
+{% endmacro %}
+
+{% macro headers_config(headers) -%}
+      {% if headers -%}
+      headers:
+        {% for header_key in headers %}
+        {{header_key}}: {{headers[header_key]}}
+        {% endfor %}
+      {% else %}
+      headers: {}
+      {% endif -%}
+{% endmacro %}
+
+{% macro proxy_config(proxy) -%}
+      {% if proxy -%}
+      proxy:
+        enabled: {{proxy.proxy | default(true)}}
+        {% if proxy.host -%}
+        host: {{proxy.host}}
+        {% endif -%}
+        {% if proxy.port -%}
+        port: {{proxy.port}}
+        {% endif -%}
+        type: {{proxy.type | default("HTTP")}}
+        {% if proxy.username -%}
+        username: {{proxy.username}}
+        {% endif -%}
+        {% if proxy.password -%}
+        password: {{proxy.password}}
+        {% endif -%}
+      {% else %}
+      proxy:
+        enabled: false
+      {% endif -%}
+{% endmacro %}
+
+{% macro ssl_config(ssl) -%}
+      {% set ssl_trustAll = default_ssl_trust_all -%}
+      {% if ssl -%}
+        {% set ssl_trustAll = ssl.trustAll | default(default_ssl_trust_all) -%}
+      {% endif -%}
+      ssl:
+        trustAll: {{ssl_trustAll}}
+        {% if ssl and ssl.trustAll -%}
+        hostnameVerifier: false
+        {% endif -%}
+        {% if ssl and ssl.trustStore -%}
+        trustStore:
+          type: {{ssl.trustStore.type}}
+          {% if ssl.trustStore.password -%}
+          password: {{ssl.trustStore.password}}
+          {% endif -%}
+          {% if ssl.trustStore.content -%}
+          content: {{ssl.trustStore.content}}
+          {% endif -%}
+          {% if ssl.trustStore.content -%}
+          path: {{ssl.trustStore.path}}
+          {% endif -%}
+        {% endif -%}
+        {% if ssl and  ssl.keyStore -%}
+        keyStore:
+          type: {{ssl.keyStore.type}}
+          {% if ssl.keyStore.password -%}
+          password: {{ssl.keyStore.password}}
+          {% endif -%}
+          {% if ssl.keyStore.content -%}
+          content: {{ssl.keyStore.content}}
+          {% endif -%}
+          {% if ssl.keyStore.content -%}
+          path: {{ssl.keyStore.path}}
+          {% endif -%}
+        {% endif -%}
+{% endmacro %}
+
+{% macro health_check_config(health_check, inherit) -%}
+{% if health_check -%}
+  health-check:
+    enabled: {{health_check.enabled | default(true)}}
+    trigger:
+      rate: {{health_check.trigger.rate}}
+      unit: {{health_check.trigger.unit}}
+    steps:
+      {% for step in health_check.steps %}
+      - name: default-step
+        request:
+          path: {{step.request.path}}
+          method: {{step.request.method}}
+          fromRoot: {{step.request.fromRoot | default(false)}}
+          {{ headers_config(step.request.headers) | indent(4)}}
+        response:
+            assertions: {{step.response.assertions }}
+      {% endfor %}
+    {% if not inherit == null -%}
+    inherit: {{inherit}}
+    {% endif -%}
+{% endif -%}
+{% endmacro %}
+
+version: {{api.version}}
+name: {{api.name}}
+description: {{api.description}}
+labels: {{api.labels}}
+views: {{api.views}}
+visibility: {{api.visibility | default('private')}}
+{% if not api.path_mappings -%}
+path_mappings: {{api.path_mappings}}
+{% endif -%}
+{% if not api.paths -%}
+paths:
+  "/": []
+{% else -%}
+paths: {{api.paths}}
+{% endif -%}
+{% if api.properties -%}
+properties: {{api.properties}}
+{% endif -%}
+{% if api.tags -%}
+tags: {{api.tags}}
+{% endif -%}
+{% if api.proxy -%}
+proxy:
+  {% if api.proxy.context_path and not api.proxy.virtual_hosts-%}
+  virtual_hosts: 
+    - path: {{api.proxy.context_path}}
+  {% endif -%}
+  {% if api.proxy.virtual_hosts-%}
+  virtual_hosts: {{api.proxy.virtual_hosts}}
+  {% endif -%}
+  context_path: {{api.proxy.context_path}}
+  strip_context_path: false
+  {% if api.proxy.cors -%}
+  cors:
+    allowCredentials: {{api.proxy.cors.allowCredentials | default(false)}}
+    allowHeaders: {{api.proxy.cors.allowHeaders}} 
+    allowMethods: {{api.proxy.cors.allowMethods | default(['GET'])}}
+    allowOrigin: {{api.proxy.cors.allowOrigin | default(['\'*\''])}}
+    enabled: true
+    exposeHeaders: {{api.proxy.cors.exposeHeaders}}
+    maxAge: {{api.proxy.cors.maxAge | default(-1)}}
+  {% endif -%}
+  {% if api.proxy.failover -%}
+    maxAttempts: {{api.proxy.failover.maxAttempts}}
+    retryTimeout: {{api.proxy.failover.retryTimeout}}
+  {% endif -%}
+  {% if api.proxy.logging -%}
+  logging:
+    condition: {{api.proxy.logging.condition}}
+    mode: {{api.proxy.logging.mode}}
+  {% endif -%}
+  {% if api.proxy.groups -%}
+  groups: 
+  {% for group in api.proxy.groups %}
+    - name: {{group.name}}
+      {% if group.endpoints -%}
+      endpoints:
+        {% for endpoint in group.endpoints %}
+        - name: {{endpoint.name}}
+          target: {{endpoint.target}}
+          weight: {{endpoint.weight | default(1)}}
+          {% if not endpoint.backup -%}
+          backup: false
+          {% else -%}
+          backup: {{endpoint.backup}}
+          {% endif -%}
+          {% if endpoint.tenants -%}
+          tenants: {{endpoint.tenants}}
+          {% endif -%}
+          type: {{default_endpoints_type}}
+          {% if 'http' not in endpoint -%}
+          inherit: true
+          {% else -%}
+          inherit: false
+          {{ http_config(endpoint.http) | indent(4)}}
+          {{ headers_config(group.headers) | indent(4)}}
+          {{ proxy_config(group.proxy) | indent(4)}}
+          {{ ssl_config(group.ssl) | indent(4)}}
+          {% endif -%}
+          {{ health_check_config(endpoint.health_check, false) | indent(8)}}
+        {% endfor %}
+      {% endif -%}
+      {% if group.load_balancing and group.load_balancing.type -%}
+      load_balancing:
+          type: {{group.load_balancing.type}}
+      {% else %}
+      load_balancing:
+          type: {{default_load_balancing}}
+      {% endif %}
+      {{ http_config(group.http) }}
+      {{ headers_config(group.headers) }}
+      {{ proxy_config(group.proxy) }}
+      {{ ssl_config(group.ssl) }}
+      {% if group.services and group.services.discovery and group.services.discovery.configuration and group.services.discovery.configuration.url and group.services.discovery.configuration.service and group.services.discovery.configuration.dc and group.services.discovery.configuration.acl -%}
+      services:
+        discovery:
+          enabled: true
+          configuration:
+            url: {{ group.services.discovery.configuration.url }}
+            service: {{ group.services.discovery.configuration.service }}
+            dc: {{ group.services.discovery.configuration.dc }}
+            acl: {{ group.services.discovery.configuration.acl }}
+          provider: "consul-service-discovery"
+      {% endif -%}
+  {% endfor %}
+  {% endif -%}
+{% else %}
+proxy: {}
+{% endif %}
+{% if api.response_templates-%}
+response_templates:
+  {% for response_templates_key in api.response_templates %}
+  {{response_templates_key}}:
+  {% for content_type in api.response_templates[response_templates_key] %}
+    {{content_type}}:
+      body: {{api.response_templates[response_templates_key][content_type].body | default ("''")}}
+      {{ headers_config(api.response_templates[response_templates_key][content_type].headers)}}
+      status: {{api.response_templates[response_templates_key][content_type].status | default (400)}}
+  {% endfor %}
+  {% endfor %}
+{% else %}
+  response_templates: {}
+{% endif -%}
+{% if api.resources -%}
+resources: {{api.resources}}
+{% endif -%}
+{% if api.services -%}
+services:
+  {% if api.services.health_check -%}
+  {{ health_check_config(api.services.health_check)}}
+  {% endif -%}
+  {% if api.services.dynamic_property-%}
+  dynamic-property:
+    configuration:
+      specification: {{api.services.dynamic_property.configuration.specification}}
+      url: {{api.services.dynamic_property.configuration.url}}
+    provider: HTTP
+    enabled: {{api.services.dynamic_property.enabled | default (true)}}
+    trigger:
+      rate: {{api.services.dynamic_property.trigger.rate}}
+      unit: {{api.services.dynamic_property.trigger.unit}}
+  {% endif -%}
+{% else %}
+services: {}
+{% endif %}
+
