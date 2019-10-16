@@ -1,5 +1,4 @@
-import click, terminaltables, yaml, json, os
-#import logging
+import click, terminaltables, yaml, json, os, requests, time
 
 from click.exceptions import ClickException
 from terminaltables import AsciiTable
@@ -8,9 +7,6 @@ from .api_data import api
 from ....exeptions import GraviteeioRequestError, GraviteeioError
 from ...utils import convert_proxy_config, clean_api
 from .... import environments
-import requests
-
-#logging.basicConfig(level=logging.DEBUG)
 
 @click.group()
 @click.pass_context
@@ -104,38 +100,74 @@ def deploy(apim_api, api_id):
         click.echo("API {} is deployed".format(api_id))
 
 @click.command()
-@click.argument('folder', type=click.Path(exists=True), required = False)
+@click.option('--folder', help='template folder',type=click.Path(exists=True), required = False)
+@click.argument('version', help ='graviteeio api management version')
 @click.pass_obj
-def init(apim_api, folder):
+def init(apim_api, folder, version, upgrade = False):
         """download init template for api"""
-        r = requests.get(environments.APIM_API_URL_GITHUB, stream=True)
+        versions = requests.get(environments.APIM_API_URL_GITHUB_TEMPLATE_FOLDER + environments.APIM_API_TEMPLATE_VERSION_FILE)
+
+        template_version = None
+        versions_obj = versions.json()
+        for version_r in versions_obj:
+                version_split = version.split(".")
+                if version_r == version_split[0] + "." + version_split[1]:
+                        template_version = versions_obj[version_r]
+                if version_r == version:
+                        template_version = versions_obj[version_r]
+
+        if not template_version:
+                click.echo("Version {} is not managed".format(version))
+                return
+
+        r = requests.get(environments.APIM_API_URL_GITHUB_TEMPLATE_FOLDER + environments.APIM_API_TEMPLATE_MODEL.format(template_version), stream=True)
 
         if r.status_code != requests.codes.ok:
-                print('Unable to connect {0}'.format(environments.APIM_API_URL_GITHUB))
+                click.echo('Unable to connect {0}'.format(environments.APIM_API_URL_GITHUB_TEMPLATE_FOLDER + environments.APIM_API_TEMPLATE_MODEL.format(template_version)))
                 r.raise_for_status()
         total_size = int(r.headers.get('Content-Length'))
 
-        if not os.path.exists(environments.GRAVITEEIO_TEMPLATES_FOLDER):
+        if not folder: folder = environments.GRAVITEEIO_TEMPLATES_FOLDER
+
+        if not os.path.exists(folder):
                 os.mkdir(environments.GRAVITEEIO_TEMPLATES_FOLDER)
 
-        template_file_path = "{}/{}".format(environments.GRAVITEEIO_TEMPLATES_FOLDER, environments.APIM_API_TEMPLATE_FILE)
+        template_file_path = "{}/{}".format(folder, environments.APIM_API_TEMPLATE_FILE)
         if not os.path.exists(template_file_path):
-                click.echo("Init api:")
+                if not upgrade: click.echo("Init api:")
                 with click.progressbar(r.iter_content(1024), length=total_size) as bar, open(template_file_path, 'wb') as file:
                         for chunk in bar:
                                 file.write(chunk)
                                 bar.update(len(chunk))
+                click.echo(" - template api {} added".format(template_version))
         else:
                 click.echo("Init file already exists")
+
+@click.command()
+@click.option('--folder', help='template folder',type=click.Path(exists=True), required = False)
+@click.argument('version', help ='graviteeio api management version')
+@click.pass_context
+def upgrade(ctx, folder, version):
+        if not folder: folder = environments.GRAVITEEIO_TEMPLATES_FOLDER
+
+        template_file_path = "{}/{}".format(folder, environments.APIM_API_TEMPLATE_FILE)
+
+        if not os.path.exists(template_file_path):
+                click.echo("Not template api found")
+                return
+        click.echo("Upgraded template api:")
+        os.rename(template_file_path, "{}/{}".format(folder, environments.APIM_API_TEMPLATE_MODEL.format(time.time())))
+        click.echo(" - old template api renamed")
+        ctx.invoke(init, folder= folder, version= version, upgrade = True )
 
 @click.command()
 @click.argument('api_id', required = True, metavar='[API ID]')
 @click.option('--file','-f', required = False , help = "values file")
 @click.option('--set','-s',multiple = True, help = "override the value(s) of value file")
-@click.option('--debug','-s', is_flag=True, help = "debug mode" )
+@click.option('--debug','-d', is_flag=True, help = "debug mode" )
 @click.argument('templates_folder', type=click.Path(exists=True), required = False , metavar='[PATH FOLDER]')
 @click.pass_obj
-def update(apim_api, api_id, file, set, debug, templates_folder):
+def update(apim_api, api_id, file, set, debug, diff, templates_folder):
         """update api configuration
         
         Values file:
@@ -175,11 +207,13 @@ def update(apim_api, api_id, file, set, debug, templates_folder):
         else:
                 click.echo("JSON")
                 click.echo(api_json_data)
+                
         
 apis.add_command(ps)
 apis.add_command(start)
 apis.add_command(stop)
 apis.add_command(init)
+apis.add_command(upgrade)
 apis.add_command(deploy)
 apis.add_command(update)
 

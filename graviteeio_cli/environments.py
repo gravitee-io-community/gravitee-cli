@@ -10,7 +10,9 @@ DEFAULT_ADDRESS_URL="https://demo.gravitee.io"
 GRAVITEEIO_TEMPLATES_FOLDER="graviteeio"
 APIM_API_VALUE_FILE_NAME="apim_api_value.yml"
 APIM_API_TEMPLATE_FILE="apim_api_template.yml.j2"
-APIM_API_URL_GITHUB="https://raw.githubusercontent.com/gravitee-io/graviteeio-cli/master/templates/apim_api_template.yml.j2"
+APIM_API_URL_GITHUB_TEMPLATE_FOLDER="https://raw.githubusercontent.com/gravitee-io/graviteeio-cli/master/templates/"
+APIM_API_TEMPLATE_VERSION_FILE="versions"
+APIM_API_TEMPLATE_MODEL="apim_api_template_{}.yml.j2"
 
 GRAVITEEIO_CONF_FILE = os.getenv("GRAVITEEIO_CONF_FILE", os.path.expanduser("~") + "/.graviteeio")
 

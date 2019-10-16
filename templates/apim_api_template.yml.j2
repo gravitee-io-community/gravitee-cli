@@ -159,6 +159,13 @@ tags: {{api.tags}}
 {% endif -%}
 {% if api.proxy -%}
 proxy:
+  {% if api.proxy.context_path and not api.proxy.virtual_hosts-%}
+  virtual_hosts: 
+    - path: {{api.proxy.context_path}}
+  {% endif -%}
+  {% if api.proxy.virtual_hosts-%}
+  virtual_hosts: {{api.proxy.virtual_hosts}}
+  {% endif -%}
   context_path: {{api.proxy.context_path}}
   strip_context_path: false
   {% if api.proxy.cors -%}
