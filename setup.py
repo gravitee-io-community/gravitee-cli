@@ -94,7 +94,15 @@ try:
         keywords = ["Swagger", "OpenAPI", "Graviteeio"],
         packages = ["graviteeio_cli"],
         #packages = find_packages(exclude=['docs', 'tests*']),
-        install_requires = ['click>=7.0,<8.0', 'configparser==3.8.1', 'requests>=2.22.0', 'click-completion>=0.5.1', 'terminaltables>=3.1.0', 'pyyaml>=5.1.2', 'jinja2>=2.10.1'],
+        install_requires = [
+            'click>=7.0,<8.0', 
+            'configparser==3.8.1', 
+            'requests>=2.22.0', 
+            'click-completion>=0.5.1', 
+            'terminaltables>=3.1.0', 
+            'pyyaml>=5.1.2', 
+            'jinja2>=2.10.1',
+            'dictdiffer>=0.8.0'],
         extras_require = {
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },

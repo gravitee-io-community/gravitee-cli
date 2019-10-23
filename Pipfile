@@ -15,6 +15,7 @@ requests = "*"
 terminaltables = "*"
 pyyaml = "*"
 jinja2 = "*"
+dictdiffer = "*"
 
 [requires]
 python_version = "3.7"

@@ -48,11 +48,11 @@ class Graviteeio_configuration:
         address_url = environments.DEFAULT_ADDRESS_URL
         
 
-        def __init__(self): 
+        def __init__(self, config_file = environments.GRAVITEEIO_CONF_FILE): 
 
             self.config = configparser.ConfigParser()
-            
-            if not os.path.isfile(environments.GRAVITEEIO_CONF_FILE):
+
+            if not os.path.isfile(config_file):
                 self.env = "DEFAULT"
                 #elf.config.add_section(self.env)
                 self.config.set(self.env, "user", self.user)
@@ -61,10 +61,10 @@ class Graviteeio_configuration:
                 self.config.set(self.env, "env", self.env)
                 #self.config['DEFAULT'] = {'user' : self.user, 'password': self.password, 'url': self.url, 'env': self.env}
                 
-                with open(environments.GRAVITEEIO_CONF_FILE, 'w') as fileObj:
+                with open(config_file, 'w') as fileObj:
                     self.config.write(fileObj)
             else:
-                self.config.read(environments.GRAVITEEIO_CONF_FILE)
+                self.config.read(config_file)
                 self.env = self.config['DEFAULT']['env']
                 self.user = self.config[self.env]['user']
                 self.password = self.config[self.env]['password']

@@ -1,34 +1,5 @@
 from .config import Graviteeio_configuration
 
-def update_dic_with_set(set_value, dic):
-    (key, value) = set_value.split('=')
-
-    __update_dict(key, value, dic)
-
-    return dic
-
-def __update_dict(key, value, dic):
-    
-    keys = key.split('.', 1)
-    new_key = keys[0]
-    index_list = None
-
-    if new_key.find('[') > 0 and new_key.find(']') > 0:
-        index_list = int(new_key[new_key.find('[')+1: new_key.find(']')])
-        new_key = new_key[0:new_key.find('[')]
-        
-
-    if len(keys) == 1:
-        if index_list == None:
-            dic[new_key] = value
-        else:
-            dic[new_key][index_list] = value
-    else:
-        if index_list == None:
-            __update_dict(keys[1], value, dic[new_key])
-        else:
-            __update_dict(keys[1], value, dic[new_key][index_list])
-
 def convert_proxy_config(yaml_dictionary):
     #strip_context_path
     if 'strip_context_path' not in yaml_dictionary['proxy']:

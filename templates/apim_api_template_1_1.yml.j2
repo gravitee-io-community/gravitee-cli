@@ -8,6 +8,7 @@
 {% set default_http_max_concurrent_connections = 100 -%}
 {% set default_http_use_compression = True -%}
 {% set default_http_follow_redirects = False -%}
+{% set default_http_encode_URI = False -%}
 {% set default_ssl_trust_all = False -%}
 
 {% macro http_config(http) -%}
@@ -19,6 +20,7 @@
       {% set http_max_concurrent_connections = default_http_max_concurrent_connections -%}
       {% set http_use_compression = default_http_use_compression -%}
       {% set http_follow_redirects = default_http_follow_redirects -%}
+      {% set http_encode_URI = default_http_encode_URI -%}
       {% if http -%}
       {% set http_connection_timeout = http.connectTimeout | default(default_http_connection_timeout) -%}
       {% set http_idle_timeout = http.idleTimeout | default(default_http_idle_timeout) -%}
@@ -28,6 +30,7 @@
       {% set http_max_concurrent_connections = http.maxConcurrentConnections | default(default_http_max_concurrent_connections) -%}
       {% set http_use_compression = http.useCompression | default(default_http_use_compression) -%}
       {% set http_follow_redirects = http.followRedirects | default(default_http_follow_redirects) -%}
+      {% set http_encode_URI = http.encodeURI | default(default_http_encode_URI) -%}
       {% endif -%}
       http:
         connectTimeout: {{http_connection_timeout}}
@@ -38,6 +41,7 @@
         maxConcurrentConnections: {{http_max_concurrent_connections}}
         useCompression: {{http_use_compression}}
         followRedirects: {{http_follow_redirects}}
+        encodeURI: {{http_encode_URI}}
 {% endmacro %}
 
 {% macro headers_config(headers) -%}
@@ -143,6 +147,8 @@ labels: {{api.labels}}
 views: {{api.views}}
 visibility: {{api.visibility | default('private')}}
 {% if not api.path_mappings -%}
+path_mappings: []
+{% else -%}
 path_mappings: {{api.path_mappings}}
 {% endif -%}
 {% if not api.paths -%}
@@ -156,6 +162,8 @@ properties: {{api.properties}}
 {% endif -%}
 {% if api.tags -%}
 tags: {{api.tags}}
+{% else -%}
+tags: []
 {% endif -%}
 {% if api.proxy -%}
 proxy:
@@ -167,6 +175,7 @@ proxy:
   virtual_hosts: {{api.proxy.virtual_hosts}}
   {% endif -%}
   context_path: {{api.proxy.context_path}}
+  preserve_host: false
   strip_context_path: false
   {% if api.proxy.cors -%}
   cors:
@@ -175,7 +184,7 @@ proxy:
     allowMethods: {{api.proxy.cors.allowMethods | default(['GET'])}}
     allowOrigin: {{api.proxy.cors.allowOrigin | default(['\'*\''])}}
     enabled: true
-    exposeHeaders: {{api.proxy.cors.exposeHeaders}}
+    exposeHeaders: {{api.proxy.cors.exposeHeaders | default([])}}
     maxAge: {{api.proxy.cors.maxAge | default(-1)}}
   {% endif -%}
   {% if api.proxy.failover -%}
@@ -239,6 +248,10 @@ proxy:
             dc: {{ group.services.discovery.configuration.dc }}
             acl: {{ group.services.discovery.configuration.acl }}
           provider: "consul-service-discovery"
+      {% else %}
+      services:
+        discovery:
+          enabled: false
       {% endif -%}
   {% endfor %}
   {% endif -%}
@@ -261,6 +274,8 @@ response_templates:
 {% endif -%}
 {% if api.resources -%}
 resources: {{api.resources}}
+{% else %}
+resources: []
 {% endif -%}
 {% if api.services -%}
 services:
@@ -281,4 +296,3 @@ services:
 {% else %}
 services: {}
 {% endif %}
-

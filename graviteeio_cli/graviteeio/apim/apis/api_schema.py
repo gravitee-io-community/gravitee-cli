@@ -1,12 +1,11 @@
-
 import yaml
 import json
 from jinja2 import Template, TemplateNotFound, Environment, PackageLoader, FileSystemLoader, select_autoescape
 from graviteeio_cli.exeptions import GraviteeioRequestError, GraviteeioError
 from .... import environments
-from ... import utils
+from . import utils
 
-class api:
+class api_schema:
 
     def __init__(self, folder_path, value_file):
         self.j2_env = Environment(loader = FileSystemLoader(folder_path), trim_blocks=False)
@@ -39,6 +38,5 @@ class api:
         if 'version' in api_data_dic:
             api_data_dic['version'] =  str(api_data_dic['version'])
 
-        api_data_json = json.dumps(api_data_dic)
-        return api_data_json
+        return api_data_dic
 

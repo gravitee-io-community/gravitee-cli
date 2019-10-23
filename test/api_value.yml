@@ -19,7 +19,7 @@ proxy:
   context_path: /mytest
   cors:
     allowCredentials: False
-    allowHeaders: [Auth, api-key]
+    allowHeaders: [auth, api-key]
   groups: 
     - name: default-group
       endpoints:
