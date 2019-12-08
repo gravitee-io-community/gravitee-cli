@@ -16,7 +16,7 @@ paths:
       removeHeaders: ["hello"]
       scope: REQUEST
 proxy:
-  context_path: /demo2
+  context_path: /demo
   groups: 
     - name: default-group
       endpoints:

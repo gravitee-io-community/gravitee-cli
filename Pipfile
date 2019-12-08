@@ -16,6 +16,8 @@ terminaltables = "*"
 pyyaml = "*"
 jinja2 = "*"
 dictdiffer = "*"
+jmespath = "*"
+aiohttp = "*"
 
 [requires]
 python_version = "3.7"

@@ -33,12 +33,12 @@ class RunTests(Command):
         raise SystemExit(errno)
 
 def get_install_requires():
-    res = ['elasticsearch>=7.0.4,<8.0.0' ]
+    res = []
     res.append('urllib3>=1.24.2,<1.25')
     res.append('requests>=2.20.0')
     res.append('boto3>=1.9.142')
     res.append('requests_aws4auth>=0.9')
-    res.append('click>=6.7,<7.0')
+    res.append('click>=6.7,<=7.0')
     res.append('pyyaml==3.13')
     res.append('voluptuous>=0.9.3')
     res.append('certifi>=2019.6.16')
@@ -54,19 +54,19 @@ try:
     if os.path.exists('Graviteeio.ico'):
         icon = 'Elastic.ico'
 
-    graviteeio_exe = Executable(
+    graviteeio_exe = Executable (
         "run_graviteeio.py",
         base=base,
-        targetName = "graviteeio"
+        targetName = "gio"
     )
 
-    buildOptions = dict(packages=["asyncio","ctypes"], excludes=[], includes=["idna.idnadata"])
+    buildOptions = dict(packages=["asyncio","ctypes","appdirs", "packaging"], excludes=[], includes=["idna.idnadata"])
 
     if sys.platform == "win32":
         graviteeio_exe = Executable(
-            "run_curator.py",
+            "run_graviteeio.py",
             base=base,
-            targetName = "graviteeio.exe",
+            targetName = "gio.exe",
             icon = icon
         )
 
@@ -83,15 +83,14 @@ try:
         classifiers = [
             'Intended Audience :: Developers',
             'Topic :: Utilities',
-            'License :: Apache License Version 2.0',
+            'License :: OSI Approved :: Apache Software License',
             'Natural Language :: English',
             'Operating System :: OS Independent',
-            'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7'
         ],
-        keywords = ["Swagger", "OpenAPI", "Graviteeio"],
+        keywords = ["Graviteeio", "gio", "gravitee","configuration", "cli"],
         packages = ["graviteeio_cli"],
         #packages = find_packages(exclude=['docs', 'tests*']),
         install_requires = [
@@ -102,14 +101,16 @@ try:
             'terminaltables>=3.1.0', 
             'pyyaml>=5.1.2', 
             'jinja2>=2.10.1',
-            'dictdiffer>=0.8.0'],
+            'dictdiffer>=0.8.0',
+            'jmespath>=0.9.4',
+            'aiohttp==3.6.2'],
         extras_require = {
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
         include_package_data=True,
         entry_points = {
             'console_scripts': [
-                'graviteeio = graviteeio_cli.cli:main',
+                'gio = graviteeio_cli.cli:main',
             ],
         },
         cmdclass = {'test': RunTests},
@@ -134,24 +135,33 @@ except ImportError:
         classifiers = [
             'Intended Audience :: Developers',
             'Topic :: Utilities',
-            'License :: Apache License Version 2.0',
+            'License :: OSI Approved :: Apache Software License',
             'Natural Language :: English',
             'Operating System :: OS Independent',
-            'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7'
         ],
-        keywords = ["Swagger", "OpenAPI", "Graviteeio"],
+        keywords = ["Graviteeio", "gio", "gravitee","configuration", "cli"],
         packages = ["graviteeio_cli"],
         #packages = find_packages(exclude=['docs', 'tests*']),
-        install_requires = ['click>=7.0,<8.0', 'configparser==3.8.1', 'requests>=2.22.0', 'click-completion>=0.5.1', 'terminaltables>=3.1.0', 'pyyaml>=5.1.2', 'jinja2>=2.10.1'],
+        install_requires = [
+            'click>=7.0,<8.0', 
+            'configparser==3.8.1', 
+            'requests>=2.22.0', 
+            'click-completion>=0.5.1', 
+            'terminaltables>=3.1.0', 
+            'pyyaml>=5.1.2', 
+            'jinja2>=2.10.1',
+            'dictdiffer>=0.8.0',
+            'jmespath>=0.9.4',
+            'aiohttp==3.6.2'],
         extras_require = {
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
         entry_points = {
             'console_scripts': [
-                'graviteeio = graviteeio_cli.cli:main',
+                'gio = graviteeio_cli.cli:main',
             ],
         },
         cmdclass = {'test': RunTests},

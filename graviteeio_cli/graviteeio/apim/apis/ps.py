@@ -1,65 +1,92 @@
 import click
+import jmespath
+import asyncio
+import aiohttp
+from jmespath import functions
+from graviteeio_cli.graviteeio.output import OutputFormat, gio, FormatType
 from terminaltables import AsciiTable
+from graviteeio_cli.graviteeio.apim.client.api_async import ApiClientAsync
+from ....exeptions import GraviteeioError
+
 
 @click.command()
-@click.option('--deploy-state', help='show if API configuration is synchronized', is_flag=True)
+#@click.option('--deploy-state', help='show if API configuration is synchronized', is_flag=True)
+@click.option('--format',
+              default="table",
+              help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`',
+              type=click.Choice(FormatType.list_name(), case_sensitive=False))
+@click.option('--query',
+               help='Execute JMESPath query. Some function styles are available for the format `table. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state`' )
 @click.pass_obj
-def ps(obj, deploy_state):
-        """APIs list"""
-        api_client = obj['api_client']
-        resp =  api_client.get_apis()
-        if not resp:
-                click.echo("No Api(s) found ")
-        else:
+def ps(obj, format, query):
+    """This command displays the list of APIs"""
 
-                data = []
+    resp = 'test'
+    if not resp:
+        click.echo("No Api(s) found ")
+    else:
 
-                if deploy_state:
-                        data.append(['id', 'Name', 'Tags', 'Synchronized', 'Status'])
+        async def get_apis():
+            client =  ApiClientAsync(obj['config'])
+            apis = await client.get_apis_with_state()
+            return apis
+            
+        apis = asyncio.run(get_apis())
+
+        if not query:
+            if FormatType.table == FormatType.value_of(format):
+                query="[].{Id: id, Name: name, Tags: style_tags(tags), Synchronized: style_synchronized(is_synchronized), Status: style_state(state), Workflow: style_workflow_state(workflow_state)}"
+            else:
+                query="[].{Id: id, Name: name, Tags: tags, Synchronized: is_synchronized, Status: state, Workflow: workflow_state}"
+           
+        class CustomFunctions(functions.Functions):
+        #options= jmespath.Options()
+            @functions.signature({'types': ['string']})
+            def _func_style_state(self, state):
+                state_color = 'red';
+                if state == 'started':
+                    state_color = 'green'
+                return click.style(state.upper(), fg=state_color)
+            
+            @functions.signature({'types': []})
+            def _func_style_workflow_state(self, workflow_state):
+                if workflow_state:
+                    return click.style(workflow_state.upper(), fg='blue')
                 else:
-                        data.append(['id', 'Name', 'Tags', 'Status'])
+                    return '-'
 
-
-                for api_item in resp.json():
-                        if api_item['state'] == 'started':
-                                state_color = 'green'
-                        else:
-                                state_color = 'red'
-
-                        if 'workflow_state' in api_item:
-                                state = click.style(api_item['workflow_state'].upper(), fg='blue')  + "-" + click.style(api_item['state'].upper(), fg=state_color)
-                        else:
-                                state = click.style(api_item['state'].upper(), fg=state_color)
-                        
-                        tags = "-"
-                        if 'tags' in api_item:
-                                tags = ', '.join(api_item['tags'])
-                        if not tags:
-                                tags = "<none>"
-
-                        if deploy_state:
-                                response_state = api_client.state_api(api_item['id'])
-                                synchronized = click.style("X", fg='yellow')
-                                if response_state.json()["is_synchronized"]:
-                                        synchronized = click.style("V", fg='green')
-                                
-                                data.append([api_item['id'], api_item['name'], tags, synchronized, state])
-                        else:
-
-                                if api_item['state'] == 'started':
-                                        color = 'green'
-                                else:
-                                        color = 'red'
-                                data.append([api_item['id'], api_item['name'], tags, state])
-
-                table = AsciiTable(data)
-                table.inner_footing_row_border = False
-                table.inner_row_border = False
-                table.inner_column_border  = False
-                table.outer_border = False
-                if deploy_state:
-                        table.justify_columns[3] = 'center'
-                        table.justify_columns[4] = 'right'
+            @functions.signature({'types': []})
+            def _func_style_tags(self, tags):
+                if tags:
+                    return ', '.join(tags)
                 else:
-                        table.justify_columns[3] = 'right'
-                click.echo(table.table)
+                    return "<none>"
+            
+            @functions.signature({'types': []})
+            def _func_style_synchronized(self, state):
+                if state:
+                    return click.style("V", fg='green')
+                else:
+                    return click.style("X", fg='yellow')
+
+        try:
+            apis_filtered = jmespath.search(query, apis, jmespath.Options(custom_functions=CustomFunctions()))
+        
+            if len(apis) > 0:
+                header = apis_filtered[0].keys()
+
+        # print("{}".format(
+        #     apis
+        #     ))
+            
+            # TODO: Dynamic table style
+            justify_columns = {3: 'center', 4: 'center', 5: 'center'}
+                
+            outputFormat = OutputFormat.value_of(format)
+            outputFormat.style = justify_columns
+            #print("{}".format(apis_filtered))
+            gio.echo(apis_filtered, outputFormat, header)
+        except Exception as err:
+            raise GraviteeioError(err.msg)
+
+        

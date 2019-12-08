@@ -1,4 +1,5 @@
-from .config import Graviteeio_configuration
+from .config import GraviteeioConfiguration
+
 
 def convert_proxy_config(yaml_dictionary):
     #strip_context_path
@@ -33,7 +34,7 @@ def convert_proxy_config(yaml_dictionary):
         if 'http' not in group:
             group['http'] = {}
         
-        config = Gravitee_configuration()
+        config = GraviteeioConfiguration()
         config.load_http(group['http'])
 
         if 'load_balancing' not in group:

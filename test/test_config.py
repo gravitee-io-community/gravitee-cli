@@ -3,7 +3,8 @@ import pytest
 from click.testing import CliRunner
 from graviteeio_cli.cli import main
 import graviteeio_cli.environments as env
-from graviteeio_cli.graviteeio.config import Graviteeio_configuration
+from graviteeio_cli.graviteeio.config import GraviteeioConfiguration, GraviteeioModule
+
 
 def test_create_config_file():
     runner = CliRunner()
@@ -41,7 +42,7 @@ def test_create_env_config():
         result = runner.invoke(main, ['config','--user','testenv', "--env", "QLF", "--load", "QLF"])
 
         with open(env.GRAVITEEIO_CONF_FILE) as file:
-            config = Graviteeio_configuration()
+            config = GraviteeioConfiguration()
             user = config.user
 
         assert result.exit_code == 0
