@@ -1,0 +1,41 @@
+version: "1.1"
+name: Demo api
+description: this is demo api
+labels:
+  - demo
+  - test
+views:
+  - product
+visibility: public
+paths:
+ "/":
+  - enabled: true
+    description: my description
+    methods: ["GET", "POST", "PUT", "DELETE", "HEAD", "PATCH", "OPTIONS", "TRACE", "CONNECT"]
+    transform-headers:
+      removeHeaders: ["hello"]
+      scope: REQUEST
+proxy:
+  context_path: /demo2
+  groups: 
+    - name: default-group
+      endpoints:
+        - name: default
+          target: https://api.gravitee.io/echo
+        - name: what
+          target: "https://api.gravitee.io/whattimeisit"
+
+services:
+  health_check:
+    trigger:
+      rate: 1
+      unit: SECONDS
+    steps:
+      - request:
+          path: /
+          method: GET
+          fromRoot: false
+        response:
+          assertions:
+            - "#response.status == 200"
+

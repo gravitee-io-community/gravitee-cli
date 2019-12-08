@@ -1,0 +1,56 @@
+version: "1.1"
+name: Test api
+description: this my test api
+labels:
+  - demo
+  - test
+views:
+  - product
+visibility: public
+paths:
+ "/":
+  - enabled: true
+    description: my description
+    methods: ["GET", "POST", "PUT", "DELETE", "HEAD", "PATCH", "OPTIONS", "TRACE", "CONNECT"]
+    transform-headers:
+      removeHeaders: ["hello"]
+      scope: REQUEST
+proxy:
+  context_path: /mytest
+  cors:
+    allowCredentials: False
+    allowHeaders: [auth, api-key]
+  groups: 
+    - name: default-group
+      endpoints:
+        - name: default
+          target: https://api.gravitee.io/echo
+        - name: what
+          target: "https://api.gravitee.io/whattimeisit"
+
+response_templates:
+  aze:
+    application/json:
+      body: test response
+services:
+  health_check:
+    trigger:
+      rate: 1
+      unit: SECONDS
+    steps:
+      - request:
+          path: /
+          method: GET
+          fromRoot: false
+        response:
+          assertions:
+            - "#response.status == 200"
+  dynamic_property:
+    trigger:
+      rate: 1
+      unit: SECONDS
+    provider: HTTP
+    configuration:
+      url: "http://localhost/test"
+      specification: "{\n    'operation': 'shift'}"
+
