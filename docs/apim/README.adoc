@@ -1,0 +1,62 @@
+= Gravitee.io CLI - API Management
+
+== Configuration
+
+The CLI needs to know the gravitee API Management host. The default values are congured for the host `+https://demo.gravitee.io/+`.
+
+You can check the current configuration with the command:
+
+`gio apim config get`
+
+== Commands
+
+* link:apim-config.adoc[config]
+** link:apim-config-get.adoc[get]
+** link:apim-config-set.adoc[set]
+** link:apim-config-load.adoc[load]
+* apis
+** link:apim-apis-ps.adoc[ps]
+** apis init
+** apis upgrade
+** apis create
+** apis update
+** apis start
+** apis stop
+** apis deploy
+
+== Examples
+
+=== List APIs
+
+Display the list of available apis and their status
+
+`gio apim apis ps`
+
+=== Create API
+
+We are going to see how create your first api
+
+. Initialization
+
+"init" command will download in the local folder `graviteeio` the configuration template according to the version of the api management server
+
+`gio apim apis init 1.30`
+
+. Value file
+
+Now we need a value file that contains the API configuration values
+You can dowload the follow: https://github.com/gravitee-io/graviteeio-cli/blob/master/examples/api_value.yml and place it in the folder `graviteeio`
+
+. Create the api
+
+The only thing left to do is to execute the following command:
+
+`gio apim apis create`
+
+=== Update API
+
+To update an API,  you just have to modify the file the `api_value.yml` file and execute the following command:
+
+`gio apim apis update [API ID]`
+
+For more information, you can use `--help` on each module
