@@ -1,0 +1,60 @@
+= Gravitee.io CLI
+
+ifdef::env-github[]
+image::https://img.shields.io/badge/python-3-brightgreen.svg?logo=Python&style=for-the-badge[pythonversion]
+endif::[]
+
+A command line client for https://gravitee.io/[Gravitee.io] API Platform.
+
+``graviteeio-cli`` is a CLI (Command Line Interface) which helps you to manage Gravitee.io eco-system.
+It allows to automate actions for all modules of the platform by calling their Management API.
+
+== Installation
+
+(not available yet)
+
+Install via `+pip <https://pypi.python.org/pypi/pip>+`
+
+Use pip to install the latest stable version:
+
+`$ pip3 install graviteeio-cli`
+
+Install via wheel:
+
+`$ python setup.py bdist_wheel`
+
+`$ pip3 install dist/graviteeio_cli-0.1.0-py3-none-any.whl`
+
+== Requirements
+
+* Python 3.5 or more
+* no additional modules are required.
+
+== Docker
+
+Run gravitee-cli with docker
+
+Build:
+
+`$ docker build -t gio .`
+
+Run:
+
+`$ docker run -v $(pwd):/graviteeio/conf gio apm apis ps`
+
+== Usage
+
+`gio <module> <command>`
+
+[cols="2", options="header"]
+|===
+|Platform module
+|Module
+
+| link:docs/apim/README.adoc[API Management]
+| `apim`
+
+| link:docs/am/README.adoc[Access Management]
+| `am`
+
+|===
