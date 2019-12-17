@@ -19,7 +19,57 @@ from ....exeptions import GraviteeioError
                help='Execute JMESPath query. Some function styles are available for the format `table. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state`' )
 @click.pass_obj
 def ps(obj, format, query):
-    """This command displays the list of APIs"""
+    """
+This command displays the list of APIs
+
+API Field:
+
+- `id`: string 
+
+- `name`: string
+
+- `version`: string
+
+- `description`: string
+
+- `visibility`: enum `public`, `private``
+
+- `state`: enum `initialized`, `stopped`, `started`, `closed`
+
+- `labels`: string array
+
+- `manageable`: boolean
+
+- `numberOfRatings`: num
+
+- `tags:string array
+
+- `created_at`: unix time
+
+- `updated_at:` unix time
+
+- `owner`:
+
+    - `id`: string
+
+    - `displayName`: string
+
+- `picture_url`: string url
+
+- `virtual_hosts`: array
+    - `host`: string
+
+    - `path`: string
+
+    - `overrideEntrypoint`: boolean
+
+- `lifecycle_state`: enum `created`, `published`, unpublished`, `deprecated`, archived`
+
+- `workflow_state`: enum `draft`, ìn_review`, `request_for_changes`, `review_ok`
+
+- `is_synchronized`: boolean
+    
+    """
 
     resp = 'test'
     if not resp:
@@ -75,9 +125,7 @@ def ps(obj, format, query):
             if len(apis) > 0:
                 header = apis_filtered[0].keys()
 
-        # print("{}".format(
-        #     apis
-        #     ))
+            # print("{}".format(apis))
             
             # TODO: Dynamic table style
             justify_columns = {3: 'center', 4: 'center', 5: 'center'}

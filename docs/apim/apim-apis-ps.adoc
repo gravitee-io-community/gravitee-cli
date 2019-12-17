@@ -13,3 +13,15 @@ This command displays the list of APIs
     +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
             +++<td>++++++<div>+++Execute JMESPath query. Some function styles are available for the format `table. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state.
                     JMESPath is a query language for JSON+++</div>++++++</td>++++++</tr>++++++</tbody>++++++</table>+++
+
+== Exemple
+
+Display apis with table format and the fields id, name and owner name
+
+ $ gio apim apis ps --query="[].{Id: id, Name: name, Owner: owner.displayName}"
+
+Display apis synchronized with table format and the fields id, name and is_synchronized.
+
+ $ gio apim apis ps  --query="[?is_synchronized].{Id: id, Name: name, Synchronized: style_synchronized(is_synchronized)}
+
+ 
