@@ -1,0 +1,5 @@
+= gio apim apis stop
+
+This command allow to stop an API
+
+ $ gio apim apis stop [API ID]

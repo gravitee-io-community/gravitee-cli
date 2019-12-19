@@ -17,7 +17,6 @@ You can check the current configuration with the command:
 * apis
 ** link:apim-apis-ps.adoc[ps]
 ** apis init
-** apis upgrade
 ** apis create
 ** apis update
 ** apis start

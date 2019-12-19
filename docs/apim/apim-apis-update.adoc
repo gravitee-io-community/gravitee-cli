@@ -1,0 +1,58 @@
+= gio apim apis update
+
+This command allow to update API configuration
+
+ $ gio apim apis update [API ID]
+
+Object to update the API are managed with the template engine.
+API values are defined in plain YAML files.
+
+By default: the values file and template are in the folder `./graviteeio` where the commande is executed
+template file: `apim_api_template.yml.j2`
+value file: `apim_api_value.yml`
+
+== Options
+
++++<table>
+++++++<thead>
+++++++<tr>
+++++++<th colspan="2">
+++++++<h3>
+++++++<a href="#option-json" id="option-json">
++++-f, --file+++</a>
+++++++</h3>
+++++++</th>
+++++++</tr>++++++</thead>+++
+    +++<tbody>
+    ++++++<tr>
+    ++++++<th>
+    +++Description
+    +++</th>
+    ++++++<td><div>+++value file+++</div>
+    ++++++</td>
+++++++</tr>
+++++++</tbody>
+++++++<thead>
+++++++<tr>
+++++++<th colspan="2">++++++<h3>++++++<a href="#option-root" id="option-root">+++-s, --set+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
+    +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
+            +++<td>++++++<div>+++overload the value(s) of value file 
+            eg: `--set proxy.groups[0].name=mynewtest`+++</div>++++++</td>++++++</tr>++++++</tbody>+++
+    +++<thead>++++++<tr>++++++<th colspan="2">++++++<h3>++++++<a href="#option-root" id="option-root">+++--debug+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
+    +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
+            +++<td>++++++<div>+++Do not perform any changes. Show the datas genereted+++</div>++++++</td>++++++</tr>++++++</tbody>+++
+    +++<thead>++++++<tr>++++++<th colspan="2">++++++<h3>++++++<a href="#option-root" id="option-root">+++--diff+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
+    +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
+            +++<td>++++++<div>+++Compare the configuration values with api on the server+++</div>++++++</td>++++++</tr>++++++</tbody></table>+++
+
+Values file:
+
+This object provides access to values passed to the template.
+
+The value can be sourced from:
+
+- the values file defined with ``--file``
+
+- the values file ``apim_api_value.yml`` is passed in PATH FOLDER with the templates
+
+- individual parameters can be overload with ``--set`` (such as gio apis update 25b75df2-f6bb-4aaf-b75d-f2f6bbdaaf61 --set proxy.groups[0].name=mynewtest)
