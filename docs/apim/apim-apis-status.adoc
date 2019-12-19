@@ -1,0 +1,18 @@
+= gio apim apis status
+
+This command allow to deploy API configuration
+
+ $ gio apim apis status [API ID]
+
+ This command displays API status
+
+ == Options
+
++++<table>
+++++++<thead>
+++++++<tr>
+++++++<th colspan="2">
+++++++<h3>++++++<a href="#option-json" id="option-json">+++--format+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
+    +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
+            +++<td>+++Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`+++</td>++++++</tr>++++++</tbody>+++
+    +++<thead>++++++<tr>++++++<th colspan="2">++++++<h3>++++++<a href="#option-root" id="option-root">+++--query+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead></table>+++

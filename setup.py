@@ -60,7 +60,7 @@ try:
         targetName = "gio"
     )
 
-    buildOptions = dict(packages=["asyncio","ctypes","appdirs", "packaging"], excludes=[], includes=["idna.idnadata"])
+    buildOptions = dict(packages=["asyncio","ctypes","appdirs", "packaging", "graviteeio_cli.graviteeio.apim.apis"], excludes=[], includes=["idna.idnadata"])
 
     if sys.platform == "win32":
         graviteeio_exe = Executable(

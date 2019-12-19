@@ -1,0 +1,5 @@
+= gio apim apis start
+
+This command allow to start an API
+
+ $ gio apim apis start [API ID]
