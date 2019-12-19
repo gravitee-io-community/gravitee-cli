@@ -1,0 +1,5 @@
+= gio apim apis deploy
+
+This command allow to deploy API configuration
+
+ $ gio apim apis deploy [API ID]

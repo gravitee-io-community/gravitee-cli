@@ -1,5 +1,6 @@
 
 import requests
+from datetime import datetime, timedelta
 from graviteeio_cli.exeptions import GraviteeioRequestError
 from requests import RequestException
 
@@ -10,29 +11,39 @@ class api_client:
         self.config = config
         self.timeout = 10
 
-    def get_apis(self):
+    def get(self):
         return self._request("GET")
 
-    def get_api(self, id):
+    def get(self, id):
         return self._request("GET", "{}".format(id))
     
-    def create_api(self, api_data):
+    def create(self, api_data):
         return self._request("POST", "import", data = api_data)
 
-    def update_api(self, id, api_data):
+    def update(self, id, api_data):
         return self._request("PUT", "{}".format(id), data = api_data)
 
-    def start_api(self, id):
+    def start(self, id):
         return self._request("POST", "{}?action=START".format(id))
 
-    def stop_api(self, id):
+    def stop(self, id):
         return self._request("POST", "{}?action=STOP".format(id))
 
-    def state_api(self, id):
+    def state(self, id):
         return self._request("GET", "{}/state".format(id))
     
-    def deploy_api(self, id):
+    def deploy(self, id):
         return self._request("GET", "{}/deploy".format(id))
+    
+    def status(self, id):
+        now = datetime.now()
+        new_date = datetime.now() - timedelta(minutes=5)
+
+        new_date_millisec = int(new_date.timestamp() * 1000)
+        now_millisec = int(now.timestamp() * 1000)
+        
+        return self._request("GET", "{}/analytics?type=group_by&field=status&ranges=100:199%3B200:299%3B300:399%3B400:499%3B500:599&interval=600000&from={}&to={}&".format(id, new_date_millisec, now_millisec))
+
     
     def _request(self, verbe, path = "", data = None):
         try:

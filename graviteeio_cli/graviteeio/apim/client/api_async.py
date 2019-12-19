@@ -37,6 +37,7 @@ class ApiClientAsync:
     #     finally:
     #         await client.close()
 
+    # TODO: Check https://github.com/spyoungtech/grequests
     async def get_apis_with_state(self):
         timeout = aiohttp.ClientTimeout(total=self.timeout)
 

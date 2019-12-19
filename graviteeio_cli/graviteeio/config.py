@@ -60,7 +60,7 @@ def get(obj, env, format):
     # print("debug")
     gio_config = obj['config']
     if not env:
-        gio.echo(gio_config.to_display(), OutputFormat.value_of(format), ["Current Config", ""])
+        gio.echo(gio_config.to_display(), OutputFormat.value_of(format), ["Current Config ({})".format(gio_config.current_env), ""])
     else:
         gio.echo(gio_config.environements(), OutputFormat.value_of(format), ["Environments"])
         # click.echo("{}".format(gio_config.get_environements()))

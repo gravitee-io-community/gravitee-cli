@@ -4,15 +4,47 @@ This command displays the list of APIs
 
  $ gio apim apis ps [OPTIONS]
 
+
 == Options
 
-+++<table>++++++<thead>++++++<tr>++++++<th colspan="2">++++++<h3>++++++<a href="#option-json" id="option-json">+++--format+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
++++<table>
+++++++<thead>
+++++++<tr>
+++++++<th colspan="2">
+++++++<h3>++++++<a href="#option-json" id="option-json">+++--format+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
     +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
             +++<td>+++Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`+++</td>++++++</tr>++++++</tbody>+++
     +++<thead>++++++<tr>++++++<th colspan="2">++++++<h3>++++++<a href="#option-root" id="option-root">+++--query+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
     +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
             +++<td>++++++<div>+++Execute JMESPath query. Some function styles are available for the format `table. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state.
                     JMESPath is a query language for JSON+++</div>++++++</td>++++++</tr>++++++</tbody>++++++</table>+++
+
+== API Field
+
+- `id`: string 
+- `name`: string
+- `version`: string
+- `description`: string
+- `visibility`: enum `public`, `private``
+- `state`: enum `initialized`, `stopped`, `started`, `closed`
+- `labels`: string array
+- `manageable`: boolean
+- `numberOfRatings`: num
+- `tags` :string array
+- `created_at`: unix time
+- `updated_at:` unix time
+- `owner`:
+    - `id`: string
+    - `displayName`: string
+- `picture_url`: string url
+- `virtual_hosts`: array
+    - `host`: string
+    - `path`: string
+    - `overrideEntrypoint`: boolean
+- `lifecycle_state`: enum `created`, `published`, `unpublished`, `deprecated`, `archived`
+- `workflow_state`: enum `draft`, ìn_review`, `request_for_changes`, `review_ok`
+- `is_synchronized`: boolean
+
 
 == Exemple
 
