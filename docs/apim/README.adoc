@@ -18,10 +18,11 @@ You can check the current configuration with the command:
 ** link:apim-apis-ps.adoc[ps]
 ** apis init
 ** apis create
-** apis update
-** apis start
-** apis stop
-** apis deploy
+** link:apis-apis-update.adoc[update]
+** link:apis-apis-start.adoc[start]
+** link:apis-apis-stop.adoc[stop]
+** link:apis-apis-deploy.adoc[deploy]
+** link:apis-apis-status.adoc[status]
 
 == Examples
 
