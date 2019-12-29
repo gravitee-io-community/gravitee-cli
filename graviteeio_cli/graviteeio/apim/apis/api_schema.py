@@ -1,6 +1,8 @@
 import yaml
-from jinja2 import TemplateNotFound, Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+
 from graviteeio_cli.exeptions import GraviteeioError
+
 from .... import environments
 from . import utils
 

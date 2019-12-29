@@ -1,21 +1,24 @@
+import asyncio
+
+import aiohttp
 import click
 import jmespath
-import asyncio
-import aiohttp
 from jmespath import functions
-from graviteeio_cli.graviteeio.output import OutputFormat, gio, FormatType
 from terminaltables import AsciiTable
+
 from graviteeio_cli.graviteeio.apim.client.api_async import ApiClientAsync
+from graviteeio_cli.graviteeio.output import FormatType, OutputFormat, gio
+
 from ....exeptions import GraviteeioError
 
 
 @click.command()
 #@click.option('--deploy-state', help='show if API configuration is synchronized', is_flag=True)
-@click.option('--format',
+@click.option('-f','--format',
               default="table",
-              help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`',
+              help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default: `table`',
               type=click.Choice(FormatType.list_name(), case_sensitive=False))
-@click.option('--query',
+@click.option('-q','--query',
                help='Execute JMESPath query. Some function styles are available for the format `table. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state`' )
 @click.pass_obj
 def ps(obj, format, query):

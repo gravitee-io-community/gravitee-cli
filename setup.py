@@ -103,7 +103,8 @@ try:
             'jinja2>=2.10.1',
             'dictdiffer>=0.8.0',
             'jmespath>=0.9.4',
-            'aiohttp==3.6.2'],
+            'aiohttp==3.6.2',
+            'pytimeparse==1.1.8'],
         extras_require = {
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
@@ -155,7 +156,8 @@ except ImportError:
             'jinja2>=2.10.1',
             'dictdiffer>=0.8.0',
             'jmespath>=0.9.4',
-            'aiohttp==3.6.2'],
+            'aiohttp==3.6.2',
+            'pytimeparse==1.1.8'],
         extras_require = {
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
