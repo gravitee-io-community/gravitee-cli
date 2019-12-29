@@ -11,9 +11,6 @@ class api_client:
         self.config = config
         self.timeout = 10
 
-    def get(self):
-        return self._request("GET")
-
     def get(self, id):
         return self._request("GET", "{}".format(id))
     
@@ -35,15 +32,21 @@ class api_client:
     def deploy(self, id):
         return self._request("GET", "{}/deploy".format(id))
     
-    def status(self, id):
+    def status(self, id, time_frame_seconds = 300):
+        
         now = datetime.now()
-        new_date = datetime.now() - timedelta(minutes=5)
-
+        new_date = now - timedelta(seconds=time_frame_seconds)
+    
         new_date_millisec = int(new_date.timestamp() * 1000)
         now_millisec = int(now.timestamp() * 1000)
         
         return self._request("GET", "{}/analytics?type=group_by&field=status&ranges=100:199%3B200:299%3B300:399%3B400:499%3B500:599&interval=600000&from={}&to={}&".format(id, new_date_millisec, now_millisec))
 
+    def health(self, id):
+        return self._request("GET", "{}/health?type=availability".format(id))
+
+    def pages_fetch(self, id):
+        return self._request("POST", "{}/pages/_fetch".format(id))
     
     def _request(self, verbe, path = "", data = None):
         try:

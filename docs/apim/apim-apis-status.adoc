@@ -12,7 +12,17 @@ This command allow to deploy API configuration
 ++++++<thead>
 ++++++<tr>
 ++++++<th colspan="2">
-++++++<h3>++++++<a href="#option-json" id="option-json">+++--format+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
+++++++<h3>++++++<a href="#option-json" id="option-json">+++-f --format+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
     +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
             +++<td>+++Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`+++</td>++++++</tr>++++++</tbody>+++
-    +++<thead>++++++<tr>++++++<th colspan="2">++++++<h3>++++++<a href="#option-root" id="option-root">+++--query+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead></table>+++
+    +++<thead>++++++<tr>++++++<th colspan="2">++++++<h3>++++++<a href="#option-root" id="option-root">+++-q --query+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>
+    +++
+    +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
+            +++<td>+++Execute JMESPath query. Default: `[].{Status: status, Hits: hits, Percent: percent}` eg: filtered on 5xx status `[?status==`5xx`].{Status: status, Hits: hits, Percent: percent}`+++</td>++++++</tr>++++++</tbody>
+    ++++++<thead>
+++++++<tr>
+++++++<th colspan="2">
+++++++<h3>++++++<a href="#option-json" id="option-json">+++-tf --time-frame+++</a>++++++</h3>++++++</th>++++++</tr>++++++</thead>+++
+    +++<tbody>++++++<tr>++++++<th>+++Description+++</th>+++
+            +++<td>+++Timeframe between now and the vale. Default: `5m`. m -> minute, h -> hour, d -> days+++</td>++++++</tr>++++++</tbody>+++
+    </table>+++

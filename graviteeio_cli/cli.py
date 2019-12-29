@@ -24,7 +24,6 @@ def main(ctx, config):
         ctx.obj = {}
         ctx.obj['config_path'] = config
 
-# main.add_command(config)
 main.add_command(apim)
 
 if __name__ == '__main__':

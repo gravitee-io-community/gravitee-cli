@@ -1,12 +1,13 @@
-import click
 import json
 import os
+
+import click
 from dictdiffer import diff as jsondiff
 
-from .api_schema import ApiSchema
-from .utils import display_dict_differ, filter_api_values
 from .... import environments
 from ....exeptions import GraviteeioError
+from .api_schema import ApiSchema
+from .utils import display_dict_differ, filter_api_values
 
 
 @click.command()

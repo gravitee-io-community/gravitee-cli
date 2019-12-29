@@ -1,5 +1,7 @@
 import click
+
 from .update import update
+
 
 @click.command()
 @click.option('--file', '-f', required=False,

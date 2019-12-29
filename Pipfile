@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 pylint = "*"
 pytest = "*"
+autopep8 = "*"
 
 [packages]
 click = "*"
@@ -18,6 +19,7 @@ jinja2 = "*"
 dictdiffer = "*"
 jmespath = "*"
 aiohttp = "*"
+pytimeparse = "*"
 
 [requires]
 python_version = "3.7"
