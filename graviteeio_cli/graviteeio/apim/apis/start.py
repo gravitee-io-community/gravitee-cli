@@ -6,5 +6,5 @@ import click
 def start(obj, api_id):
     """This command allow to start an API"""
     api_client = obj['api_client']
-    resp = api_client.start(api_id)
+    api_client.start(api_id)
     click.echo("API {} is started".format(api_id))

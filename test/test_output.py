@@ -6,41 +6,49 @@ APIS_PS_DATA_table = [{'Id': '339ac63d-a072-4234-9ac6-3da0726234be', 'Name': 'Gr
 
 def test_output_dict_table(capsys):
     data = {"param1": "value1","param2": "value2"}
-    gio.echo(data, OutputFormat(FormatType.table), ["Header","Header"])
+    gio.echo(data, OutputFormat.value_of("table"), ["Header","Header"])
     captured = capsys.readouterr()
     assert captured.out == " Header  Header \n----------------\n param1  value1 \n param2  value2 \n"
 
 def test_output_list_table(capsys):
     data = ['demo', 'qualif', 'prod']
-    gio.echo(data, OutputFormat(FormatType.table), ["Env"])
+    gio.echo(data, OutputFormat.value_of("table"), ["Env"])
     captured = capsys.readouterr()
     assert captured.out == " Env    \n--------\n demo   \n qualif \n prod   \n"
 
+# def test_output_list_table_without_header(capsys):
+#     data = ['demo', 'qualif', 'prod']
+#     gio.echo(data, OutputFormat.value_of("table"))
+#     captured = capsys.readouterr()
+#     print(captured.out)
+#     print("---------\n demo     \n qualif   \n prod     \n")
+#     assert captured.out == "----------\n demo     \n qualif   \n prod     \n"
+
 def test_output_dict_tsv(capsys):
     data = {"param1": "value1","param2": "value2"}
-    gio.echo(data, OutputFormat(FormatType.tsv), ["Header1","Header2"])
+    gio.echo(data, OutputFormat.value_of("tsv"), ["Header1","Header2"])
     captured = capsys.readouterr()
     assert captured.out == "Header1\tHeader2\nparam1\tvalue1\nparam2\tvalue2\n"
 
 def test_output_list_tsv(capsys):
     data = ['demo', 'qualif', 'prod']
-    gio.echo(data, OutputFormat(FormatType.tsv), ["Env"])
+    gio.echo(data, OutputFormat.value_of("tsv"), ["Env"])
     captured = capsys.readouterr()
     assert captured.out == "Env\ndemo\nqualif\nprod\n"
 
 def test_output_dict_table_apis_ps(capsys):
-    gio.echo(APIS_PS_DATA_table, OutputFormat(FormatType.table), ["id","Name","Tags","Synchronized","Status"])
+    gio.echo(APIS_PS_DATA_table, OutputFormat.value_of("table"), ["id","Name","Tags","Synchronized","Status"])
     captured = capsys.readouterr()
     assert captured.out == " id                                    Name                  Tags    Synchronized  Status  \n-------------------------------------------------------------------------------------------\n 339ac63d-a072-4234-9ac6-3da0726234be  Gravitee.io features  <none>  V             STARTED \n"
 
 def test_output_dict_tsv_apis_ps_with_no_data(capsys):
     
-    gio.echo([], OutputFormat(FormatType.tsv), [])
+    gio.echo([], OutputFormat.value_of("tsv"), [])
     captured = capsys.readouterr()
     assert captured.out == "\t\n"
 
 def test_output_dict_tsv_apis_ps(capsys):
     
-    gio.echo(APIS_PS_DATA, OutputFormat(FormatType.tsv), ["id","Name","Tags","Synchronized","Status"])
+    gio.echo(APIS_PS_DATA, OutputFormat.value_of("tsv"), ["id","Name","Tags","Synchronized","Status"])
     captured = capsys.readouterr()
     assert captured.out == "id\tName\tTags\tSynchronized\tStatus\n339ac63d-a072-4234-9ac6-3da0726234be\tGravitee.io features\t[]\tTrue\tstarted\tNone\n"
