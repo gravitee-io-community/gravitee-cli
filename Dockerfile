@@ -1,7 +1,7 @@
 FROM python:3.7-alpine3.10 as builder
 
 RUN apk --no-cache upgrade && apk --no-cache add build-base tar musl-utils openssl-dev && pip3 install --upgrade pip
-RUN pip3 install setuptools appdirs packaging cx_Freeze
+RUN pip3 install setuptools appdirs packaging cx_Freeze==6.1
 
 COPY . .
 RUN ln -s /lib/libc.musl-x86_64.so.1 ldd
@@ -15,7 +15,7 @@ COPY --from=builder build/exe.linux-x86_64-3.7 /graviteeio/
 RUN mkdir /graviteeio/config && chown -R nobody:nobody /graviteeio
 USER nobody:nobody
 ENV LC_ALL=en_US.utf8
-ENV LD_LIBRARY_PATH=/graviteeio/lib
+# ENV LD_LIBRARY_PATH=/graviteeio/lib
 ENV GRAVITEEIO_CONF_FILE=/graviteeio/config/.graviteeio
 VOLUME [ "/graviteeio/config/" ]
 ENTRYPOINT ["/graviteeio/gio"]
