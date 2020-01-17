@@ -13,5 +13,5 @@ from .update import update
 @click.argument('templates_folder', type=click.Path(exists=True), required=False, metavar='[PATH FOLDER]')
 @click.pass_context
 def create(ctx, file, set, debug, templates_folder):
-    """this command allow to create api configuration"""
+    """This command allow to create api configuration"""
     ctx.invoke(update, api_id=None, file=file, set=set, debug=debug, diff=False, templates_folder=templates_folder)
