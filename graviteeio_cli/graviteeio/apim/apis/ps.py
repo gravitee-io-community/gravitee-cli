@@ -1,9 +1,10 @@
 import asyncio
+import logging
 
 import aiohttp
 import click
 import jmespath
-from jmespath import functions
+from jmespath import exceptions, functions
 from terminaltables import AsciiTable
 
 from graviteeio_cli.graviteeio.apim.client.api_async import ApiClientAsync
@@ -16,7 +17,7 @@ from ....exeptions import GraviteeioError
 #@click.option('--deploy-state', help='show if API configuration is synchronized', is_flag=True)
 @click.option('-f','--format',
               default="table",
-              help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default: `table`',
+              help='Set the format for printing command output resources. Default: `table`',
               type=click.Choice(FormatType.list_name(), case_sensitive=False))
 @click.option('-q','--query',
                help='Execute JMESPath query. Some function styles are available for the format `table. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state`' )
@@ -58,12 +59,12 @@ API Field:
         apis = await client.get_apis_with_state()
         return apis
     try: 
-       # apis = asyncio.run(get_apis())
         loop = asyncio.get_event_loop()
         apis = loop.run_until_complete(get_apis())
 
-    except Exception as err:
-        raise GraviteeioError(err.msg)
+        # print("{}".format(apis))
+    except Exception:
+        raise GraviteeioError("to get apis")
 
     if not apis and len(apis) <=0:
         click.echo("No Api(s) found ")
@@ -106,18 +107,23 @@ API Field:
 
     try:
         apis_filtered = jmespath.search(query, apis, jmespath.Options(custom_functions=CustomFunctions()))
-    
-        if len(apis) > 0:
+        header = None
+        if len(apis_filtered) > 0 and type(apis_filtered[0]) is dict:
             header = apis_filtered[0].keys()
 
-        # print("{}".format(apis))
-        
-        # TODO: Dynamic table style
-        justify_columns = {3: 'center', 4: 'center', 5: 'center'}
-            
+        # print("{}".format(apis_filtered))
+
         outputFormat = OutputFormat.value_of(format)
-        outputFormat.style = justify_columns
+        if format is "table" and header:
+            # TODO: Dynamic table style
+            justify_columns = {}
+            for x in range(2, len(header)):
+                justify_columns[x] = 'center'
+            #justify_columns = {3: 'center', 4: 'center', 5: 'center'}
+            outputFormat.style = justify_columns
         #print("{}".format(apis_filtered))
         gio.echo(apis_filtered, outputFormat, header)
-    except Exception as err:
-        raise GraviteeioError(err.msg)
+    except exceptions.JMESPathError as jmespatherr:
+        raise GraviteeioError(str(jmespatherr))
+    except Exception:
+         raise GraviteeioError("to print {} with the format {}".format(apis_filtered, format))
