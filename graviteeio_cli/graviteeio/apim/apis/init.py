@@ -11,7 +11,7 @@ from .... import environments
 def init(folder, version, upgrade):
     """init api template according to api management version"""
     if upgrade:
-        upgrade_exec()
+        upgrade_exec(folder)
 
     versions = requests.get(
         environments.APIM_API_URL_GITHUB_TEMPLATE_FOLDER + environments.APIM_API_TEMPLATE_VERSION_FILE)
@@ -58,7 +58,7 @@ def init(folder, version, upgrade):
         click.echo("Init file already exists")
 
 
-def upgrade_exec(ctx, folder, version):
+def upgrade_exec(folder):
     """upgrade api template according to api management version"""
     if not folder: folder = environments.GRAVITEEIO_TEMPLATES_FOLDER
 
