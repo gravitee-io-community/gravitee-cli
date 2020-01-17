@@ -7,7 +7,7 @@ from ..client.api import api_client
 from .plugins import COMMANDS
 
 # cmd_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'plugins'))
-add_command = ["ps", "init", "start", "stop", "deploy", "update", "create", "status", "health"]
+add_command = ["ps", "init", "start", "stop", "deploy", "update", "create", "status", "health", "fetch"]
 
 class PluginCommand(click.MultiCommand):
 
@@ -19,7 +19,7 @@ class PluginCommand(click.MultiCommand):
 
         rv.extend(add_command)
         rv.sort()
-
+        
         return rv
 
     def get_command(self, ctx, name):
