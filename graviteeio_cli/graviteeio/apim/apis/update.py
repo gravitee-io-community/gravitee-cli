@@ -67,6 +67,6 @@ def update(obj, api_id, file, set, debug, diff, templates_folder):
             resp = api_client.update(api_id, json.dumps(api_data))
             click.echo("API {} is updated".format(api_id))
         else:
-            click.echo("Start Create")
             resp = api_client.create(json.dumps(api_data))
+            click.echo("Start Create")
             click.echo("API {} has been created".format(resp.json()["id"]))
