@@ -5,4 +5,5 @@ build/
 gravitee.egg-info/
 .idea/*
 .vscode/*
+.venv/*
 graviteeio_cli.egg-info/*
