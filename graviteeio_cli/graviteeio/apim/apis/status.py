@@ -2,6 +2,7 @@ import time
 
 import click
 import jmespath
+from jmespath import exceptions
 
 from graviteeio_cli.graviteeio.output import FormatType, OutputFormat, gio
 from pytimeparse import parse
@@ -14,11 +15,11 @@ colors = {"1xx":"white","2xx":"green","3xx":"white","4xx":"yellow","5xx":"red"}
 @click.argument('api_id', required=True)
 @click.option('-f','--format',
               default="table",
-              help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`',
-              type=click.Choice(FormatType.list_name(), case_sensitive=False))
+              help='Set the format for printing command output resources. Default is: `table`',
+              type=click.Choice(FormatType.extended_list_name(), case_sensitive=False))
 @click.option('-q','--query',
-              default="[].{Status: status, Hits: hits, Percent: percent}",
-              help='Execute JMESPath query. Default: `[].{Status: status, Hits: hits, Percent: percent}` eg: filtered on 5xx status `[?status==`5xx`].{Status: status, Hits: hits, Percent: percent}`' )
+              default="reverse(@)[].{Status: status, Hits: hits, Percent: percent}",
+              help='Execute JMESPath query. Default: `reverse(@)[].{Status: status, Hits: hits, Percent: percent}` eg: filtered on 5xx status `[?status==`5xx`].{Status: status, Hits: hits, Percent: percent}`' )
 @click.option('-tf','--time-frame',
               default="5m",
               help="Timeframe between now and the vale. Default: `5m`. m -> minute, h -> hour, d -> days")
@@ -57,15 +58,20 @@ Status Field:
         for status in to_return:
             status["percent"] = round(status["percent"] / total, 2)
  
+    if format == "hbar":
+        query = "reverse(@)[].{Status: status, Percent: percent}"
     # start_time = time.time()
     try:
         status_filtered = jmespath.search(query, to_return)
-    
-        if len(to_return) > 0:
+
+        header = None
+        if len(status_filtered) > 0 and type(status_filtered[0]) is dict:
             header = status_filtered[0].keys()
             
         outputFormat = OutputFormat.value_of(format)
         gio.echo(status_filtered, outputFormat, header)
 
+    except exceptions.JMESPathError as jmespatherr:
+        raise GraviteeioError(str(jmespatherr))
     except Exception as err:
-        raise GraviteeioError(err.msg)
+        raise GraviteeioError("to print {} with the format {}".format(status_filtered, format))

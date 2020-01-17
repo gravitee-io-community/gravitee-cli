@@ -104,7 +104,8 @@ try:
             'dictdiffer>=0.8.0',
             'jmespath>=0.9.4',
             'aiohttp==3.6.2',
-            'pytimeparse==1.1.8'],
+            'pytimeparse==1.1.8',
+            'termgraph==0.2.1'],
         extras_require = {
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
@@ -157,7 +158,8 @@ except ImportError:
             'dictdiffer>=0.8.0',
             'jmespath>=0.9.4',
             'aiohttp==3.6.2',
-            'pytimeparse==1.1.8'],
+            'pytimeparse==1.1.8',
+            'termgraph==0.2.1'],
         extras_require = {
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
