@@ -40,7 +40,7 @@ Build:
 
 Run:
 
-`$ docker run -v $(pwd):/graviteeio/conf gio apm apis ps`
+`$ docker run -v $(pwd):/graviteeio/conf gio apim apis ps`
 
 == Usage
 
