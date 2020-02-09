@@ -1,12 +1,14 @@
 import enum
 import functools as ft
 import json
+import logging
 from functools import reduce
 
 import click
 import yaml
-from terminaltables import AsciiTable
 from termgraph import termgraph as tg
+from terminaltables import AsciiTable
+
 # class gio:
 
 
@@ -71,7 +73,6 @@ class TableOutputFormat(OutputFormat):
         table.inner_column_border = False
         table.outer_border = False
 
-        # print("{}".format(justify_columns))
         if not self.style is None:
             table.justify_columns = self.style
 
@@ -152,6 +153,7 @@ class gio:
         # print("{}".format(type(obj[0])))
         # print("{}".format(obj))
         # print("debug {}".format(format))
+        logging.debug("gio echo obj: {} format {} header {}".format(obj, format, header))
         to_print = obj
 
         if format.type == FormatType.table or format.type == FormatType.tsv:
@@ -207,4 +209,3 @@ class gio:
             to_print.append(data)
 
         format.echo(to_print)
-

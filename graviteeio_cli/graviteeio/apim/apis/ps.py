@@ -1,3 +1,4 @@
+import logging
 import asyncio
 import logging
 
@@ -12,6 +13,7 @@ from graviteeio_cli.graviteeio.output import FormatType, OutputFormat, gio
 
 from ....exeptions import GraviteeioError
 
+logger = logging.getLogger("command-ps")
 
 @click.command()
 #@click.option('--deploy-state', help='show if API configuration is synchronized', is_flag=True)
@@ -58,13 +60,16 @@ API Field:
         client =  ApiClientAsync(obj['config'])
         apis = await client.get_apis_with_state()
         return apis
+
     try: 
         loop = asyncio.get_event_loop()
         apis = loop.run_until_complete(get_apis())
 
-        # print("{}".format(apis))
     except Exception:
-        raise GraviteeioError("to get apis")
+        logging.exception("get apis")
+        raise GraviteeioError("get apis")
+
+    logger.debug("apis response: {}".format(apis))
 
     if not apis and len(apis) <=0:
         click.echo("No Api(s) found ")
@@ -108,10 +113,13 @@ API Field:
     try:
         apis_filtered = jmespath.search(query, apis, jmespath.Options(custom_functions=CustomFunctions()))
         header = None
-        if len(apis_filtered) > 0 and type(apis_filtered[0]) is dict:
+        
+        logging.debug("apis_filtered: {}".format(apis_filtered))
+        
+        if len(apis_filtered) > 0 and type(apis_filtered) is list and type(apis_filtered[0]) is dict:
             header = apis_filtered[0].keys()
-
-        # print("{}".format(apis_filtered))
+        
+        logging.debug("apis_filtered header: {}".format(header))
 
         outputFormat = OutputFormat.value_of(format)
         if format is "table" and header:
@@ -121,9 +129,11 @@ API Field:
                 justify_columns[x] = 'center'
             #justify_columns = {3: 'center', 4: 'center', 5: 'center'}
             outputFormat.style = justify_columns
-        #print("{}".format(apis_filtered))
+
         gio.echo(apis_filtered, outputFormat, header)
     except exceptions.JMESPathError as jmespatherr:
+        logging.exception("PS JMESPathError exception")
         raise GraviteeioError(str(jmespatherr))
     except Exception:
-         raise GraviteeioError("to print {} with the format {}".format(apis_filtered, format))
+        logging.exception("PS Exception")
+        raise GraviteeioError("apis filtered {} and the format {}".format(apis_filtered, format))

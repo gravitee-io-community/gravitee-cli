@@ -4,12 +4,12 @@ from .... import environments
 
 
 @click.command()
-@click.option('--folder', help='Path to folder of templates', type=click.Path(exists=True), required=False)
+@click.option('--folder', help='Path for folder of templates', type=click.Path(exists=True), required=False)
 @click.option('--upgrade', help='Upgrade api template', is_flag=False)
 @click.argument('version')
 @click.pass_obj
 def init(folder, version, upgrade):
-    """init api template according to api management version"""
+    """init api download a default template according to api management version"""
     if upgrade:
         upgrade_exec(folder)
 

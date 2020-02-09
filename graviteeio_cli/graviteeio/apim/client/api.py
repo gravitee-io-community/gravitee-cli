@@ -1,11 +1,15 @@
 
-import requests
+import logging
 from datetime import datetime, timedelta
-from graviteeio_cli.exeptions import GraviteeioRequestError
+
+import requests
 from requests import RequestException
+
+from graviteeio_cli.exeptions import GraviteeioRequestError
 
 APIS_CONTEXT = "/management/{}apis/"
 
+logger = logging.getLogger("client.api_client")
 class api_client:
     def __init__(self, config=None, debug=False):
         self.config = config
@@ -60,16 +64,21 @@ class api_client:
             self._check(response)
             return response
         except RequestException:
+            logger.exception("api_client Request exception")
             raise GraviteeioRequestError(msg = "Error Connecting to server")
 
     def _check(self, response):
+        
         if not response.status_code:
             raise GraviteeioRequestError(msg = "Request error")
         if response.status_code >= 400:
             try:
+                logger.debug("response status %s %s", response.status_code, response.reason)
+
                 error = response.json()
                 raise GraviteeioRequestError(msg = error['message'], error_code = error['http_status'] )
             except ValueError:
+                logger.exception("api_client Value error")
                 raise GraviteeioRequestError(msg = response.reason, error_code = response.status_code )
 
 # curl 'https://demo.gravitee.io/management/apis/import' -H 'sec-fetch-mode: cors' 

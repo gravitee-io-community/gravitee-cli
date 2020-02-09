@@ -1,11 +1,12 @@
-import click
 import configparser
-import os
 import enum
-from .output import OutputFormat, gio, FormatType
+import os
+
+import click
 
 from .. import environments
 from ..exeptions import GraviteeioError
+from .output import FormatType, OutputFormat, gio
 
 
 @click.group()
@@ -57,7 +58,6 @@ def get(obj, env, format):
     """
     This command prints current configuration values used
     """
-    # print("debug")
     gio_config = obj['config']
     if not env:
         gio.echo(gio_config.to_display(), OutputFormat.value_of(format), ["Current Config ({})".format(gio_config.current_env), ""])
