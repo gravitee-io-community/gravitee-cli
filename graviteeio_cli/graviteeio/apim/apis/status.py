@@ -1,11 +1,12 @@
+import logging
 import time
 
 import click
 import jmespath
 from jmespath import exceptions
+from pytimeparse import parse
 
 from graviteeio_cli.graviteeio.output import FormatType, OutputFormat, gio
-from pytimeparse import parse
 
 from ....exeptions import GraviteeioError
 
@@ -72,6 +73,8 @@ Status Field:
         gio.echo(status_filtered, outputFormat, header)
 
     except exceptions.JMESPathError as jmespatherr:
+        logging.exception("STATUS JMESPathError exception")
         raise GraviteeioError(str(jmespatherr))
     except Exception as err:
+        logging.exception("STATUS Exception")
         raise GraviteeioError("to print {} with the format {}".format(status_filtered, format))
