@@ -14,7 +14,7 @@ colors = {"1xx":"white","2xx":"green","3xx":"white","4xx":"yellow","5xx":"red"}
 
 @click.command()
 @click.argument('api_id', required=True)
-@click.option('-f','--format',
+@click.option('--format',
               default="table",
               help='Set the format for printing command output resources. Default is: `table`',
               type=click.Choice(FormatType.extended_list_name(), case_sensitive=False))
@@ -41,6 +41,7 @@ Status Field:
         status_values = api_client.status(api_id, parse(time_frame)).json()['values']
     except TypeError:
         raise GraviteeioError("Unsupported type for time frame")
+
 
     to_return = []
     total = 0
