@@ -6,7 +6,7 @@ import click_completion
 from .__version__ import __version__ as VERSION
 from .environments import GRAVITEEIO_CONF_FILE
 from .graviteeio.apim.apim import apim
-from .graviteeio.config import GraviteeioConfiguration, config
+from .graviteeio.profile import profile, GraviteeioConfig
 
 # Enable shell completion.
 click_completion.init()
@@ -34,9 +34,11 @@ def main(ctx, config, log, log_level):
             logging.disable(logging.ERROR)
 
         logging.basicConfig(format='%(name)s-%(levelname)s: %(message)s', level=log_level)
+        ctx.obj['config'] = GraviteeioConfig()
         
 
 main.add_command(apim)
+main.add_command(profile)
 
 if __name__ == '__main__':
     main()

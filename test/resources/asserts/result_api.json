@@ -1,0 +1,66 @@
+{
+    "version": "1.0",
+    "name": "My first api",
+    "description": "api generated with gio cli",
+    "visibility": "private",
+    "proxy": {
+        "strip_context_path": false,
+        "preserve_host": false,
+        "virtual_hosts": [
+            {
+                "path": "/test"
+            }
+        ],
+        "groups": [
+            {
+                "name": "default-group",
+                "endpoints": [
+                    {
+                        "name": "default-1",
+                        "target": "https://api.gravitee.io/echo",
+                        "weight": 1,
+                        "backup": false,
+                        "type": "HTTP",
+                        "inherit": true
+                    }
+                ],
+                "load_balancing": {
+                    "type": "ROUND_ROBIN"
+                },
+                "http": {
+                    "connectTimeout": 5000,
+                    "encodeURI": false,
+                    "followRedirects": false,
+                    "idleTimeout": 60000,
+                    "keepAlive": true,
+                    "maxConcurrentConnections": 100,
+                    "pipelining": false,
+                    "readTimeout": 10000,
+                    "useCompression": true
+                }
+            }
+        ]
+    },
+    "paths": {
+        "/": []
+    },
+    "resources": [],
+    "path_mappings": [],
+    "response_templates": {},
+    "plans": [
+        {
+            "name": "Plan keyless",
+            "description": "plan keyless",
+            "validation": "auto",
+            "security": "KEY_LESS",
+            "type": "api",
+            "status": "published",
+            "order": 1,
+            "paths": {
+                "/": []
+            },
+            "comment_required": false,
+            "characteristics": []
+        }
+    ]
+}

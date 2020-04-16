@@ -10,6 +10,7 @@ from terminaltables import AsciiTable
 
 from graviteeio_cli.graviteeio.apim.client.api_async import ApiClientAsync
 from graviteeio_cli.graviteeio.output import FormatType, OutputFormat, gio
+from graviteeio_cli.environments import GraviteeioModule
 
 from ....exeptions import GraviteeioError
 
@@ -17,7 +18,7 @@ logger = logging.getLogger("command-ps")
 
 @click.command()
 #@click.option('--deploy-state', help='show if API configuration is synchronized', is_flag=True)
-@click.option('-f','--format',
+@click.option('--format',
               default="table",
               help='Set the format for printing command output resources. Default: `table`',
               type=click.Choice(FormatType.list_name(), case_sensitive=False))
@@ -57,7 +58,7 @@ API Field:
     """
 
     async def get_apis():
-        client =  ApiClientAsync(obj['config'])
+        client =  ApiClientAsync(obj['config'].getGraviteeioConfig(GraviteeioModule.APIM))
         apis = await client.get_apis_with_state()
         return apis
 

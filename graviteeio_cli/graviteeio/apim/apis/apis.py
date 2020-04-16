@@ -2,12 +2,13 @@ import os
 import sys
 
 import click
+from graviteeio_cli.environments import GraviteeioModule
 
 from ..client.api import api_client
 from .plugins import COMMANDS
 
 # cmd_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'plugins'))
-add_command = ["ps", "init", "start", "stop", "deploy", "update", "create", "status", "health", "fetch"]
+add_command = ["ps", "init", "start", "stop", "deploy", "status", "health", "fetch", "schema", "spec", "get"]
 
 class PluginCommand(click.MultiCommand):
 
@@ -32,10 +33,13 @@ class PluginCommand(click.MultiCommand):
                 mod = __import__('graviteeio_cli.graviteeio.apim.apis.plugins.cmd_' + name, None, None, [name])
         except ImportError:
             return
-        return getattr(mod,name)
+        return getattr(mod, name)
 
 
 @click.command(cls=PluginCommand)
 @click.pass_context
 def apis(ctx):
-    ctx.obj['api_client'] = api_client(config=ctx.obj['config'])
+    """
+    apis actions
+    """
+    ctx.obj['api_client'] = api_client(config=ctx.obj['config'].getGraviteeioConfig(GraviteeioModule.APIM))

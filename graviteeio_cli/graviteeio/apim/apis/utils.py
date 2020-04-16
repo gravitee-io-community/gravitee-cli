@@ -10,7 +10,16 @@ EXCLUDED_API_VALUES = [
     'id',
     'state',
     'entrypoints',
-    'workflow_state'
+    'workflow_state',
+    'picture'
+]
+
+EXLUDED_API_PLAN_VALUES = [
+    'id',
+    'apis',
+    'created_at',
+    'updated_at',
+    'published_at'
 ]
 
 
@@ -35,7 +44,10 @@ def __update_dict(key, value, dic):
         if index_list == None:
             dic[new_key] = value
         else:
-            dic[new_key][index_list] = value
+            if len(dic[new_key]) < index_list + 1:
+                dic[new_key].append(value)
+            else:
+                dic[new_key][index_list] = value
     else:
         if index_list == None:
             __update_dict(keys[1], value, dic[new_key])
@@ -47,10 +59,19 @@ def filter_api_values(api_data):
     for key in EXCLUDED_API_VALUES:
         if key in api_data:
             del api_data[key]
+    
+    if 'plans' in api_data:
+        for plan in api_data['plans']:
+            for key in EXLUDED_API_PLAN_VALUES:
+                if key in plan:
+                    del plan[key]
+
 
 
 def display_dict_differ(dict_differ):
+    has_diff = False
     for diff_tuple in dict_differ:
+        has_diff = True
         if diff_tuple[0] is 'change':
             # click.echo(click.style('- {}: {}'.format(diff_tuple[1], diff_tuple[2][0]), fg='red') + " " + click.style('+ {}: {}'.format(diff_tuple[1], diff_tuple[2][1]), fg='green'))
             click.echo(click.style('- {}: {}'.format(format_key(diff_tuple[1]), diff_tuple[2][0]), fg='red'))
@@ -88,6 +109,9 @@ def display_dict_differ(dict_differ):
             click.echo()
         else:
             click.echo("diff_key {}".format(diff_tuple))
+    
+    if not has_diff:
+        click.echo("No diff")
 
 
 def format_key(key):
