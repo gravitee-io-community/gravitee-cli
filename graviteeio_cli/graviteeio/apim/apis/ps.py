@@ -9,7 +9,7 @@ from jmespath import exceptions, functions
 from terminaltables import AsciiTable
 
 from graviteeio_cli.graviteeio.apim.client.api_async import ApiClientAsync
-from graviteeio_cli.graviteeio.output import FormatType, OutputFormat, gio
+from graviteeio_cli.graviteeio.output import OutputFormatType
 from graviteeio_cli.environments import GraviteeioModule
 
 from ....exeptions import GraviteeioError
@@ -18,14 +18,14 @@ logger = logging.getLogger("command-ps")
 
 @click.command()
 #@click.option('--deploy-state', help='show if API configuration is synchronized', is_flag=True)
-@click.option('--format',
+@click.option('--output', '-o', 
               default="table",
               help='Set the format for printing command output resources. Default: `table`',
-              type=click.Choice(FormatType.list_name(), case_sensitive=False))
+              type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.option('-q','--query',
                help='Execute JMESPath query. Some function styles are available for the format `table. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state`' )
 @click.pass_obj
-def ps(obj, format, query):
+def ps(obj, output, query):
     """
 This command displays the list of APIs
 
@@ -75,8 +75,9 @@ API Field:
     if not apis and len(apis) <=0:
         click.echo("No Api(s) found ")
     
+    outputFormatType = OutputFormatType.value_of(output)
     if not query:
-        if FormatType.table == FormatType.value_of(format):
+        if outputFormatType.TABLE == outputFormatType:
             query="[].{Id: id, Name: name, Tags: style_tags(tags), Synchronized: style_synchronized(is_synchronized), Status: style_state(state), Workflow: style_workflow_state(workflow_state)}"
         else:
             query="[].{Id: id, Name: name, Tags: tags, Synchronized: is_synchronized, Status: state, Workflow: workflow_state}"
@@ -122,16 +123,17 @@ API Field:
         
         logging.debug("apis_filtered header: {}".format(header))
 
-        outputFormat = OutputFormat.value_of(format)
+        
+        justify_columns = {}
         if format is "table" and header:
             # TODO: Dynamic table style
-            justify_columns = {}
             for x in range(2, len(header)):
                 justify_columns[x] = 'center'
             #justify_columns = {3: 'center', 4: 'center', 5: 'center'}
-            outputFormat.style = justify_columns
+            # outputFormat.style = justify_columns
 
-        gio.echo(apis_filtered, outputFormat, header)
+        outputFormatType.echo(apis_filtered, header = header, style = justify_columns)
+
     except exceptions.JMESPathError as jmespatherr:
         logging.exception("PS JMESPathError exception")
         raise GraviteeioError(str(jmespatherr))

@@ -9,82 +9,97 @@ import yaml
 from termgraph import termgraph as tg
 from terminaltables import AsciiTable
 
-# class gio:
-
-
-class FormatType (enum.IntEnum):
-    table = 1
-    json = 2
-    yaml = 3
-    tsv = 4
-    hbar = 5
-
+class DataAdapter:
     @staticmethod
-    def list_name():
-        formatType = list (map (lambda c: c.name, FormatType))
-        formatType.remove("hbar")
-        return formatType
+    def Table(obj, header):
+        data = []
 
-    @staticmethod
-    def extended_list_name():
-        return list (map (lambda c: c.name, FormatType))
+        if not header:
+            header = []
+            for x in range(2):
+                header.append("")
 
-    @staticmethod
-    def value_of(value):
-        for formatType in FormatType:
-            if formatType.name == value:
-                return formatType
+        data.append (header)
 
-class OutputFormat:
-    type: FormatType
-
-    def __init__(self, formatType):
-        self.type = formatType
-    
-    def echo(self, data):
-        print("OutputFormat")
-
-    @staticmethod
-    def value_of(value):
-        if value == "table":
-            return TableOutputFormat(FormatType.value_of(value))
-        elif value == "hbar":
-            return HBarOutputFormat(FormatType.value_of(value))
-        elif value == "tsv":
-            return TsvOutputFormat(FormatType.value_of(value))
-        elif value == "json":
-            return JsonOutputFormat(FormatType.value_of(value))
-        elif value == "yaml":
-            return YamlOutputFormat(FormatType.value_of(value))
+        # print("{}".format(obj))
+        if type(obj) is dict:
+            data.extend(obj.items())
+        elif obj and type(obj) is list and not type(obj[0]) is list and not type(obj[0]) is dict:
+            data.extend(list(map(lambda c: [c], obj)))
+        elif obj and type(obj) is list and type(obj[0]) is dict:
+            data.extend(map(lambda api: api.values(), obj))
         else:
-            return OutputFormat(FormatType.value_of(value))
+            data.extend(obj)
 
-class TableOutputFormat(OutputFormat):
-    style: tuple = None
+        return data
 
-    def __init__(self, formatType, style = None):
-        super().__init__(formatType)
-        self.style = style
+class Output():
+
+   def adapter(self, obj, header):
+       pass
+
+   def print(self, obj, **kwargs):
+       pass
+
+   def echo(self, object, **kwargs):
+       header = None
+       if 'header' in kwargs:
+           header = kwargs['header']
+
+       self.print(self.adapter(object, header), **kwargs)
+
+
+class TableOutput(Output):
+
+    def adapter(self, obj, header):
+        return DataAdapter.Table(obj, header)
     
-    def echo(self, data):
+    def print(self, data, **kwargs):
         table = AsciiTable (data)
         table.inner_footing_row_border = False
         table.inner_row_border = False
         table.inner_column_border = False
         table.outer_border = False
 
-        if not self.style is None:
-            table.justify_columns = self.style
+        if "style" in kwargs:
+            table.justify_columns = kwargs["style"]
 
         click.echo(table.table)
 
-class HBarOutputFormat(OutputFormat):
 
-    def __init__(self, formatType):
-        super().__init__(formatType)
+class HBarOutput(Output):
+    def adapter(self, obj, header):
+        data = []
+        categories = []
+        labels = []
+
+        for value in obj:
+
+            for num,key in enumerate(value.keys()):
+                if num == 0 and not value[key] in categories:
+                    categories.append(value[key])
+                
+                if num > 0:
+                    if len(data) == 0:
+                        data.append([])
+
+                    data[num - 1].append(value[key])
+
+
+        if not header:
+            header = []
+            for x in range(2):
+                header.append("")
+        labels=list(header)[1:]
+
+        to_print = []
+        to_print.append(categories)
+        to_print.append(labels)
+        to_print.append(data)
+
+        return to_print
     
-    def echo(self, data):
-        
+    def print(self, data, **kwargs):
         categories = data[0]
         labels = data[1]
         values = data[2]
@@ -112,12 +127,12 @@ class HBarOutputFormat(OutputFormat):
             tg.chart(colors, values, args, labels)
 
 
-class TsvOutputFormat(OutputFormat):
+class TsvOutput(Output):
 
-    def __init__(self, formatType):
-        super().__init__(formatType)
-
-    def echo(self, obj_list):
+    def adapter(self, obj, header):
+        return DataAdapter.Table(obj, header)
+    
+    def print(self, obj_list, **kwargs):
         data = []
         for obj in obj_list:
             items = []
@@ -127,85 +142,64 @@ class TsvOutputFormat(OutputFormat):
 
         click.echo("\n".join(['\t'.join (item) for item in data]))
 
-class JsonOutputFormat(OutputFormat):
+class JsonOutput(Output):
+    def adapter(self, obj, header):
+        return obj
+    
+    def print(self, data, **kwargs):
+        click.echo(json.dumps(data, indent=2))
 
-    def __init__(self, formatType):
-        super().__init__(formatType)
 
-    def echo(self, obj):
-        click.echo(json.dumps(obj))
+class YamlOutput(Output):
+    def adapter(self, obj, header):
+        return obj
+    
+    def print(self, data, **kwargs):
+        click.echo(yaml.dump(data))
 
-class YamlOutputFormat(OutputFormat):
+class OutputFormatType(enum.Enum):
+    TABLE = {
+        'num': 1,
+        'echo': TableOutput().echo
+    }
 
-    def __init__(self, formatType):
-        super().__init__(formatType)
+    JSON =  {
+        'num': 2,
+        'echo': JsonOutput().echo
+    }
 
-    def echo(self, obj):
-        click.echo(yaml.dump(obj))
+    YAML = {
+        'num': 3,
+        'echo': YamlOutput().echo
+    }
+    
+    TSV = {
+        'num': 4,
+        'echo': TsvOutput().echo
+    }
 
-class gio:
+    HBAR = {
+        'num': 5,
+        'echo': HBarOutput().echo
+    }
+
+    def __init__(self, values):
+        self.num = values['num']
+        self.echo = values['echo']
 
     @staticmethod
-    def echo(obj, format: OutputFormat, header=None):
-        # print("" + format)
-        # print("{}".format(format == OutputFormat.json))
-        # print("{}".format(type(obj)))
-        # print("{}".format(type(obj[0])))
-        # print("{}".format(obj))
-        # print("debug {}".format(format))
-        logging.debug("gio echo obj: {} format {} header {}".format(obj, format, header))
-        to_print = obj
+    def list_name():
+        formatType = list (map (lambda c: c.name, OutputFormatType))
+        formatType.remove("HBAR")
+        return formatType
 
-        if format.type == FormatType.table or format.type == FormatType.tsv:
-            data = []
+    @staticmethod
+    def extended_list_name():
+        return list (map (lambda c: c.name, OutputFormatType))
 
-            if not header:
-                header = []
-                for x in range(2):
-                    header.append("")
+    @staticmethod
+    def value_of(value):
+        for output in OutputFormatType:
+            if output.name == value.upper():
+                return output
 
-            data.append (header)
-
-            # print("{}".format(obj))
-            if type(obj) is dict:
-                data.extend(obj.items())
-            elif obj and type(obj) is list and not type(obj[0]) is list and not type(obj[0]) is dict:
-                data.extend(list(map(lambda c: [c], obj)))
-            elif obj and type(obj) is list and type(obj[0]) is dict:
-                data.extend(map(lambda api: api.values(), obj))
-            else:
-                data.extend(obj)
-
-            to_print = data
-        
-        if format.type == FormatType.hbar:
-            # print("{}".format(obj))
-            data = []
-            categories = []
-            labels = []
-
-            for value in obj:
-
-                for num,key in enumerate(value.keys()):
-                    if num == 0 and not value[key] in categories:
-                        categories.append(value[key])
-                    
-                    if num > 0:
-                        if len(data) == 0:
-                            data.append([])
-
-                        data[num - 1].append(value[key])
-
-
-            if not header:
-                header = []
-                for x in range(2):
-                    header.append("")
-            labels=list(header)[1:]
-
-            to_print = []
-            to_print.append(categories)
-            to_print.append(labels)
-            to_print.append(data)
-
-        format.echo(to_print)
