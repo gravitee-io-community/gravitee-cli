@@ -11,7 +11,7 @@ from ..utils import display_dict_differ, filter_api_values
 
 
 @click.command()
-@click.argument('api_id', required=False, metavar='[API ID]')
+@click.argument('api_id', required=True, metavar='[API ID]')
 @click.option('--file', '-f', type=click.Path(exists=True), required=False,
               help="Value file")
 @click.option('--set', '-s', multiple=True,
