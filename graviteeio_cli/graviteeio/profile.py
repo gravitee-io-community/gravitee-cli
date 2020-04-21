@@ -8,7 +8,7 @@ import click
 from .. import environments
 from ..environments import GraviteeioModule
 from ..exeptions import GraviteeioError
-from .output import FormatType, OutputFormat, gio
+from .output import OutputFormatType
 
 
 @click.group()
@@ -68,18 +68,20 @@ def set(obj, profile_name, module, user, pwd, url, env):
 @click.command()
 @click.argument('profile', required=False, metavar='[PROFILE]')
 # @click.option('--profile', help='print data for the profile filled')
-@click.option('--format',
+@click.option('--output', '-o',  
               default="table",
               help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`',
-              type=click.Choice(FormatType.list_name(), case_sensitive=False))
+              type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.pass_obj
-def get(obj, profile, format):
+def get(obj, profile, output):
     """
     This command prints current configuration values
     """
     gio_config = obj['config']
+    format_type = OutputFormatType.value_of(output)
+
     if profile:
-        gio.echo(gio_config.display_profile(profile), OutputFormat.value_of(format), ["Configuration", ""])
+        format_type.echo(gio_config.display_profile(profile), header = ["Configuration", ""])
     else:
         profiles = gio_config.profiles()
         new_profiles = []
@@ -90,7 +92,7 @@ def get(obj, profile, format):
                 new_profiles.append(profile)
 
 
-        gio.echo(new_profiles, OutputFormat.value_of(format), ["Profiles"])
+        format_type.echo(new_profiles, header = ["Profiles"])
 
 @click.command()
 # @click.option('--env', help='config environment (e.g staging, production..). Default: current environment loaded')

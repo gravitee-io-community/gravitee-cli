@@ -6,7 +6,7 @@ import jmespath
 from jmespath import exceptions
 from pytimeparse import parse
 
-from graviteeio_cli.graviteeio.output import FormatType, OutputFormat, gio
+from graviteeio_cli.graviteeio.output import OutputFormatType
 
 from ....exeptions import GraviteeioError
 
@@ -14,10 +14,10 @@ colors = {"1xx":"white","2xx":"green","3xx":"white","4xx":"yellow","5xx":"red"}
 
 @click.command()
 @click.argument('api_id', required=True)
-@click.option('--format',
+@click.option('--output', '-o', 
               default="table",
               help='Set the format for printing command output resources. Default is: `table`',
-              type=click.Choice(FormatType.extended_list_name(), case_sensitive=False))
+              type=click.Choice(OutputFormatType.extended_list_name(), case_sensitive=False))
 @click.option('-q','--query',
               default="reverse(@)[].{Status: status, Hits: hits, Percent: percent}",
               help='Execute JMESPath query. Default: `reverse(@)[].{Status: status, Hits: hits, Percent: percent}` eg: filtered on 5xx status `[?status==`5xx`].{Status: status, Hits: hits, Percent: percent}`' )
@@ -25,7 +25,7 @@ colors = {"1xx":"white","2xx":"green","3xx":"white","4xx":"yellow","5xx":"red"}
               default="5m",
               help="Timeframe between now and the vale. Default: `5m`. m -> minute, h -> hour, d -> days")
 @click.pass_obj
-def status(obj, format, query, time_frame, api_id):
+def status(obj, output, query, time_frame, api_id):
     """
 This command displays API status
 
@@ -70,8 +70,8 @@ Status Field:
         if len(status_filtered) > 0 and type(status_filtered[0]) is dict:
             header = status_filtered[0].keys()
             
-        outputFormat = OutputFormat.value_of(format)
-        gio.echo(status_filtered, outputFormat, header)
+        outputFormat = OutputFormatType.value_of(output)
+        outputFormat.echo(status_filtered, header = header)
 
     except exceptions.JMESPathError as jmespatherr:
         logging.exception("STATUS JMESPathError exception")
