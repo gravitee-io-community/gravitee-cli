@@ -12,7 +12,7 @@ from .graviteeio.profile import profile, GraviteeioConfig
 click_completion.init()
 
 @click.option(
-    '--config', help='Path to configuration file. Default: ' + GRAVITEEIO_CONF_FILE,
+    '--config', help='Path for configuration file.\nEnv: GRAVITEEIO_CONF_FILE',
     type=click.Path(), default=GRAVITEEIO_CONF_FILE
 )
 @click.option('--log', help='displays detailed information', is_flag=True)
@@ -27,14 +27,13 @@ type=click.Choice(['CRITICAL','ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET'], ca
 def main(ctx, config, log, log_level):
         """Graviteeio cli"""
         ctx.obj = {}
-        ctx.obj['config_path'] = config
         
         log_level = logging._nameToLevel[log_level.upper()]
         if not log:
             logging.disable(logging.ERROR)
 
         logging.basicConfig(format='%(name)s-%(levelname)s: %(message)s', level=log_level)
-        ctx.obj['config'] = GraviteeioConfig()
+        ctx.obj['config'] = GraviteeioConfig(config)
         
 
 main.add_command(apim)

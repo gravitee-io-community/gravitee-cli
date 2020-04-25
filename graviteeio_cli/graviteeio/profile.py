@@ -10,7 +10,6 @@ from ..environments import GraviteeioModule
 from ..exeptions import GraviteeioError
 from .output import OutputFormatType
 
-
 @click.group()
 def profile():
     """
@@ -166,7 +165,7 @@ class GraviteeioConfig:
             }
 
             for key in self.config_module:
-                self.config_module[key].init_values(self.profile, self.proxies)
+                self.config_module[key].init_values(self.profile)
 
             with open(self.config_file, 'w') as fileObj:
                 self.config.write(fileObj)
@@ -302,7 +301,7 @@ class GraviteeioConfig_am(GraviteeioConfig_abstract):
     def __init__(self, config_parser, proxies):
         GraviteeioConfig_abstract.__init__(self,GraviteeioModule.APIM, config_parser, proxies)
 
-    def getInitValuesDemo(self):
+    def getInitValues(self):
         return {}
 
 class GraviteeioConfig_apim(GraviteeioConfig_abstract):
