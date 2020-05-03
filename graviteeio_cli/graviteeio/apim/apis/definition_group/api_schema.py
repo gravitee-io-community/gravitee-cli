@@ -35,7 +35,7 @@ def dump_json(data):
     return io.getvalue()
 
 map_extention = {}
-class Data_Format(Enum):
+class Data_Template_Format(Enum):
     YAML = {
         'num': 1,
         'extentions': ['.yml', '.yaml'],
@@ -67,11 +67,11 @@ class Data_Format(Enum):
 
     @staticmethod
     def list_name():
-        return list (map (lambda c: c.name, Data_Format))
+        return list (map (lambda c: c.name, Data_Template_Format))
     
     @staticmethod
     def value_of(value):
-        for data_type in Data_Format:
+        for data_type in Data_Template_Format:
             if data_type.name == value.upper():
                 return data_type
 
@@ -79,7 +79,7 @@ class Data_Format(Enum):
     def extention_list():
         tuple_to_return = []
 
-        for format in Data_Format:
+        for format in Data_Template_Format:
             if type(format.extentions) is tuple:
                 for extention in format.extentions:
                     tuple_to_return.append(extention)
@@ -107,7 +107,7 @@ class ApiSchema:
         self.files["value_file"] = value_file
 
 
-    def generate_schema(self, format = Data_Format.YAML, api_def = None, debug = False):
+    def generate_schema(self, format = Data_Template_Format.YAML, api_def = None, debug = False):
         for key in self.folders:
             if debug:
                 print("mkdir {}".format(self.folders[key]))
@@ -192,7 +192,7 @@ class ApiSchema:
             value_file = self.files["value_file"]
 
         root_template_path_file = self.files["root_template_path_file"]
-        for (data_format, extention) in ((data_format, extention) for data_format in Data_Format for extention in data_format.extentions):
+        for (data_format, extention) in ((data_format, extention) for data_format in Data_Template_Format for extention in data_format.extentions):
             if not root_template_file and os.path.exists(root_template_path_file.format(extention)):
                 self.template_format = data_format;
                 root_template_file = environments.APIM_API_TEMPLATE_FILE.format(extention)
@@ -235,7 +235,7 @@ class ApiSchema:
                     raise GraviteeioError("No such file {}".format(file))
                 
                 filename, file_extension = os.path.splitext(file)
-                file_format = Data_Format.find(file_extension)
+                file_format = Data_Template_Format.find(file_extension)
 
                 if file_format:
                     self.api_vars[filename] = file_format.load(config_string)

@@ -1,4 +1,4 @@
-from graviteeio_cli.graviteeio.apim.apis.schema_group.api_schema import ApiSchema
+from graviteeio_cli.graviteeio.apim.apis.definition_group.api_schema import ApiSchema
 from graviteeio_cli import environments
 import os
 import json
