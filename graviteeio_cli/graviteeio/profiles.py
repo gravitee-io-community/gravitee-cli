@@ -9,6 +9,7 @@ from .. import environments
 from ..environments import GraviteeioModule
 from ..exeptions import GraviteeioError
 from .output import OutputFormatType
+from .utils import is_uri_valid
 
 @click.group()
 def profiles():
@@ -43,24 +44,25 @@ def set(obj, profile_name, module, user, pwd, url, env):
     """This command writes configuration values according to profile and module"""
 
     gio_config = obj['config']
-    try:
-        if user or pwd or url or env:
-            data = {}
-            if user:
-             data["user"] = user
-            if pwd:
-             data["password"] = pwd
-            if url:
-             data["address_url"] = url
-            if env:
-             data["env"] = env
 
-            gio_config.save(profile_name, module, data)
+    if user or pwd or url or env:
+        data = {}
 
-            click.echo("Profile data saved")
+        if user:
+            data["user"] = user
+        if pwd:
+            data["password"] = pwd
+        if url:
+            if not is_uri_valid(url):
+                raise GraviteeioError('URL " %s " not valid' % url)
+            
+            data["address_url"] = url
+        if env:
+            data["env"] = env
 
-    except GraviteeioError:
-        click.echo(click.style("Error: ", fg='red') + 'No profile " %s " found' % load, err=True)
+        gio_config.save(profile_name, module, data)
+
+        click.echo("Profile data saved")
 
 
 @click.command()
@@ -69,7 +71,7 @@ def set(obj, profile_name, module, user, pwd, url, env):
               help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`',
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.pass_obj
-def list(obj, output):
+def ls(obj, output):
     """
     Display profile list
     """
@@ -88,7 +90,6 @@ def list(obj, output):
 
 @click.command()
 @click.argument('profile', required=True, metavar='[PROFILE]')
-# @click.option('--profile', help='print data for the profile filled')
 @click.option('--output', '-o',  
               default="table",
               help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`',
@@ -116,26 +117,27 @@ def create(obj, profile_name, module, user, pwd, url, env):
     """This command create a new profile configuration according to module"""
 
     gio_config = obj['config']
-    try:
-        data = {
-            "user": user,
-            "password": pwd,
-            "address_url": url
-        }
-        if env:
-            data["env"] = env
-        gio_config.save(profile = profile_name, module = module, **data)
 
-        click.echo("Profile data saved")
+    if not is_uri_valid(url):
+        raise GraviteeioError('URL " %s " not valid' % url)
 
-    except GraviteeioError:
-        click.echo(click.style("Error: ", fg='red') + 'No profile " %s " found' % load, err=True)
+    data = {
+        "user": user,
+        "password": pwd,
+        "address_url": url
+    }
+    
+    if env:
+        data["env"] = env
+    gio_config.save(profile = profile_name, module = module, **data)
+
+    click.echo("Profile data saved")
 
 @click.command()
 @click.argument('profile_name', required=True)
 @click.pass_obj
 def remove(obj, profile_name):
-    """This command create a new profile configuration according to module"""
+    """remove profile"""
 
     gio_config = obj['config']
     gio_config.remove(profile = profile_name)
@@ -147,8 +149,7 @@ def remove(obj, profile_name):
 @click.pass_obj
 def load(obj, profile_name):
     """
-    This command load profile
-    ENVIRONMENT: value that corresponds to the configuration that will be loaded for the execution of commands
+    Load current profile
     """
     gio_config = GraviteeioConfig()
 
@@ -157,7 +158,7 @@ def load(obj, profile_name):
     click.echo("Switch profile from {} to {}".format(old_profile, profile_name))
 
 
-profiles.add_command(list)
+profiles.add_command(ls)
 profiles.add_command(get)
 profiles.add_command(set)
 profiles.add_command(load)
@@ -205,6 +206,8 @@ class GraviteeioConfig:
     def load(self, profile):
         if profile is "DEFAULT":
             raise GraviteeioError('No profile " %s " accepted' % profile)
+        if not self.config.has_section(profile):
+            raise GraviteeioError('No profile " %s " found' % profile)
         
         self.config.set("DEFAULT", "current_profile", profile)
         with open(self.config_file, 'w') as fileObj:
@@ -241,6 +244,14 @@ class GraviteeioConfig:
             raise GraviteeioError('No profile " %s " found' % profile)
 
         self.config.remove_section(profile)
+
+        if profile == self.profile:
+            self.profile = self.config.sections()[0]
+            self.config.set("DEFAULT", "current_profile", self.profile)
+            self._load_config()
+        
+        with open(self.config_file, 'w') as fileObj:
+            self.config.write(fileObj)
 
     def display_default(self, parameter_list):
         to_return = {}
