@@ -8,6 +8,8 @@ from ..... import environments
 from .....exeptions import GraviteeioError
 from .api_schema import ApiSchema
 from ..utils import display_dict_differ, filter_api_values
+from ..deploy import deploy
+from ..start import start
 
 
 @click.command()
@@ -51,7 +53,12 @@ def apply(obj, api_id, file, set, debug, config_path):
         else:
             click.echo("Start Create")
             resp = api_client.create_import(api_data)
-            click.echo("API has been created with id {}".format(resp.json()["id"]))
+            api_id = resp.json()["id"]
+            click.echo("API has been created with id {}".format(api_id))
+            
+            # obj.invoke(start, api_id=api_id)
+    
+    # obj.invoke(deploy, api_id=api_id)
 
 
 
