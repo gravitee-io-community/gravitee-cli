@@ -2,9 +2,9 @@ import click
 
 from .apis.apis import apis
 
-@click.group(invoke_without_command=True)
+@click.group()
 def apim():
-    "Api Management action"
+    "Api Management commands"
     pass
 
 

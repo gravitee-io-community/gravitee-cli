@@ -22,6 +22,13 @@ def test_output_list_table_without_header(capsys):
     captured = capsys.readouterr()
     assert captured.out == "          \n----------\n demo     \n qualif   \n prod     \n"
 
+def test_output_list_table_without_header_and_line_header(capsys):
+    data = ['demo', 'qualif', 'prod']
+    OutputFormatType.TABLE.echo(data, inner_heading_row_border = False)
+    captured = capsys.readouterr()
+
+    assert captured.out == " demo   \n qualif \n prod   \n"
+
 def test_output_dict_tsv(capsys):
     data = {"param1": "value1","param2": "value2"}
     OutputFormatType.TSV.echo(data, header = ["Header1","Header2"])
@@ -42,7 +49,7 @@ def test_output_dict_table_apis_ps(capsys):
 def test_output_dict_tsv_apis_ps_with_no_data(capsys):
     OutputFormatType.TSV.echo([], header = [])
     captured = capsys.readouterr()
-    assert captured.out == "\t\n"
+    assert captured.out == "\n"
 
 def test_output_dict_tsv_apis_ps(capsys):
     OutputFormatType.TSV.echo(APIS_PS_DATA, header = ["id","Name","Tags","Synchronized","Status"])
