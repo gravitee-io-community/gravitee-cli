@@ -70,8 +70,7 @@ Status Field:
         if len(status_filtered) > 0 and type(status_filtered[0]) is dict:
             header = status_filtered[0].keys()
             
-        outputFormat = OutputFormatType.value_of(output)
-        outputFormat.echo(status_filtered, header = header)
+        OutputFormatType.value_of(output).echo(status_filtered, header = header)
 
     except exceptions.JMESPathError as jmespatherr:
         logging.exception("STATUS JMESPathError exception")

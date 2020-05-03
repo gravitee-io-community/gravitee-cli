@@ -1,7 +1,10 @@
-import logging
 import json
+import logging
+
 import click
+
 from graviteeio_cli.graviteeio.output import OutputFormatType
+
 from .utils import filter_api_values
 
 logger = logging.getLogger("command-get")
@@ -23,5 +26,4 @@ def get(obj, output, api_id):
     filter_api_values(api_server)
 
     OutputFormatType.value_of(output).echo(api_server)
-
 

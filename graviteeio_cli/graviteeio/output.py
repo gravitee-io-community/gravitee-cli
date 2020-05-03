@@ -11,15 +11,16 @@ from terminaltables import AsciiTable
 
 class DataAdapter:
     @staticmethod
-    def Table(obj, header):
+    def Table(obj, header, empty_header):
         data = []
 
-        if not header:
+        if not header and empty_header:
             header = []
-            for x in range(2):
+            for _ in range(2):
                 header.append("")
 
-        data.append (header)
+        if header:
+            data.append (header)
 
         # print("{}".format(obj))
         if type(obj) is dict:
@@ -35,7 +36,7 @@ class DataAdapter:
 
 class Output():
 
-   def adapter(self, obj, header):
+   def adapter(self, obj, header, empty_header):
        pass
 
    def print(self, obj, **kwargs):
@@ -46,13 +47,17 @@ class Output():
        if 'header' in kwargs:
            header = kwargs['header']
 
-       self.print(self.adapter(object, header), **kwargs)
+       empty_header = True
+       if "inner_heading_row_border" in kwargs:
+           empty_header = kwargs["inner_heading_row_border"]
+
+       self.print(self.adapter(object, header, empty_header), **kwargs)
 
 
 class TableOutput(Output):
 
-    def adapter(self, obj, header):
-        return DataAdapter.Table(obj, header)
+    def adapter(self, obj, header, empty_header):
+        return DataAdapter.Table(obj, header, empty_header)
     
     def print(self, data, **kwargs):
         table = AsciiTable (data)
@@ -60,15 +65,18 @@ class TableOutput(Output):
         table.inner_row_border = False
         table.inner_column_border = False
         table.outer_border = False
+        if "inner_heading_row_border" in kwargs:
+            table.inner_heading_row_border = kwargs["inner_heading_row_border"]
 
         if "style" in kwargs:
             table.justify_columns = kwargs["style"]
 
+        # [:2].rstrip("\n")
         click.echo(table.table)
 
 
 class HBarOutput(Output):
-    def adapter(self, obj, header):
+    def adapter(self, obj, header, empty_header):
         data = []
         categories = []
         labels = []
@@ -80,15 +88,16 @@ class HBarOutput(Output):
                     categories.append(value[key])
                 
                 if num > 0:
-                    if len(data) == 0:
-                        data.append([])
+                    # if len(data) == 0:
+                    #     data.append([])
+                    if len(data) == num - 1:
+                         data.append([])
 
                     data[num - 1].append(value[key])
 
-
         if not header:
             header = []
-            for x in range(2):
+            for _ in range(2):
                 header.append("")
         labels=list(header)[1:]
 
@@ -129,8 +138,8 @@ class HBarOutput(Output):
 
 class TsvOutput(Output):
 
-    def adapter(self, obj, header):
-        return DataAdapter.Table(obj, header)
+    def adapter(self, obj, header, empty_header):
+        return DataAdapter.Table(obj, header, False)
     
     def print(self, obj_list, **kwargs):
         data = []
@@ -143,7 +152,7 @@ class TsvOutput(Output):
         click.echo("\n".join(['\t'.join (item) for item in data]))
 
 class JsonOutput(Output):
-    def adapter(self, obj, header):
+    def adapter(self, obj, header, empty_header):
         return obj
     
     def print(self, data, **kwargs):
@@ -151,7 +160,7 @@ class JsonOutput(Output):
 
 
 class YamlOutput(Output):
-    def adapter(self, obj, header):
+    def adapter(self, obj, header, empty_header):
         return obj
     
     def print(self, data, **kwargs):
