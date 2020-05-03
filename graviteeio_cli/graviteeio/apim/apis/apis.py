@@ -2,7 +2,7 @@ import os
 import sys
 
 import click
-from graviteeio_cli.environments import GraviteeioModule
+from graviteeio_cli.modules import GraviteeioModule
 
 from ..client.api import api_client
 from .plugins import COMMANDS

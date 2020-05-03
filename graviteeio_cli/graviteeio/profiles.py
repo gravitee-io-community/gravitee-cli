@@ -6,7 +6,7 @@ import json
 import click
 
 from .. import environments
-from ..environments import GraviteeioModule
+from ..modules import GraviteeioModule
 from ..exeptions import GraviteeioError
 from .output import OutputFormatType
 from .utils import is_uri_valid

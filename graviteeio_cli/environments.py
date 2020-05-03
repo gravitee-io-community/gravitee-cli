@@ -28,11 +28,3 @@ APIM_HTTP_PIPELINING = string_to_bool(os.getenv("APIM_HTTP_PIPELINING", "False")
 APIM_HTTP_MAX_CONCURRENT_CONNECTION = int(os.getenv("APIM_HTTP_MAX_CONCURRENT_CONNECTION", 100))
 APIM_HTTP_USE_COMPRESSION = string_to_bool(os.getenv("APIM_HTTP_MAX_CONCURRENT_CONNECTION", "True"))
 APIM_HTTP_FOLLOW_REDIRECTS = string_to_bool(os.getenv("APIM_HTTP_MAX_CONCURRENT_CONNECTION", "False"))
-
-class GraviteeioModule(enum.IntEnum):
-    APIM = 0
-    AM = 1
-
-    @staticmethod
-    def list_name():
-        return list(map(lambda c: c.name.lower(), GraviteeioModule))
