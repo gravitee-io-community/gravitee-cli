@@ -8,7 +8,7 @@ from ..client.api import api_client
 from .plugins import COMMANDS
 import pkgutil
 
-add_command = ["ps", "init", "start", "stop", "deploy", "status", "health", "fetch", "definition", "spec", "get"]
+add_command = ["ls", "init", "start", "stop", "deploy", "status", "health", "fetch", "definition", "spec", "get"]
 
 class PluginCommand(click.MultiCommand):
 
