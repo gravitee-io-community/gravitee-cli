@@ -28,7 +28,6 @@ def diff(obj, api_id, file, set, diff, config_path):
 
     if not config_path:
         config_path = "./"
-        # resources_folder = "./{}".format(environments.GRAVITEEIO_RESOURCES_FOLDER)
 
     if not os.path.exists(config_path):
         raise GraviteeioError("No resources folder {} found".format(config_path))
