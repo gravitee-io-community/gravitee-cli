@@ -1,4 +1,3 @@
-import logging
 import asyncio
 import logging
 
@@ -8,9 +7,9 @@ import jmespath
 from jmespath import exceptions, functions
 from terminaltables import AsciiTable
 
-from graviteeio_cli.graviteeio.apim.client.api_async import ApiClientAsync
-from graviteeio_cli.graviteeio.output import OutputFormatType
+from graviteeio_cli.graviteeio.client.apim.api_async import ApiClientAsync
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
+from graviteeio_cli.graviteeio.output import OutputFormatType
 
 from ....exeptions import GraviteeioError
 
