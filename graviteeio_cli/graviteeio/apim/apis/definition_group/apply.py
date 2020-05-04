@@ -22,8 +22,10 @@ from ..start import start
               help="Do not perform any changes. Show the datas genereted")
 @click.option('--config-path', type=click.Path(exists=True), required=False, default="./",
               help="Config folder")
-@click.pass_obj
-def apply(obj, api_id, file, set, debug, config_path):
+@click.option('--with-deploy', is_flag=True, required=False,
+              help="Deploy api after applying")
+@click.pass_context
+def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
     """
     This command allow to create/update an API
     the API definition is managed with the template engine.
@@ -33,7 +35,7 @@ def apply(obj, api_id, file, set, debug, config_path):
     template file: `apim_api_template.yml.j2`
     value file: `apim_api_value.yml`
     """
-    api_client = obj['api_client']
+    api_client = ctx.obj['api_client']
 
         # resources_folder = "./{}".format(environments.GRAVITEEIO_RESOURCES_FOLDER)
 
@@ -48,17 +50,25 @@ def apply(obj, api_id, file, set, debug, config_path):
         click.echo(json.dumps(api_data))
     else:
         if api_id:
+            click.echo("Starting to apply API: {} {}".format(api_id, api_data["name"]))
             resp = api_client.update_import(api_id, api_data)
             click.echo("API {} is updated".format(api_id))
+
+            try:
+                ctx.invoke(deploy, api_id=api_id)
+            except GraviteeioError:
+                click.echo("Error: " + click.style("API could not be deployed", fg="red"))
         else:
-            click.echo("Start Create")
+            click.echo("Starting to create API: {}".format(api_data["name"]))
             resp = api_client.create_import(api_data)
             api_id = resp.json()["id"]
             click.echo("API has been created with id {}".format(api_id))
-            
-            # obj.invoke(start, api_id=api_id)
-    
-    # obj.invoke(deploy, api_id=api_id)
+
+            if with_deploy:
+                try:
+                    ctx.invoke(start, api_id=api_id)
+                except GraviteeioError:
+                    click.echo("Error: " + click.style("API could not be started", fg="red"))
 
 
 

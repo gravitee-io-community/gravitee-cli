@@ -11,19 +11,17 @@ logger = logging.getLogger("client.gio")
 APIS_CONTEXT = "/management/{}apis/"
 
 class gio:
-
     def __init__(self, config=None, debug=False):
         self.apim_api = api_client(HttpClient(APIS_CONTEXT, config))
 
 class HttpClient:
-
     def __init__(self, context, config = None):
         self.config = config
         self.timeout = 10
         self.context = context
         self.headers = {'Content-type': 'application/json'} 
 
-    def get(self, path, params):
+    def get(self, path, params = None):
         return self.request("GET", path = path, params= params)
 
     def post(self, path, data = None):
