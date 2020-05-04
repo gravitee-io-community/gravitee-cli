@@ -6,7 +6,7 @@ import json
 import click
 
 from .. import environments
-from ..modules import GraviteeioModule
+from .modules import GraviteeioModule
 from ..exeptions import GraviteeioError
 from .output import OutputFormatType
 from .utils import is_uri_valid
@@ -200,6 +200,7 @@ class GraviteeioConfig:
     
     def getGraviteeioConfig(self, module):
         return self.config_module[module]
+        
     def profiles(self):
         return self.config.sections()
 
@@ -341,7 +342,7 @@ class GraviteeioConfig_am(GraviteeioConfig_abstract):
 
     def getInitValues(self):
         return {}
-
+ 
 class GraviteeioConfig_apim(GraviteeioConfig_abstract):
     def __init__(self, config_parser, proxies):
         GraviteeioConfig_abstract.__init__(self,GraviteeioModule.APIM, config_parser, proxies)

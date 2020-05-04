@@ -10,7 +10,7 @@ from terminaltables import AsciiTable
 
 from graviteeio_cli.graviteeio.apim.client.api_async import ApiClientAsync
 from graviteeio_cli.graviteeio.output import OutputFormatType
-from graviteeio_cli.modules import GraviteeioModule
+from graviteeio_cli.graviteeio.modules import GraviteeioModule
 
 from ....exeptions import GraviteeioError
 
