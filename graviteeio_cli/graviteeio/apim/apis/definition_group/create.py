@@ -12,7 +12,9 @@ from .apply import apply
               help="Do not perform any changes. Show the datas genereted")
 @click.option('--config-path', type=click.Path(exists=True), required=False, default="./",
               help="Config folder")
+@click.option('--with-start', is_flag=True, required=False,
+              help="Deploy and start api after creation")
 @click.pass_context
-def create(ctx, file, set, debug, config_path):
+def create(ctx, file, set, debug, config_path, with_start):
     """This command allow to create api"""
-    ctx.invoke(apply, api_id=None, file=file, set=set, debug=debug, config_path=config_path)
+    ctx.invoke(apply, api_id=None, file=file, set=set, debug=debug, config_path=config_path, with_deploy=with_start)

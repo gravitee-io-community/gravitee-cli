@@ -1,6 +1,7 @@
 
 import logging
 import json
+import enum
 from datetime import datetime, timedelta
 
 import requests
@@ -11,6 +12,11 @@ from graviteeio_cli.exeptions import GraviteeioRequestError
 APIS_CONTEXT = "/management/{}apis/"
 
 logger = logging.getLogger("client.api_client")
+
+class Api_Action(enum.IntEnum):
+    START = 0
+    STOP = 1
+
 class api_client:
     def __init__(self, httpClient, debug=False):
         self.httpClient = httpClient
@@ -56,17 +62,23 @@ class api_client:
         }
         return self.httpClient.post("{}/import/swagger".format(id), data = data)
 
+    def action(self, id, action_type: Api_Action):
+        params = {
+            "action": action_type.name
+        }
+        return self.httpClient.post("{}".format(id, action_type))
+
     def start(self, id):
-        return self.httpClient.post("{}?action=START".format(id))
+        return self.action(id, Api_Action.START)
 
     def stop(self, id):
-        return self.httpClient.post("{}?action=STOP".format(id))
+        return self.action(id, Api_Action.STOP)
 
     def state(self, id):
         return self.httpClient.get("{}/state".format(id))
     
     def deploy(self, id):
-        return self.httpClient.get("{}/deploy".format(id))
+        return self.httpClient.post("{}/deploy".format(id))
     
     def status(self, id, time_frame_seconds = 300):
         
@@ -79,7 +91,10 @@ class api_client:
         return self.httpClient.get("{}/analytics?type=group_by&field=status&ranges=100:199%3B200:299%3B300:399%3B400:499%3B500:599&interval=600000&from={}&to={}&".format(id, new_date_millisec, now_millisec))
 
     def health(self, id):
-        return self.httpClient.get("{}/health?type=availability".format(id))
+        params =  {
+            "type": "availability"
+        }
+        return self.httpClient.get("{}/health".format(id), params)
 
     def pages_fetch(self, id):
         return self.httpClient.post("{}/pages/_fetch".format(id))
