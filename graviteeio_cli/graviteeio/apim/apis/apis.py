@@ -2,7 +2,7 @@ import os
 import sys
 
 import click
-from graviteeio_cli.modules import GraviteeioModule
+from graviteeio_cli.graviteeio.modules import GraviteeioModule
 
 from ..client.api import api_client
 from .plugins import COMMANDS
@@ -43,3 +43,4 @@ def apis(ctx):
     apis commands
     """
     ctx.obj['api_client'] = api_client(config=ctx.obj['config'].getGraviteeioConfig(GraviteeioModule.APIM))
+
