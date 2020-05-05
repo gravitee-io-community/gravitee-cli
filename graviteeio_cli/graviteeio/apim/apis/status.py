@@ -13,7 +13,9 @@ from ....exeptions import GraviteeioError
 colors = {"1xx":"white","2xx":"green","3xx":"white","4xx":"yellow","5xx":"red"}
 
 @click.command()
-@click.argument('api_id', required=True)
+@click.option('--api', 'api_id',
+              help='API id',
+              required=True)
 @click.option('--output', '-o', 
               default="table",
               help='Set the format for printing command output resources. Default is: `table`',

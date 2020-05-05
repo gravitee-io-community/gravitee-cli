@@ -1,7 +1,9 @@
 import click
 
 @click.command()
-@click.argument('api_id', required=True)
+@click.option('--api', 'api_id',
+              help='API id',
+              required=True)
 @click.pass_obj
 def fetch(obj, api_id):
     """Fetch API documentation"""

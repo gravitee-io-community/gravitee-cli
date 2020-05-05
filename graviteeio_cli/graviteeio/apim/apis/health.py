@@ -11,7 +11,9 @@ from ....exeptions import GraviteeioError
 
 
 @click.command()
-@click.argument('api_id', required=True)
+@click.option('--api', 'api_id',
+              help='API id',
+              required=True)
 @click.option('--output', '-o', 
               default="table",
               help='Set the format for printing command output resources. Default is: `table`',
