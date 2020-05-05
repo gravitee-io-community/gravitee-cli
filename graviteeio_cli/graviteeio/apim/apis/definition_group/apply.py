@@ -13,7 +13,9 @@ from ..start import start
 
 
 @click.command()
-@click.argument('api_id', required=True, metavar='[API ID]')
+@click.option('--api', 'api_id',
+              help='API id',
+              required=True)
 @click.option('--file', '-f', type=click.Path(exists=True), required=False,
               help="Value file")
 @click.option('--set', '-s', multiple=True,

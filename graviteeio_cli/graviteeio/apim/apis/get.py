@@ -10,11 +10,13 @@ from .utils import filter_api_values
 logger = logging.getLogger("command-get")
 
 @click.command()
-@click.argument('api_id', required=True)
 @click.option('--output', '-o', 
               default="yaml",
               help='Output format. Default: `yaml`',
               type=click.Choice(['yaml', 'json'], case_sensitive=False))
+@click.option('--api', 'api_id',
+              help='API id',
+              required=True)
 @click.pass_obj
 def get(obj, output, api_id):
     """

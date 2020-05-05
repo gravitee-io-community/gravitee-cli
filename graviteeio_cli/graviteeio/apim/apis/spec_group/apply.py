@@ -2,7 +2,9 @@ import click
 from graviteeio_cli.exeptions import GraviteeioError
 
 @click.command()
-@click.argument('api_id', required=False, metavar='[API ID]')
+@click.option('--api', 'api_id',
+              help='API id',
+              required=True)
 @click.option('--file', '-f', type=click.Path(exists=True), required=False,
               help="Spec file")
 @click.option('--set', '-s', multiple=True,

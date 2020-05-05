@@ -1,7 +1,9 @@
 import click
 
 @click.command()
-@click.argument('api_id', required=True)
+@click.option('--api', 'api_id',
+              help='API id',
+              required=True)
 @click.pass_obj
 def start(obj, api_id):
     """Start an API"""
