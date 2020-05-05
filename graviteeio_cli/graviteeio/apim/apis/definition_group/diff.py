@@ -35,8 +35,7 @@ def diff(obj, api_id, file, set, diff, config_path):
     api_sch = ApiSchema(config_path, file)
     api_data = api_sch.get_api_data(set_values=set)
 
-    api_server = api_client.get_export(api_id).json()
-    filter_api_values(api_server)
+    api_server = api_client.get_export(api_id, filter_api_values)
 
     diff_result = jsondiff(api_server, api_data)
     display_dict_differ(diff_result)

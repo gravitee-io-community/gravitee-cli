@@ -30,6 +30,6 @@ def apply(obj, api_id, file, set, debug, config_path):
     else:
         click.echo("Start Create")
         resp = api_client.create_oas(api_spec)
-        click.echo("API has been created with id {}".format(resp.json()["id"]))
+        click.echo("API has been created with id {}".format(resp["id"]))
 
     pass

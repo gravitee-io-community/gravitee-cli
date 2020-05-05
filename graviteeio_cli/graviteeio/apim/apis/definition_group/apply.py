@@ -50,7 +50,7 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
         click.echo(json.dumps(api_data))
     else:
         if api_id:
-            click.echo("Starting to apply API: {} {}".format(api_id, api_data["name"]))
+            click.echo("Starting to apply API: {} '{}'".format(api_id, api_data["name"]))
             resp = api_client.update_import(api_id, api_data)
             click.echo("API {} is updated".format(api_id))
 
@@ -59,9 +59,9 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
             except GraviteeioError:
                 click.echo("Error: " + click.style("API could not be deployed", fg="red"))
         else:
-            click.echo("Starting to create API: {}".format(api_data["name"]))
+            click.echo("Starting to create API: '{}'".format(api_data["name"]))
             resp = api_client.create_import(api_data)
-            api_id = resp.json()["id"]
+            api_id = resp["id"]
             click.echo("API has been created with id {}".format(api_id))
 
             if with_deploy:
