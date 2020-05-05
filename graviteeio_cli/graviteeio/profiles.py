@@ -40,7 +40,7 @@ def profiles():
                     type=click.Choice(GraviteeioModule.list_name(), case_sensitive=False))
 @click.argument('profile_name', required=True)
 @click.pass_obj
-def set(obj, profile_name, module, user, pwd, url, env):
+def set_(obj, profile_name, module, user, pwd, url, env):
     """This command writes configuration values according to profile and module"""
 
     gio_config = obj['config']
@@ -158,9 +158,9 @@ def load(obj, profile_name):
     click.echo("Switch profile from {} to {}".format(old_profile, profile_name))
 
 
-profiles.add_command(ls)
+profiles.add_command(ls, name = "list")
 profiles.add_command(get)
-profiles.add_command(set)
+profiles.add_command(set_, name="set")
 profiles.add_command(load)
 profiles.add_command(create)
 profiles.add_command(remove)
@@ -359,169 +359,5 @@ class GraviteeioConfig_apim(GraviteeioConfig_abstract):
 
     def credential(self):
         return (self.data["user"], self.data["password"])
-
-# class Graviteeio_Config_abstract:
-
-#     def __init__(self, module, config_file=environments.GRAVITEEIO_CONF_FILE):
-
-#         self.config_file = config_file
-#         self.module = module.name
-#         self.config = configparser.ConfigParser()
-
-#         if not os.path.isfile(config_file):
-
-#             self.profile = "demo"
-#             self.config['DEFAULT'] = {
-#                 "current_profile": self.profile
-#             }
-#             self.set_data(self.init_value_demo())
-#             self._writes_config(self.profile, self.init_value_demo())
-#             # self._writes_config(self.profile, self.data, is_new_current_profile = True)
-
-#         else:
-#             self.config.read(config_file)
-#             self._load_config(
-#                 self.config['DEFAULT']['current_profile']
-#             )
-
-#         self.http_proxy = os.environ.get("http_proxy")
-#         self.https_proxy = os.environ.get("https_proxy")
-#         self.proxyDict = {
-#             "http": self.http_proxy,
-#             "https": self.https_proxy
-#         }
-    
-#     def init_value_demo(self):
-#         pass
-
-#     def set_data(self, data):
-#         pass
-
-#     def get_data(self):
-#         pass
-    
-#     def to_display(self):
-#         pass
-
-#     def _writes_config(self, profile, data = None):
-#         if (not self.config.has_section(profile)) :
-#             self.config.add_section(profile)
-
-#         if data:
-#             self.config.set(profile, self.module, json.dumps(data))
-
-#         with open(self.config_file, 'w') as fileObj:
-#             self.config.write(fileObj)
-
-#     def _load_config(self, load_profile):
-#         if self.config.has_section(load_profile):
-#             self.profile = load_profile
-#             self.set_data(json.loads(self.config[self.profile][self.module]))
-#         else:
-#             raise GraviteeioError('No profile " %s " found' % load_profile)
-    
-#     def save(self, profile, **kwargs):
-#         if (not self.config.has_section(profile)):
-#             self._writes_config(profile, kwargs)
-#         else:
-#             new_data = kwargs
-
-#             current_data = json.loads(self.config[profile][self.module])
-#             for key in new_data:
-#                 current_data[key] = new_data[key]
-            
-#             self._writes_config(profile, current_data)
-
-#     def load(self, profile):
-#         if profile is "DEFAULT":
-#             raise GraviteeioError('No profile " %s " accepted' % profile)
-        
-#         self.profile = profile
-#         self.config.set("DEFAULT", "current_profile", profile)
-#         self._writes_config(profile)
-
-#     def profiles(self):
-#         return self.config.sections()
-
-#     def url(self, path):
-#         return self.get_data()["address_url"] + path.format(self.get_data()["env"] + "/" if "env" in self.get_data() else "")
-
-#     def credential(self):
-#         return (self.get_data()["user"], self.get_data()["password"])
-    
-#     def to_display(self):
-#         profile = self.config["DEFAULT"]["current_profile"]
-
-#         to_return = {
-#             "Profile": "{}".format(profile.upper())
-#         }
-
-#         for module_name in environments.GraviteeioModule.list_name():
-#             to_return["Module"] = "{}".format(module_name)
-            
-#             if self.config.has_section(profile):
-#                 data_module = json.loads(self.config[profile][module_name.upper()])
-
-#                 for (key, value) in data_module:
-#                     to_return[key] = "{}".format(value)
-
-#         if self.http_proxy:
-#             to_return["http_proxy"] = "{}".format(self.http_proxy)
-#         if self.http_proxy:
-#             to_return["https_proxy"] = "{}".format(self.https_proxy)
-
-#         return to_return
-
-
-# class Graviteeio_Config_apim(Graviteeio_Config):
-#     def __init__(self, config_file=environments.GRAVITEEIO_CONF_FILE):
-#         Graviteeio_Config.__init__(self,environments.GraviteeioModule.APIM, config_file)
-
-#     def init_value_demo(self):
-#         return {
-#             "user": environments.DEFAULT_USER,
-#             "password": environments.DEFAULT_PASSWORD,
-#             "address_url": environments.DEFAULT_ADDRESS_URL
-#         }
-    
-#     def set_data(self, data):
-#         self.data = data
-    
-#     def get_data(self):
-#         return self.data
-
-# class Graviteeio_Config_am(Graviteeio_Config):
-#     def __init__(self, config_file=environments.GRAVITEEIO_CONF_FILE):
-#         Graviteeio_Config.__init__(self,environments.GraviteeioModule.AM, config_file)
-    
-#     def init_value_demo(self):
-#         return {
-#             "user": environments.DEFAULT_USER,
-#             "password": environments.DEFAULT_PASSWORD,
-#             "address_url": environments.DEFAULT_ADDRESS_URL
-#         }
-    
-#     def set_data(self, data):
-#         self.data = data
-    
-#     def get_data(self):
-#         return self.data
-    
-#     def to_display(self):
-#         to_return = {
-#             "URL": "{}".format(self.data["address_url"]),
-#             "User": "{}".format(self.data["user"]),
-#             "Password": "{}".format(self.data["password"]),
-#             "Current environment": "{}".format(self.profile),
-#         }
-
-#         if "env"in self.data:
-#             to_return["env"] = "{}".format(self.data["env"])
-#         if self.http_proxy:
-#             to_return["http_proxy"] = "{}".format(self.http_proxy)
-#         if self.http_proxy:
-#             to_return["https_proxy"] = "{}".format(self.https_proxy)
-
-#         return to_return
 
 

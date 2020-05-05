@@ -8,7 +8,7 @@ from graviteeio_cli.graviteeio.client.gio import gio
 from .plugins import COMMANDS
 import pkgutil
 
-add_command = ["ls", "init", "start", "stop", "deploy", "status", "health", "fetch", "definition", "spec", "get"]
+add_command = ["list", "init", "start", "stop", "deploy", "status", "health", "fetch", "definition", "spec", "get"]
 
 class PluginCommand(click.MultiCommand):
 
@@ -28,6 +28,7 @@ class PluginCommand(click.MultiCommand):
             if sys.version_info[0] == 2:
                 name = name.encode('ascii', 'replace')
             if name in add_command:
+                if name is 'list': name = "ls"
                 mod = __import__('graviteeio_cli.graviteeio.apim.apis.' + name, None, None, [name])
             else:
                 mod = __import__('graviteeio_cli.graviteeio.apim.apis.plugins.cmd_' + name, None, None, [name])
