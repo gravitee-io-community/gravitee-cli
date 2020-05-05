@@ -21,11 +21,14 @@ class api_client:
     def __init__(self, httpClient, debug=False):
         self.httpClient = httpClient
 
-    def get(self, id):
-        return self.httpClient.get("{}".format(id))
+    def get(self, id, response_filter = None):
+        response = self.httpClient.get("{}".format(id)).json()
+        if response_filter:
+            response_filter(response)
+        return response
     
     def create_import(self, api_data):
-        return self.httpClient.post("import", data = json.dumps(api_data))
+        return self.httpClient.post("import", data = json.dumps(api_data)).json()
     
     def create_oas(self, oas):
         data = {
@@ -36,20 +39,25 @@ class api_client:
             "type": "INLINE",
             "payload": oas
         }
-        return self.httpClient.post("import/swagger", data = json.dumps(data))
+        return self.httpClient.post("import/swagger", data = json.dumps(data)).json()
     
-    def get_export(self, id):
+    def get_export(self, id, response_filter = None):
         params = {
             "exclude": "groups,members,pages",
             "version": "default"
         }
-        return self.httpClient.get("{}/export".format(id), params = params)
+
+        response = self.httpClient.get("{}/export".format(id), params = params).json()
+        if response_filter:
+            response_filter(response)
+
+        return response
 
     def update(self, id, api_data):
-        return self.httpClient.put("{}".format(id), data = json.dumps(api_data))
+        return self.httpClient.put("{}".format(id), data = json.dumps(api_data)).json()
         
     def update_import(self, id, api_data):
-        return self.httpClient.post("{}/import".format(id), data = json.dumps(api_data))
+        return self.httpClient.post("{}/import".format(id), data = json.dumps(api_data)).json()
 
     def update_oas(self, id, oas):
         data = {
@@ -60,7 +68,7 @@ class api_client:
             "type": "INLINE",
             "payload": oas
         }
-        return self.httpClient.post("{}/import/swagger".format(id), data = data)
+        return self.httpClient.post("{}/import/swagger".format(id), data = data).json()
 
     def action(self, id, action_type: Api_Action):
         params = {
@@ -88,13 +96,14 @@ class api_client:
         new_date_millisec = int(new_date.timestamp() * 1000)
         now_millisec = int(now.timestamp() * 1000)
         
-        return self.httpClient.get("{}/analytics?type=group_by&field=status&ranges=100:199%3B200:299%3B300:399%3B400:499%3B500:599&interval=600000&from={}&to={}&".format(id, new_date_millisec, now_millisec))
+        return self.httpClient.get("{}/analytics?type=group_by&field=status&ranges=100:199%3B200:299%3B300:399%3B400:499%3B500:599&interval=600000&from={}&to={}&" \
+            .format(id, new_date_millisec, now_millisec)).json()
 
     def health(self, id):
         params =  {
             "type": "availability"
         }
-        return self.httpClient.get("{}/health".format(id), params)
+        return self.httpClient.get("{}/health".format(id), params).json()
 
     def pages_fetch(self, id):
         return self.httpClient.post("{}/pages/_fetch".format(id))

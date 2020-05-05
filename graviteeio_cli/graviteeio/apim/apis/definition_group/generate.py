@@ -26,8 +26,7 @@ def generate(obj, config_path, format, from_id):
     api_def_string = None
     if from_id:
         api_client = obj['api_client']
-        api_def_string = api_client.get_export(from_id).json()
-        filter_api_values(api_def_string)
+        api_def_string = api_client.get_export(from_id, filter_api_values)
 
     apischema = ApiSchema(config_path)
     apischema.generate_schema(format = Data_Template_Format.value_of(format), api_def = api_def_string)

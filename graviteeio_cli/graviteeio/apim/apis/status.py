@@ -38,7 +38,7 @@ Status Field:
     api_client = obj['api_client']
 
     try: 
-        status_values = api_client.status(api_id, parse(time_frame)).json()['values']
+        status_values = api_client.status(api_id, parse(time_frame))['values']
     except TypeError:
         raise GraviteeioError("Unsupported type for time frame")
 

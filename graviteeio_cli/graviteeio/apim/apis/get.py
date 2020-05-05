@@ -22,8 +22,7 @@ def get(obj, output, api_id):
     """
     api_client = obj['api_client']
 
-    api_server = api_client.get_export(api_id).json()
-    filter_api_values(api_server)
+    api_server = api_client.get_export(api_id, filter_api_values)
 
     OutputFormatType.value_of(output).echo(api_server)
 
