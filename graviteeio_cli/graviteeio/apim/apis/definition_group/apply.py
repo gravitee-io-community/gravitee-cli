@@ -69,6 +69,7 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
             if with_deploy:
                 try:
                     ctx.invoke(start, api_id=api_id)
+                    ctx.invoke(deploy, api_id=api_id)
                 except GraviteeioError:
                     click.echo("Error: " + click.style("API could not be started", fg="red"))
 

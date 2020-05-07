@@ -62,5 +62,5 @@ class HttpClient:
             except ValueError:
                 logger.exception("api_client Value error")
                 raise GraviteeioRequestError(msg = response.reason, error_code = response.status_code )
-        elif response.status_code > 500:
+        elif response.status_code >= 500:
             raise GraviteeioRequestError(msg = response.reason, error_code = response.status_code )

@@ -71,10 +71,11 @@ class api_client:
         return self.httpClient.post("{}/import/swagger".format(id), data = data).json()
 
     def action(self, id, action_type: Api_Action):
-        params = {
-            "action": action_type.name
-        }
-        return self.httpClient.post("{}".format(id, action_type))
+        # params = {
+        #     "action": action_type.name
+        # }
+        # return self.httpClient.post("{}".format(id), params)
+        return self.httpClient.post("{}?action={}".format(id, action_type.name))
 
     def start(self, id):
         return self.action(id, Api_Action.START)
@@ -83,7 +84,7 @@ class api_client:
         return self.action(id, Api_Action.STOP)
 
     def state(self, id):
-        return self.httpClient.get("{}/state".format(id))
+        return self.httpClient.post("{}/state".format(id))
     
     def deploy(self, id):
         return self.httpClient.post("{}/deploy".format(id))
