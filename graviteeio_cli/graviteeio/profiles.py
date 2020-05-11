@@ -69,6 +69,7 @@ def set_(obj, profile_name, module, user, pwd, url, env):
 @click.option('--output', '-o',  
               default="table",
               help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`',
+              show_default=True,
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.pass_obj
 def ls(obj, output):
@@ -81,7 +82,7 @@ def ls(obj, output):
     new_profiles = []
     for profile in profiles:
         if profile == gio_config.profile:
-            new_profiles.append("{} (Current)".format(profile))
+            new_profiles.append("{} (active)".format(profile))
         else:
             new_profiles.append(profile)
 
@@ -104,8 +105,8 @@ def get(obj, profile, output):
         
 
 @click.command()
-@click.option('--user', help='authentication user', required=True)
-@click.option('--pwd', help='authentication password', required=True)
+# @click.option('--user', help='authentication user', required=True)
+# @click.option('--pwd', help='authentication password', required=True)
 @click.option('--url', help='graviteeio Rest Management url', required=True)
 @click.option('--module', 
                         help='graviteeio module', required=True,
@@ -113,17 +114,15 @@ def get(obj, profile, output):
 @click.option('--env', help='config graviteeio environment')
 @click.argument('profile_name', required=True)
 @click.pass_obj
-def create(obj, profile_name, module, user, pwd, url, env):
+def create(obj, profile_name, module, url, env):
     """This command create a new profile configuration according to module"""
 
     gio_config = obj['config']
 
     if not is_uri_valid(url):
-        raise GraviteeioError('URL " %s " not valid' % url)
+        raise GraviteeioError('URL [%s] not valid.' % url)
 
     data = {
-        "user": user,
-        "password": pwd,
         "address_url": url
     }
     
@@ -131,7 +130,7 @@ def create(obj, profile_name, module, user, pwd, url, env):
         data["env"] = env
     gio_config.save(profile = profile_name, module = module, **data)
 
-    click.echo("Profile data saved")
+    click.echo("Datas saved for profile [{}].".format(profile_name))
 
 @click.command()
 @click.argument('profile_name', required=True)
@@ -142,7 +141,7 @@ def remove(obj, profile_name):
     gio_config = obj['config']
     gio_config.remove(profile = profile_name)
 
-    click.echo("Profile %s removed" % profile_name)
+    click.echo("Profile [%s] removed." % profile_name)
 
 @click.command()
 @click.argument('profile_name', required=True)
@@ -155,7 +154,7 @@ def load(obj, profile_name):
 
     old_profile = gio_config.profile
     gio_config.load(profile_name)
-    click.echo("Switch profile from {} to {}".format(old_profile, profile_name))
+    click.echo("Switch profile from [{}] to [{}].".format(old_profile, profile_name))
 
 
 profiles.add_command(ls, name = "list")
@@ -164,6 +163,21 @@ profiles.add_command(set_, name="set")
 profiles.add_command(load)
 profiles.add_command(create)
 profiles.add_command(remove)
+
+class Auth_Type(enum.IntEnum):
+    CREDENTIAL = 0,
+    # OIDC = 1,
+    # TOKEN_EXCHANGE = 2
+
+    @staticmethod
+    def list_name():
+        return list(map(lambda c: c.name.lower(), Auth_Type))
+    
+    @staticmethod
+    def value_of(value):
+        for output in OutputFormatType:
+            if output.name == value.upper():
+                return output
 
 class GraviteeioConfig:
     def __init__(self, config_file=environments.GRAVITEEIO_CONF_FILE):
@@ -176,8 +190,8 @@ class GraviteeioConfig:
         }
 
         self.config_module = {}
-        self.config_module[GraviteeioModule.APIM] = GraviteeioConfig_apim(self.config, self.proxies)
-        self.config_module[GraviteeioModule.AM] = GraviteeioConfig_am(self.config, self.proxies)
+        self.config_module[GraviteeioModule.APIM] = GraviteeioConfig_apim(self.config, self.proxies, self)
+        self.config_module[GraviteeioModule.AM] = GraviteeioConfig_am(self.config, self.proxies, self)
 
         if not os.path.isfile(config_file):
 
@@ -206,9 +220,9 @@ class GraviteeioConfig:
 
     def load(self, profile):
         if profile is "DEFAULT":
-            raise GraviteeioError('No profile " %s " accepted' % profile)
+            raise GraviteeioError('No profile [%s] accepted.' % profile)
         if not self.config.has_section(profile):
-            raise GraviteeioError('No profile " %s " found' % profile)
+            raise GraviteeioError('No profile [%s] found.' % profile)
         
         self.config.set("DEFAULT", "current_profile", profile)
         with open(self.config_file, 'w') as fileObj:
@@ -222,6 +236,8 @@ class GraviteeioConfig:
                 self.config_module[key].load_config(self.profile)
 
     def save(self, profile, module, **kwargs):
+        if not profile:
+            profile = self.profile
 
         if (not self.config.has_section(profile)):
             
@@ -242,7 +258,7 @@ class GraviteeioConfig:
 
     def remove(self, profile):
         if not self.config.has_section(profile):
-            raise GraviteeioError('No profile " %s " found' % profile)
+            raise GraviteeioError('No profile [%s] found.' % profile)
 
         self.config.remove_section(profile)
 
@@ -264,24 +280,24 @@ class GraviteeioConfig:
         return to_return
 
 
-    def display_current_profile(self, profile = None):
-        profile = self.config["DEFAULT"]["current_profile"]
+    # def display_current_profile(self, profile = None):
+    #     profile = self.config["DEFAULT"]["current_profile"]
         
-        to_return = {
-            "-- Default --": ""
-        }
+    #     to_return = {
+    #         "-- Default --": ""
+    #     }
 
-        to_return["Profile"] = "{}".format(profile)
+    #     to_return["Profile"] = "{}".format(profile)
 
-        for key in self.config_module:
-            to_return["## Module"] = "{}".format(self.config_module[key].module)
-            to_return.update(self.config_module[key].display_current())
+    #     for key in self.config_module:
+    #         to_return["## Module"] = "{}".format(self.config_module[key].module)
+    #         to_return.update(self.config_module[key].display_current())
 
-        return to_return
+    #     return to_return
     
     def display_profile(self, profile):
         if not self.config.has_section(profile):
-            raise GraviteeioError('No profile " %s " found' % profile)
+            raise GraviteeioError('No profile [%s] found.' % profile)
 
         to_return = {
             "Profile": "{}".format(profile)
@@ -294,10 +310,11 @@ class GraviteeioConfig:
         return to_return
 
 class GraviteeioConfig_abstract:
-    def __init__(self, module, config_parser, proxies):
+    def __init__(self, module, config_parser, proxies, graviteeioConfig: GraviteeioConfig):
         self.module = module.name
         self.config = config_parser
         self.proxies = proxies
+        self.graviteeioConfig = graviteeioConfig
         self.data = {}
     
     def init_values(self, profile):
@@ -318,46 +335,101 @@ class GraviteeioConfig_abstract:
         if self.config.has_section(profile):
             self.data = json.loads(self.config[profile][self.module])
         else:
-            raise GraviteeioError('No profile " %s " found' % profile)
+            raise GraviteeioError('No profile [%s ]found.' % profile)
     
-    def display_current(self):
-        to_return = {}
-        if self.data:
-            for key, value in self.data.items():
-                to_return[key] = "{}".format(value)
-        return to_return
+    # def display_current(self):
+    #     to_return = {}
+    #     if self.data:
+    #         for key, value in self.data.items():
+    #             to_return[key] = "{}".format(value)
+    #     return to_return
     
     def display_profile(self, profile):
-        return json.loads(self.config[profile][self.module])
+        to_return = {}
+        datas = json.loads(self.config[profile][self.module])
+        to_return["address_url"] = datas["address_url"]
+        to_return["auth"] = datas["active_auth"]["username"]
+        if "env" in datas:
+            to_return["auth"] = datas["env"]
+
+        return to_return
+
+    def save(self, **kwargs):
+        self.graviteeioConfig.save(None, self.module, **kwargs)
 
     def url(self, path):
         pass
 
     def credential(self):
-        pass 
+        pass
+
+    def get_auth_list(self):
+        return self.data["auth"] if "auth" in self.data else None
+    
+    def display_auth_list(self):
+        to_return = []
+        
+        if self.data and "auth" in self.data:
+            for auth in self.data["auth"]:
+                to_return.append({
+                    "username": auth["username"],
+                    "type": auth["type"],
+                    "is_active": "active" if auth["is_active"] else ""
+                })
+        return to_return
+    
+    def get_active_auth(self):
+        return  self.data["active_auth"] if "active_auth" in self.data else None
+    
+    def get_bearer(self):
+        return self.data["bearer"] if "bearer" in self.data else None
+
+    def get_bearer_header(self):
+        return {"Authorization": "Bearer {}".format(self.data["bearer"])} if "bearer" in self.data else None
+    
+    def load_auth(self, username):
+        bearer_old = self.get_bearer()
+        beare_new = None
+
+        active_auth = None
+        auth_list = self.get_auth_list()
+        for auth in auth_list:
+            if auth["username"] == username:
+                auth["is_active"] = True
+                active_auth = auth
+                if 'bearer' in auth:
+                    beare_new = auth["bearer"]
+            elif auth["is_active"]:
+                auth["is_active"] = False
+                auth["bearer"] = bearer_old
+
+        if not active_auth:
+            raise GraviteeioError("Username [{}] not exist.".format(username))
+
+        self.save(auth = auth_list, bearer = beare_new, active_auth = active_auth)
+
 
 class GraviteeioConfig_am(GraviteeioConfig_abstract):
-    def __init__(self, config_parser, proxies):
-        GraviteeioConfig_abstract.__init__(self,GraviteeioModule.APIM, config_parser, proxies)
+    def __init__(self, config_parser, proxies, graviteeioConfig: GraviteeioConfig):
+        GraviteeioConfig_abstract.__init__(self,GraviteeioModule.APIM, config_parser, proxies, graviteeioConfig)
 
     def getInitValues(self):
         return {}
  
 class GraviteeioConfig_apim(GraviteeioConfig_abstract):
-    def __init__(self, config_parser, proxies):
-        GraviteeioConfig_abstract.__init__(self,GraviteeioModule.APIM, config_parser, proxies)
+    def __init__(self, config_parser, proxies, graviteeioConfig: GraviteeioConfig):
+        GraviteeioConfig_abstract.__init__(self,GraviteeioModule.APIM, config_parser, proxies, graviteeioConfig)
 
     def getInitValues(self):
         return {
-            "user": environments.DEFAULT_USER,
-            "password": environments.DEFAULT_PASSWORD,
-            "address_url": environments.DEFAULT_ADDRESS_URL
+            "address_url": environments.DEFAULT_ADDRESS_URL,
+            "active_auth": {"username": environments.DEFAULT_USER, "type": Auth_Type.CREDENTIAL.name.lower()},
+            "auth": [
+                {"username": environments.DEFAULT_USER, "type": Auth_Type.CREDENTIAL.name.lower(), "is_active": True} 
+            ]
         }
     
     def url(self, path):
         return self.data["address_url"] + path.format(self.data["env"] + "/" if "env" in self.data else "")
-
-    def credential(self):
-        return (self.data["user"], self.data["password"])
 
 

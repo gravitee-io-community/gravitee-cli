@@ -1,47 +1,81 @@
+import enum
 import logging
 
 import requests
 from requests import RequestException
 
 from graviteeio_cli.exeptions import GraviteeioRequestError
+
 from .apim.api import api_client
+from .apim.auth import auth_client
 
 logger = logging.getLogger("client.gio")
 
-APIS_CONTEXT = "/management/{}apis/"
+APIM_APIS_CONTEXT = "/management/{}apis/"
+APIM_USER_CONEXT = "/management/{}user/"
 
-class gio:
-    def __init__(self, config=None, debug=False):
-        self.apim_api = api_client(HttpClient(APIS_CONTEXT, config))
+class APIM_client_type(enum.Enum):
+    API = {
+        'num': 1,
+        'context': "/management/{}apis/"
+        
+    }
+
+    AUTH = {
+        'num': 2,
+        'context': "/management/{}user/"
+        
+    }
+
+    def __init__(self, values):
+        self.num = values['num']
+        self.context = values['context']
+
+class AM_client_type(enum.IntEnum):
+    AUTH = 1
+
+class GioClient:
+    
+    @staticmethod
+    def APIM(http_client_type: APIM_client_type, config, debug=False):
+        if http_client_type is APIM_client_type.API:
+            return  api_client(HttpClient(http_client_type.context, config))
+        elif http_client_type is APIM_client_type.AUTH:
+            return auth_client(HttpClient(http_client_type.context, config))
+    
+    @staticmethod
+    def AM(http_client_type: AM_client_type, config, debug=False):
+        pass
 
 class HttpClient:
     def __init__(self, context, config = None):
         self.config = config
         self.timeout = 10
         self.context = context
-        self.headers = {'Content-type': 'application/json'} 
+        self.headers = {'Content-type': 'application/json'}
 
-    def get(self, path, params = None):
-        return self.request("GET", path = path, params= params)
+    def get(self, path, params = None, **kwargs):
+        return self.request("GET", path = path, params= params, **kwargs)
 
-    def post(self, path, data = None):
-        return self.request("POST", path = path, data = data)
+    def post(self, path, data = None, **kwargs):
+        return self.request("POST", path = path, data = data, **kwargs)
 
-    def put(self, path, data = None):
-        return self.request("PUT", path = path, data = data)
+    def put(self, path, data = None, **kwargs):
+        return self.request("PUT", path = path, data = data, **kwargs)
 
     def request(self, verbe, path = "", **kwargs):
         try:
 
             params = kwargs
 
-            params["auth"] = self.config.credential()
             params["proxies"] = self.config.proxies
             params["timeout"] = self.timeout
 
-            params["headers"] = self.headers
+            if self.config.get_bearer():
+                self.headers["Authorization"] = self.config.get_bearer_header()["Authorization"]
 
-            response = requests.request(verbe, self.config.url(APIS_CONTEXT + path), **params)
+            params["headers"] = self.headers
+            response = requests.request(verbe, self.config.url(self.context + path), **params)
             self._check(response)
             return response
         except RequestException:

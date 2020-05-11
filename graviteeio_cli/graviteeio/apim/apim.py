@@ -1,6 +1,7 @@
 import click
 
 from .apis.apis import apis
+from .auth.auth import auth
 
 @click.group()
 def apim():
@@ -9,3 +10,4 @@ def apim():
 
 
 apim.add_command(apis)
+apim.add_command(auth)

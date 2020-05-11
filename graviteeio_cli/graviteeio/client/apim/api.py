@@ -9,8 +9,6 @@ from requests import RequestException
 
 from graviteeio_cli.exeptions import GraviteeioRequestError
 
-APIS_CONTEXT = "/management/{}apis/"
-
 logger = logging.getLogger("client.api_client")
 
 class Api_Action(enum.IntEnum):

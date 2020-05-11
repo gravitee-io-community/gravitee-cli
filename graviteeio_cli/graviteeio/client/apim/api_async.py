@@ -41,7 +41,11 @@ class ApiClientAsync:
     async def get_apis_with_state(self):
         timeout = aiohttp.ClientTimeout(total=self.timeout)
 
-        async with aiohttp.ClientSession(auth=aiohttp.BasicAuth('admin', password='admin'), timeout=timeout) as session:
+        headers = None
+        if self.config.get_bearer():
+            headers=self.config.get_bearer_header()
+
+        async with aiohttp.ClientSession(headers = headers, timeout=timeout) as session:
             async with session.get(self.config.url(APIS_CONTEXT), ssl=False) as resp:
                 apis = await resp.json();
                 for api in apis:
