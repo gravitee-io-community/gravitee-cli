@@ -56,22 +56,17 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
             resp = api_client.update_import(api_id, api_data)
             click.echo("API {} is updated".format(api_id))
 
-            try:
-                ctx.invoke(deploy, api_id=api_id)
-            except GraviteeioError:
-                click.echo("Error: " + click.style("API could not be deployed", fg="red"))
+            ctx.invoke(deploy, api_id=api_id)
+
         else:
-            click.echo("Starting to create API: '{}'".format(api_data["name"]))
+            click.echo("Starting to create API [{}].".format(api_data["name"]))
             resp = api_client.create_import(api_data)
             api_id = resp["id"]
-            click.echo("API has been created with id {}".format(api_id))
+            click.echo("API has been created with id [{}].".format(api_id))
 
             if with_deploy:
-                try:
-                    ctx.invoke(start, api_id=api_id)
-                    ctx.invoke(deploy, api_id=api_id)
-                except GraviteeioError:
-                    click.echo("Error: " + click.style("API could not be started", fg="red"))
+                ctx.invoke(start, api_id=api_id)
+                ctx.invoke(deploy, api_id=api_id)
 
 
 

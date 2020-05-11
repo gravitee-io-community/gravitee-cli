@@ -13,6 +13,6 @@ def deploy(obj, api_id):
     try:
         response = api_client.deploy(api_id)
     except GraviteeioError:
-        click.echo("Error: " + click.style("API could not be deployed", fg="red"))
+        click.echo("Error: " + click.style("API [{}]could not be deployed.".format(api_id), fg="red"))
 
-    click.echo("API {} is deployed".format(api_id))
+    click.echo("API [{}] is deployed.".format(api_id))

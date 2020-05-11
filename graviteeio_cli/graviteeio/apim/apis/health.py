@@ -61,4 +61,4 @@ def health(obj, output, query, api_id , time_frame):
         raise GraviteeioError(str(jmespatherr))
     except Exception:
         logging.exception("HEALTH Exception")
-        raise GraviteeioError("to print {} with the format {}".format(health_filtered, format))
+        raise GraviteeioError("to print {} with the format {}.".format(health_filtered, format))

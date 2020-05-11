@@ -32,7 +32,7 @@ def diff(obj, api_id, file, set, diff, config_path):
         config_path = "./"
 
     if not os.path.exists(config_path):
-        raise GraviteeioError("No resources folder {} found".format(config_path))
+        raise GraviteeioError("No resources folder {} found.".format(config_path))
 
     api_sch = ApiSchema(config_path, file)
     api_data = api_sch.get_api_data(set_values=set)
