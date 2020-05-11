@@ -18,14 +18,14 @@ colors = {"1xx":"white","2xx":"green","3xx":"white","4xx":"yellow","5xx":"red"}
               required=True)
 @click.option('--output', '-o', 
               default="table",
-              help='Set the format for printing command output resources. Default is: `table`',
+              help='Set the format for printing command output resources.', show_default=True,
               type=click.Choice(OutputFormatType.extended_list_name(), case_sensitive=False))
 @click.option('-q','--query',
               default="reverse(@)[].{Status: status, Hits: hits, Percent: percent}",
               help='Execute JMESPath query. Default: `reverse(@)[].{Status: status, Hits: hits, Percent: percent}` eg: filtered on 5xx status `[?status==`5xx`].{Status: status, Hits: hits, Percent: percent}`' )
 @click.option('-tf','--time-frame',
               default="5m",
-              help="Timeframe between now and the vale. Default: `5m`. m -> minute, h -> hour, d -> days")
+              help="Timeframe between now and the vale. m -> minute, h -> hour, d -> days", show_default=True)
 @click.pass_obj
 def status(obj, output, query, time_frame, api_id):
     """

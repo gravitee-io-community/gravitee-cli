@@ -16,7 +16,7 @@ from ....exeptions import GraviteeioError
               required=True)
 @click.option('--output', '-o', 
               default="table",
-              help='Set the format for printing command output resources. Default is: `table`',
+              help='Set the format for printing command output resources.', show_default=True,
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.option('-q','--query',
               default="[].{Time: time, Percent: percent}",
