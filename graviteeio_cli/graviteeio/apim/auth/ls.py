@@ -8,8 +8,8 @@ from graviteeio_cli.graviteeio.output import OutputFormatType
 
 @click.command()
 @click.option('--output', '-o', 
-              default="table",
-              help='Set the format for printing command output resources. Default: `table`',
+              default="table", show_default=True,
+              help='Set the format for printing command output resources.',
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.pass_obj
 def ls(obj, output):

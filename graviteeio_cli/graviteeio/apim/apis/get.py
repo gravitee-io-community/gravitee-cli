@@ -11,8 +11,8 @@ logger = logging.getLogger("command-get")
 
 @click.command()
 @click.option('--output', '-o', 
-              default="yaml",
-              help='Output format. Default: `yaml`',
+              default="yaml", show_default=True,
+              help='Output format.',
               type=click.Choice(['yaml', 'json'], case_sensitive=False))
 @click.option('--api', 'api_id',
               help='API id',

@@ -18,7 +18,7 @@ logger = logging.getLogger("command-ps")
 #@click.option('--deploy-state', help='show if API configuration is synchronized', is_flag=True)
 @click.option('--output', '-o', 
               default="table",
-              help='Set the format for printing command output resources. Default: `table`',
+              help='Set the format for printing command output resources.', show_default=True,
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.option('-q','--query',
                help='Execute JMESPath query. Some function styles are available for the output format `table. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state`' )

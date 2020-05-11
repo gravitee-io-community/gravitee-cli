@@ -68,7 +68,7 @@ def set_(obj, profile_name, module, user, pwd, url, env):
 @click.command()
 @click.option('--output', '-o',  
               default="table",
-              help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`',
+              help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`.',
               show_default=True,
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.pass_obj
@@ -93,7 +93,7 @@ def ls(obj, output):
 @click.argument('profile', required=True, metavar='[PROFILE]')
 @click.option('--output', '-o',  
               default="table",
-              help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`. Default is: `table`',
+              help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`.', show_default=True,
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.pass_obj
 def get(obj, profile, output):
@@ -109,7 +109,7 @@ def get(obj, profile, output):
 # @click.option('--pwd', help='authentication password', required=True)
 @click.option('--url', help='graviteeio Rest Management url', required=True)
 @click.option('--module', 
-                        help='graviteeio module', required=True,
+                        help='graviteeio module', required=True, 
                     type=click.Choice(GraviteeioModule.list_name(), case_sensitive=False))
 @click.option('--env', help='config graviteeio environment')
 @click.argument('profile_name', required=True)
