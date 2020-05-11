@@ -13,6 +13,6 @@ def start(obj, api_id):
     try:
         response = api_client.start(api_id)
     except GraviteeioError:
-        click.echo("Error: " + click.style("API could not be started", fg="red"))
+        click.echo("Error: " + click.style("API [{}]could not be started".format(api_id), fg="red"))
     
-    click.echo("API {} is started".format(api_id))
+    click.echo("API [{}] is started".format(api_id))

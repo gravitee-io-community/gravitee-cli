@@ -5,7 +5,6 @@ import aiohttp
 import click
 import jmespath
 from jmespath import exceptions, functions
-from terminaltables import AsciiTable
 
 from graviteeio_cli.graviteeio.client.apim.api_async import ApiClientAsync
 from graviteeio_cli.graviteeio.modules import GraviteeioModule

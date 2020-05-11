@@ -79,4 +79,4 @@ Status Field:
         raise GraviteeioError(str(jmespatherr))
     except Exception as err:
         logging.exception("STATUS Exception")
-        raise GraviteeioError("to print {} with the format {}".format(status_filtered, format))
+        raise GraviteeioError("to print {} with the format {}.".format(status_filtered, format))
