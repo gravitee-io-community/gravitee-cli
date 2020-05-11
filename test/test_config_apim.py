@@ -1,5 +1,5 @@
 import os
-from graviteeio_cli.graviteeio.profiles import GraviteeioConfig
+from graviteeio_cli.graviteeio.profiles import GraviteeioConfig, Auth_Type
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
 
 FILE = "graviteeio.ini"
@@ -15,13 +15,15 @@ def test_init_config_file(tmpdir):
     current_profile = p.readlines()[1]
     apim_data = p.readlines()[4]
 
-    apim = gio_config.getGraviteeioConfigData(GraviteeioModule.APIM)
-    user = apim["user"]
-    password = apim["password"]
-    address_url = apim["address_url"]
+    apim_config = gio_config.getGraviteeioConfig(GraviteeioModule.APIM)
+    apim_config_data = gio_config.getGraviteeioConfigData(GraviteeioModule.APIM)
+    user = apim_config.get_active_auth()["username"]
+    address_url = apim_config_data["address_url"]
+
     # current_profile = demo
     assert current_profile == 'current_profile = {}\n'.format(gio_config.profile)
-    assert apim_data == 'apim = {"user": "%s", "password": "%s", "address_url": "%s"}\n' % (user, password, address_url)
+    assert apim_data == 'apim = {"address_url": "%s", "active_auth": {"username": "%s", "type": "%s"}, "auth": [{"username": "%s", "type": "%s", "is_active": true}]}\n' % (address_url, user, Auth_Type.CREDENTIAL.name.lower(), user, Auth_Type.CREDENTIAL.name.lower())
+
 
 def test_load_config_file(tmpdir):
     d = tmpdir.mkdir("config")
@@ -35,13 +37,13 @@ def test_load_config_file(tmpdir):
     current_profile = p.readlines()[1]
     apim_data = p.readlines()[4]
 
-    apim = gio_config2.getGraviteeioConfigData(GraviteeioModule.APIM)
-    user = apim["user"]
-    password = apim["password"]
-    address_url = apim["address_url"]
+    apim_config = gio_config.getGraviteeioConfig(GraviteeioModule.APIM)
+    apim_config_data = gio_config.getGraviteeioConfigData(GraviteeioModule.APIM)
+    user = apim_config.get_active_auth()["username"]
+    address_url = apim_config_data["address_url"]
     # current_profile = demo
     assert current_profile == 'current_profile = {}\n'.format(gio_config.profile)
-    assert apim_data == 'apim = {"user": "%s", "password": "%s", "address_url": "%s"}\n' % (user, password, address_url)
+    assert apim_data == 'apim = {"address_url": "%s", "active_auth": {"username": "%s", "type": "%s"}, "auth": [{"username": "%s", "type": "%s", "is_active": true}]}\n' % (address_url, user, Auth_Type.CREDENTIAL.name.lower(), user, Auth_Type.CREDENTIAL.name.lower())
 
 def test_save(tmpdir):
     d = tmpdir.mkdir("config")
@@ -84,3 +86,32 @@ def test_save_and_load(tmpdir):
     apim = gio_config.getGraviteeioConfigData(GraviteeioModule.APIM)
     assert 'test_profile' == gio_config.profile
     assert 'test' == apim['user']
+
+def test_create_auth_load_auth(tmpdir):
+    d = tmpdir.mkdir("config")
+
+    config_file = os.path.join( d.dirname, FILE )
+    gio_config = GraviteeioConfig(config_file)
+
+
+    apim_config = gio_config.getGraviteeioConfig(GraviteeioModule.APIM)
+    auth_list = apim_config.get_auth_list()
+
+    user = "newuser"
+    
+    auth_list.append({
+        "username": "newuser",
+        "type": Auth_Type.CREDENTIAL.name.lower(),
+        "is_active": False
+    })
+
+    apim_config.save(auth = auth_list)
+    print(apim_config.get_auth_list())
+
+    assert "[{'username': 'admin', 'type': 'credential', 'is_active': True}, {'username': 'newuser', 'type': 'credential', 'is_active': False}]" == "{}".format(apim_config.get_auth_list())
+
+    apim_config.load_auth("newuser")
+    active_user = apim_config.get_active_auth()["username"]
+    assert "[{'username': 'admin', 'type': 'credential', 'is_active': False, 'bearer': None}, {'username': 'newuser', 'type': 'credential', 'is_active': True}]" == "{}".format(apim_config.get_auth_list())
+    assert active_user == "newuser"
+
