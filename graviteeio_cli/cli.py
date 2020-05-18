@@ -6,7 +6,8 @@ import click_completion
 from .__version__ import __version__ as VERSION
 from .environments import GRAVITEEIO_CONF_FILE
 from .graviteeio.apim.apim import apim
-from .graviteeio.profiles import profiles, GraviteeioConfig
+from .graviteeio.profiles import profiles
+from .graviteeio.config import GraviteeioConfig
 
 # Enable shell completion.
 click_completion.init()

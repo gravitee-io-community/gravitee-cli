@@ -1,51 +1,10 @@
-import enum
-import logging
-
 import requests
+import logging
 from requests import RequestException
 
 from graviteeio_cli.exeptions import GraviteeioRequestError
 
-from .apim.api import api_client
-from .apim.auth import auth_client
-
-logger = logging.getLogger("client.gio")
-
-APIM_APIS_CONTEXT = "/management/{}apis/"
-APIM_USER_CONEXT = "/management/{}user/"
-
-class APIM_client_type(enum.Enum):
-    API = {
-        'num': 1,
-        'context': "/management/{}apis/"
-        
-    }
-
-    AUTH = {
-        'num': 2,
-        'context': "/management/{}user/"
-        
-    }
-
-    def __init__(self, values):
-        self.num = values['num']
-        self.context = values['context']
-
-class AM_client_type(enum.IntEnum):
-    AUTH = 1
-
-class GioClient:
-    
-    @staticmethod
-    def APIM(http_client_type: APIM_client_type, config, debug=False):
-        if http_client_type is APIM_client_type.API:
-            return  api_client(HttpClient(http_client_type.context, config))
-        elif http_client_type is APIM_client_type.AUTH:
-            return auth_client(HttpClient(http_client_type.context, config))
-    
-    @staticmethod
-    def AM(http_client_type: AM_client_type, config, debug=False):
-        pass
+logger = logging.getLogger("client.HttpClient")
 
 class HttpClient:
     def __init__(self, context, config = None):

@@ -1,13 +1,14 @@
 
-import logging
-import json
 import enum
+import json
+import logging
 from datetime import datetime, timedelta
 
 import requests
 from requests import RequestException
 
 from graviteeio_cli.exeptions import GraviteeioRequestError
+from graviteeio_cli.graviteeio.client.http_client import HttpClient
 
 logger = logging.getLogger("client.api_client")
 
@@ -16,14 +17,15 @@ class Api_Action(enum.IntEnum):
     STOP = 1
 
 class api_client:
-    def __init__(self, httpClient, debug=False):
+    def __init__(self, httpClient: HttpClient, debug=False):
         self.httpClient = httpClient
 
-    def get(self, id, response_filter = None):
-        response = self.httpClient.get("{}".format(id)).json()
+    def get(self, id = None, response_filter = None):
+        response =self.httpClient.get("{}".format(id) if id else "")
+        json_body = response.json()
         if response_filter:
-            response_filter(response)
-        return response
+            response_filter(json_body)
+        return json_body
     
     def create_import(self, api_data):
         return self.httpClient.post("import", data = json.dumps(api_data)).json()
@@ -82,7 +84,7 @@ class api_client:
         return self.action(id, Api_Action.STOP)
 
     def state(self, id):
-        return self.httpClient.post("{}/state".format(id))
+        return self.httpClient.get("{}/state".format(id)).json()
     
     def deploy(self, id):
         return self.httpClient.post("{}/deploy".format(id))

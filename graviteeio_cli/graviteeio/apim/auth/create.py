@@ -5,13 +5,13 @@ import click
 from graviteeio_cli.exeptions import GraviteeioError
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
 from graviteeio_cli.graviteeio.output import OutputFormatType
-from graviteeio_cli.graviteeio.profiles import Auth_Type
+from graviteeio_cli.graviteeio.config import Auth_Type
 
 
 @click.command()
 @click.option('--user', help='authentication user', required=True)
 @click.option('--type', 'auth_type',
-                        help='authentication type', required=True,
+                        help='authentication type', default="credential", show_default=True,
                     type=click.Choice(Auth_Type.list_name(), case_sensitive=False))
 @click.pass_obj
 def create(obj, user, auth_type):
