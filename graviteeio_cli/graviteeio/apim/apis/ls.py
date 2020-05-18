@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import time
 
 import aiohttp
 import click
@@ -56,17 +57,20 @@ API Field:
     """
 
     async def get_apis():
-        client =  ApiClientAsync(obj['config'].getGraviteeioConfig(GraviteeioModule.APIM))
+        client =  ApiClientAsync(obj['config'])
         apis = await client.get_apis_with_state()
         return apis
+    # try: 
+    loop = asyncio.get_event_loop()
+    apis = loop.run_until_complete(get_apis())
 
-    try: 
-        loop = asyncio.get_event_loop()
-        apis = loop.run_until_complete(get_apis())
-
-    except Exception:
-        logging.exception("get apis")
-        raise GraviteeioError("get apis")
+    # except Exception:
+    #     logging.exception("get apis")
+    #     raise GraviteeioError("get apis")
+    # api_client = obj['api_client']
+    # apis = api_client.get()
+    # for api in apis:
+    #     api_client.state(api["id"])
 
     logger.debug("apis response: {}".format(apis))
 

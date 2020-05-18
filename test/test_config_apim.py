@@ -1,5 +1,5 @@
 import os
-from graviteeio_cli.graviteeio.profiles import GraviteeioConfig, Auth_Type
+from graviteeio_cli.graviteeio.config import GraviteeioConfig, Auth_Type
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
 
 FILE = "graviteeio.ini"

@@ -4,7 +4,7 @@ from graviteeio_cli.exeptions import GraviteeioError
 @click.command()
 @click.option('--api', 'api_id',
               help='API id',
-              required=True)
+              required=False)
 @click.option('--file', '-f', type=click.Path(exists=True), required=False,
               help="Spec file")
 @click.option('--set', '-s', multiple=True,

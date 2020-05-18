@@ -11,6 +11,6 @@ def logout(obj):
     auth_client = obj['auth_client']
     bearer = auth_client.logout()
 
-    config.save(bearer = None)
+    config.remove_active_auth()
 
-    click.echo("You are now logged out.")
+    click.echo("[{}] is now logged out.".format(auth["username"]))

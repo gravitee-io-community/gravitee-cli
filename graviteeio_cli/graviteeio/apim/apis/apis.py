@@ -4,7 +4,7 @@ import sys
 import click
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
 
-from graviteeio_cli.graviteeio.client.gio import GioClient, APIM_client_type
+from graviteeio_cli.graviteeio.client.gio_resources import APIM_Client
 from .plugins import COMMANDS
 import pkgutil
 
@@ -46,4 +46,5 @@ def apis(ctx):
     """
     apis commands
     """
-    ctx.obj['api_client'] = GioClient.APIM(config=ctx.obj['config'].getGraviteeioConfig(GraviteeioModule.APIM), http_client_type = APIM_client_type.API)
+    ctx.obj['api_client'] = APIM_Client.API.http(ctx.obj['config'])
+    # ctx.obj['api_client'] = GioClient.APIM(config=ctx.obj['config'].getGraviteeioConfig(GraviteeioModule.APIM), http_client_type = APIM_client_type.API)
