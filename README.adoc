@@ -13,42 +13,29 @@ It allows to automate actions for all modules of the platform by calling their M
 
 Gravitee cli documentation is published on https://docs.gravitee.io/cli/cli_introduction.html
 
-== Installation
+== Requirements
 
-(not available yet)
+* Python 3.5 or more
+
+== Setup
 
 Install via `+pip <https://pypi.python.org/pypi/pip>+`
 
 Use pip to install the latest stable version:
 
-`$ pip3 install graviteeio-cli`
-
-Install via wheel:
-
-`$ python setup.py bdist_wheel`
-
-`$ pip3 install dist/graviteeio_cli-0.1.0-py3-none-any.whl`
-
-== Requirements
-
-* Python 3.5 or more
-* no additional modules are required.
-
-== Docker
-
-Run gravitee-cli with docker
-
-Build:
-
-`$ docker build -t gio .`
-
-Run:
-
-`$ docker run -v $(pwd):/graviteeio/config gio apim apis ps`
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+$ pip3 install graviteeio-cli
+----
 
 == Usage
 
-`gio <module> <command>`
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gio <module> <command>
+----
 
 [cols="2", options="header"]
 |===
