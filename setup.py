@@ -52,7 +52,7 @@ try:
 
     icon = None
     if os.path.exists('Graviteeio.ico'):
-        icon = 'Elastic.ico'
+        icon = 'Graviteeio.ico'
 
     graviteeio_exe = Executable (
         "run_graviteeio.py",
@@ -60,7 +60,7 @@ try:
         targetName = "gio"
     )
 
-    buildOptions = dict(packages=["asyncio","ctypes","appdirs", "packaging", "graviteeio_cli.graviteeio.apim.apis"], excludes=[], includes=["idna.idnadata"])
+    buildOptions = dict(packages=["asyncio","ctypes","appdirs", "packaging", "graviteeio_cli.graviteeio.apim.apis"], excludes=["unittest"], includes=["idna.idnadata"])
 
     if sys.platform == "win32":
         graviteeio_exe = Executable(
@@ -103,7 +103,7 @@ try:
             'jinja2>=2.10.1',
             'dictdiffer>=0.8.0',
             'jmespath>=0.9.4',
-            'aiohttp==3.6.2',
+            'asyncio==3.4.3',
             'pytimeparse==1.1.8',
             'termgraph==0.2.1'],
         extras_require = {
@@ -157,7 +157,7 @@ except ImportError:
             'jinja2>=2.10.1',
             'dictdiffer>=0.8.0',
             'jmespath>=0.9.4',
-            'aiohttp==3.6.2',
+            'asyncio==3.4.3',
             'pytimeparse==1.1.8',
             'termgraph==0.2.1'],
         extras_require = {

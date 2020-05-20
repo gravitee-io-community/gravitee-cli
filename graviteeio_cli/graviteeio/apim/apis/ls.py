@@ -2,7 +2,6 @@ import asyncio
 import logging
 import time
 
-import aiohttp
 import click
 import jmespath
 from jmespath import exceptions, functions
