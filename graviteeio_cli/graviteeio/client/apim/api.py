@@ -9,6 +9,7 @@ from requests import RequestException
 
 from graviteeio_cli.exeptions import GraviteeioRequestError
 from graviteeio_cli.graviteeio.client.http_client import HttpClient
+from graviteeio_cli.graviteeio.config import GraviteeioConfig_apim
 
 logger = logging.getLogger("client.api_client")
 
@@ -16,9 +17,10 @@ class Api_Action(enum.IntEnum):
     START = 0
     STOP = 1
 
-class api_client:
-    def __init__(self, httpClient: HttpClient, debug=False):
-        self.httpClient = httpClient
+class ApiClient:
+
+    def __init__(self, config: GraviteeioConfig_apim, debug=False):
+        self.httpClient = HttpClient("/management/{}apis/", config)
 
     def get(self, id = None, response_filter = None):
         response =self.httpClient.get("{}".format(id) if id else "")
