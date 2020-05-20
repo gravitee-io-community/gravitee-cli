@@ -5,6 +5,7 @@ import jmespath
 from jmespath import exceptions
 from pytimeparse import parse
 
+from graviteeio_cli.graviteeio.client.apim.api import ApiClient
 from graviteeio_cli.graviteeio.output import OutputFormatType
 
 from ....exeptions import GraviteeioError
@@ -27,7 +28,7 @@ from ....exeptions import GraviteeioError
 @click.pass_obj
 def health(obj, output, query, api_id , time_frame):
     """API health: return the lastest availability minute, hour, day, week, month"""
-    api_client = obj['api_client']
+    api_client : ApiClient = obj['api_client']
 
     health_values = None
     # health = api_client.health(api_id, time_frame_seconds = parse(time_frame))
