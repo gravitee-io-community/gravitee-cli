@@ -30,7 +30,7 @@ def profiles():
 
 
 @click.command()
-@click.option('--url', help='graviteeio rest management url', required=True)
+@click.option('--url', help='graviteeio module url', required=True)
 @click.option('--module', 
                         help='graviteeio module', required=True, 
                     type=click.Choice(GraviteeioModule.list_name(), case_sensitive=False))
@@ -41,7 +41,7 @@ def profiles():
 def create(obj, profile_name, module, url, environment, organization):
     """This command create a new profile configuration according to module"""
 
-    gio_config = obj['config']
+    gio_config:GraviteeioConfig = obj['config']
 
     if not is_uri_valid(url):
         raise GraviteeioError('URL [%s] not valid.' % url)
@@ -60,7 +60,7 @@ def create(obj, profile_name, module, url, environment, organization):
     click.echo("Data saved for profile [{}].".format(profile_name))
 
 @click.command()
-@click.option('--url', help='graviteeio rest management url')
+@click.option('--url', help='graviteeio module url')
 @click.option('--environment', "--env", help='config graviteeio environment')
 @click.option('--organization', "--org",help='config graviteeio organization')
 @click.option('--module', 
@@ -71,7 +71,7 @@ def create(obj, profile_name, module, url, environment, organization):
 def set_(obj, profile_name, module, url, environment, organization):
     """This command writes configuration values according to profile and module"""
 
-    gio_config = obj['config']
+    gio_config:GraviteeioConfig = obj['config']
 
     if url or environment or organization:
         data = {}
@@ -102,7 +102,7 @@ def ls(obj, output):
     """
     Display profile list
     """
-    gio_config = obj['config']
+    gio_config:GraviteeioConfig = obj['config']
 
     profiles = gio_config.profiles()
     new_profiles = []
@@ -126,8 +126,10 @@ def get(obj, profile, output):
     """
     Display configuration for the filled profile
     """
-    gio_config = obj['config']
-    to_display = gio_config.display_profile(profile)
+    # gio_config = obj['config']
+    gio_config =  GraviteeioConfig(obj['path-config'])
+    gio_config.load(profile, no_save=True)
+    to_display = gio_config.display_profile()
 
     output = OutputFormatType.value_of(output)
     if(output == OutputFormatType.TABLE):
@@ -152,7 +154,7 @@ def get(obj, profile, output):
 def remove(obj, profile_name):
     """remove profile"""
 
-    gio_config = obj['config']
+    gio_config:GraviteeioConfig = obj['config']
     gio_config.remove(profile = profile_name)
 
     click.echo("Profile [%s] removed." % profile_name)
@@ -164,7 +166,7 @@ def load(ctx, profile_name):
     """
     Load current profile
     """
-    gio_config = ctx.obj['config']
+    gio_config:GraviteeioConfig = ctx.obj['config']
     old_profile = gio_config.profile
 
     if gio_config.config_module[GraviteeioModule.APIM] and gio_config.config_module[GraviteeioModule.APIM].is_logged_in():

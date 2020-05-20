@@ -35,6 +35,7 @@ def main(ctx, config, log, log_level):
 
         logging.basicConfig(format='%(name)s-%(levelname)s: %(message)s', level=log_level)
         ctx.obj['config'] = GraviteeioConfig(config)
+        ctx.obj['path-config'] = config
         
 
 main.add_command(apim)
