@@ -23,4 +23,4 @@ def ls(obj, output):
     if auth_list:
         outputFormatType.echo(auth_list, header = ["username", "type"])
     else:
-        click.echo("No auth")
+        click.echo("No authication")
