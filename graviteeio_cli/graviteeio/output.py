@@ -164,7 +164,7 @@ class YamlOutput(Output):
         return obj
     
     def print(self, data, **kwargs):
-        click.echo(yaml.dump(data))
+        click.echo(yaml.dump(data, sort_keys=False))
 
 class OutputFormatType(enum.Enum):
     TABLE = {
