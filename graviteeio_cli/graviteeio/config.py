@@ -1,12 +1,10 @@
 import configparser
-import copy
 import enum
 import json
 import os
 
 from .. import environments
 from ..exeptions import GraviteeioError
-from .apim.auth.logout import logout
 from .modules import GraviteeioModule
 from .output import OutputFormatType
 from .utils import is_uri_valid
@@ -66,15 +64,16 @@ class GraviteeioConfig:
     def profiles(self):
         return self.config.sections()
 
-    def load(self, profile):
+    def load(self, profile, no_save = False):
         if profile is "DEFAULT":
             raise GraviteeioError('No profile [%s] accepted.' % profile)
         if not self.config.has_section(profile):
             raise GraviteeioError('No profile [%s] found.' % profile)
         
         self.config.set("DEFAULT", "current_profile", profile)
-        with open(self.config_file, 'w') as fileObj:
-                self.config.write(fileObj)
+        if not no_save:
+            with open(self.config_file, 'w') as fileObj:
+                    self.config.write(fileObj)
         
         self._load_config()
 
@@ -143,12 +142,10 @@ class GraviteeioConfig:
 
     #     return to_return
     
-    def display_profile(self, profile):
-        if not self.config.has_section(profile):
-            raise GraviteeioError('No profile [%s] found.' % profile)
+    def display_profile(self):
 
         to_return = {
-            "profile": "{}".format(profile),
+            "profile": "{}".format(self.profile),
             "modules": []
         }
 
@@ -157,10 +154,8 @@ class GraviteeioConfig:
                 "module": self.config_module[key].module 
             }
 
-            config_module = self.config_module[key].new(self.profile)
-
-            if config_module.display_profile():
-                module_data.update(config_module.display_profile())
+            if self.config_module[key].display_profile():
+                module_data.update(self.config_module[key].display_profile())
             
             to_return["modules"].append(module_data)
         
@@ -255,10 +250,6 @@ class GraviteeioConfig_abstract:
     def get_bearer_header(self):
         return {"Authorization": "Bearer {}".format(self.get_bearer())} if self.is_logged_in() else None
     
-    def new(self, profile):
-        new = copy.deepcopy(self)
-        new.load_config(profile)
-        return new
     # def load_auth(self, username):
     #     bearer_old = self.get_bearer()
     #     beare_new = None
@@ -306,7 +297,10 @@ class GraviteeioConfig_apim(GraviteeioConfig_abstract):
                 "authentification": self.display_auth_list()
             }
         if "env" in self.data:
-            to_return["env"] = self.data["env"]
+            to_return["environments"] = self.data["env"]
+        
+        if "org" in self.data:
+            to_return["organisations"] = self.data["org"]
 
         return to_return
     
