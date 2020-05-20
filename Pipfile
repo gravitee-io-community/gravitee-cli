@@ -18,7 +18,7 @@ pyyaml = "*"
 jinja2 = "*"
 dictdiffer = "*"
 jmespath = "*"
-aiohttp = "*"
+asyncio = "*"
 pytimeparse = "*"
 termgraph = "*"
 
