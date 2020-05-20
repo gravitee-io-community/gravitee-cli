@@ -1,6 +1,7 @@
 import click
 
 from ....exeptions import GraviteeioError
+from graviteeio_cli.graviteeio.client.apim.api import ApiClient
 
 @click.command()
 @click.option('--api', 'api_id',
@@ -9,7 +10,7 @@ from ....exeptions import GraviteeioError
 @click.pass_obj
 def stop(obj, api_id):
     """This command allow to stop an API"""
-    api_client = obj['api_client']
+    api_client : ApiClient = obj['api_client']
     try:
         api_client.stop(api_id)
     except GraviteeioError:

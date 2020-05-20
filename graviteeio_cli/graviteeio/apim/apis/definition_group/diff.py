@@ -4,10 +4,13 @@ import os
 import click
 from dictdiffer import diff as jsondiff
 
+from graviteeio_cli.graviteeio.client.apim.api import ApiClient
+
 from ..... import environments
 from .....exeptions import GraviteeioError
-from .api_schema import ApiSchema
 from ..utils import display_dict_differ, filter_api_values
+from .api_schema import ApiSchema
+
 
 @click.command()
 @click.option('--api', 'api_id',
@@ -26,7 +29,7 @@ def diff(obj, api_id, file, set, diff, config_path):
     """
     Compare the configuration values with api on the server
     """
-    api_client = obj['api_client']
+    api_client : ApiClient = obj['api_client']
 
     if not config_path:
         config_path = "./"
@@ -41,4 +44,3 @@ def diff(obj, api_id, file, set, diff, config_path):
 
     diff_result = jsondiff(api_server, api_data)
     display_dict_differ(diff_result)
-

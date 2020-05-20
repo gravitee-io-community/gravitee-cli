@@ -6,6 +6,7 @@ import jmespath
 from jmespath import exceptions
 from pytimeparse import parse
 
+from graviteeio_cli.graviteeio.client.apim.api import ApiClient
 from graviteeio_cli.graviteeio.output import OutputFormatType
 
 from ....exeptions import GraviteeioError
@@ -37,7 +38,7 @@ Status Field:
 - `hits`: numerate
 - `percent`: string
     """
-    api_client = obj['api_client']
+    api_client : ApiClient = obj['api_client']
 
     try: 
         status_values = api_client.status(api_id, parse(time_frame))['values']

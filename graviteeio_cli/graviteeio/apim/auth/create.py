@@ -5,7 +5,7 @@ import click
 from graviteeio_cli.exeptions import GraviteeioError
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
 from graviteeio_cli.graviteeio.output import OutputFormatType
-from graviteeio_cli.graviteeio.config import Auth_Type
+from graviteeio_cli.graviteeio.config import Auth_Type, GraviteeioConfig_apim
 
 
 @click.command()
@@ -16,7 +16,7 @@ from graviteeio_cli.graviteeio.config import Auth_Type
 @click.pass_obj
 def create(obj, user, auth_type):
     """This command create a new authentication user"""
-    config = obj['config'].getGraviteeioConfig(GraviteeioModule.APIM)
+    config: GraviteeioConfig_apim = obj['config'].getGraviteeioConfig(GraviteeioModule.APIM)
     auth_list = config.get_auth_list()
 
     for auth in auth_list:

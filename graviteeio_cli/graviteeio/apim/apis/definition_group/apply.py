@@ -4,12 +4,14 @@ import os
 import click
 from dictdiffer import diff as jsondiff
 
+from graviteeio_cli.graviteeio.client.apim.api import ApiClient
+
 from ..... import environments
 from .....exeptions import GraviteeioError
-from .api_schema import ApiSchema
-from ..utils import display_dict_differ, filter_api_values
 from ..deploy import deploy
 from ..start import start
+from ..utils import display_dict_differ, filter_api_values
+from .api_schema import ApiSchema
 
 
 @click.command()
@@ -37,7 +39,7 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
     template file: `apim_api_template.yml.j2`
     value file: `apim_api_value.yml`
     """
-    api_client = ctx.obj['api_client']
+    api_client : ApiClient = ctx.obj['api_client']
 
         # resources_folder = "./{}".format(environments.GRAVITEEIO_RESOURCES_FOLDER)
 
@@ -67,8 +69,4 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
             if with_deploy:
                 ctx.invoke(start, api_id=api_id)
                 ctx.invoke(deploy, api_id=api_id)
-
-
-
-
 
