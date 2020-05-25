@@ -1,0 +1,32 @@
+= Graviteeio CLI
+
+The Graviteeio CLI is command-line interce (CLI) which helps you to manage Gravitee.io eco-system. It allows to automate actions for all modules of the gravitee platform.
+
+== Current version
+
+Current version is 0.0.1b1. If you need to update, run `gio --version`
+
+== Install or run gravitee cli - gios
+
+see the page link:../install_or_run.adoc[Install or run]
+
+== Usage
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gio <module> <command>
+----
+
+[cols="2", options="header"]
+|===
+|Platform module
+|Module
+
+| link:docs/apim/README.adoc[API Management]
+| `apim`
+
+| link:docs/am/README.adoc[Access Management]
+| `am`
+
+|===

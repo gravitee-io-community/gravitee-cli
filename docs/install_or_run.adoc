@@ -1,0 +1,43 @@
+= Install Graviteeio CLI - gio
+
+The Graviteeio cli is available to install with Python `pip`. It can be run in Docker container
+
+== Install - Python
+
+Install cli using `pip`.
+
+Use pip to install the latest stable version:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+$ pip3 install graviteeio-cli
+----
+
+Check that the cli's installed by running:
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+$ gio --version
+----
+
+== Update - Python
+
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+$ pip3 install --upgrade graviteeio-cli
+----
+
+## Run - Docker
+
+Install cli via using `docker run`.
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+$ docker run -it -v $(pwd):/graviteeio/config graviteeio/cli
+----
+
+it is recommended to mount volume on host machine `-v` to keep the configuration data.
