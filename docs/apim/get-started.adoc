@@ -1,0 +1,163 @@
+
+= Get started
+
+Welcome to Gravitee CLI!
+This guide introduces the CLI and lets you quickly undersand graviteeio cli. 
+
+These steps don't require you to have a API Management cluster. You will be able to use the demo environement `+https://demo.gravitee.io/+`.
+
+* Install or run gravitee cli - gio
+* Profiles
+* Create and deploy your first api
+
+== Install or run gravitee cli - gio
+
+see the page link:../install_or_run.adoc[Install or run]
+
+
+== Profiles
+
+The CLI needs to know the gravitee API Management host. The default values are configured for the host `+https://demo.gravitee.io/+`.
+
+You can consult profiles list with the command:
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gio profiles list
+----
+
+you can see:
+----
+ Profiles         
+------------------
+ demo  (active)
+----
+
+"active" mean what the profile `demo` is the current profile loaded
+
+The profile `demo` contain configuration for all module (apim and am)
+
+Let's check the current configuration for the profile `demo`
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gio profiles get demo
+----
+
+----
+
+ Profile: demo 
+                                            
+--------------------------------------------
+ module            APIM                     
+ address_url       https://demo.gravitee.io 
+ authentification  []                       
+            
+------------
+ module  AM 
+
+----
+
+If you wish to create your own configuration you can use the command `gio profiles create`:
+
+----
+Usage: gio profiles create [OPTIONS] PROFILE_NAME
+
+  This command create a new profile configuration according to module
+
+Options:
+  --url TEXT                  graviteeio module url  [required]
+  --module [apim|am]          graviteeio module  [required]
+  --environment, --env TEXT   config graviteeio environment
+  --organization, --org TEXT  config graviteeio organization
+  --help                      Show this message and exit.
+----
+
+== Create and deploy your first api
+
+First step, you need to login in on the api management plateform
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gio apim auth login
+----
+
+Now, we are going to generate our templates and the values for our api definition.
+Api definition are managed with the template engine and API values are defined in YAML or JSON file
+
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gio apim apis definition generate
+----
+
+----
+Successfully created directory ./templates 
+Successfully created directory ./settings 
+Successfully created file ./templates/apim_config.yml.j2 
+Successfully created file ./apim_values.yml 
+Successfully created file ./settings/Http.yml 
+----
+
+When you execute this command, the folders and files are created in the current directory.
+
+you can see:
+
+* `./templates/apim_config.yml.j2`: api definition template.
+* `./apim_values.yml`: this file contains the values for the api definition template.
+* `./settings`: this folder contains setting values. In the folder, you can find the file `Http.yml` that contains default value http. These values are inserted in the api definition template.
+
+If you are still on the profile `demo` your api definition must certainly already exist.
+
+Edit the `apim_value.yml` file and personalize the fields `name` and `context_path`.
+
+Now let's start to create and deploy your api
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gio apim apis definition create --with-start
+----
+
+----
+Starting to create API [????].
+API has been created with id [????].
+API [????]. is started.
+API [????]. is deployed.
+----
+
+The `????` is the id of your api created.
+
+If you use the command:
+[.console-input]
+[source,bash,subs="+macros,+attributes"]
+----
+gio apim apis list
+----
+
+you can now see your api in the list.
+
+To update your api definition, you can use the command `apply` and specify API id with `--api`
+
+----
+Usage: gio apim apis definition apply [OPTIONS]
+
+Options:
+  --api TEXT          API id  [required]
+  -f, --file PATH     Path of value file. By default `apim_values` is loaded
+                      in the current directory either with the extension
+                      `.json`or `.yaml` or `.yml` depending on the format of
+                      the data.
+  -s, --set TEXT      Overload the value(s) of value file eg: `--set
+                      proxy.groups[0].name=mynewtest`
+  -d, --debug         Do not perform any changes. Display the datas generated
+  --config-path PATH  Path of all configuration foldes and setting files. The
+                      default value is the current directory
+  --with-deploy       Deploy api after applying
+  --help              Show this message and exit.
+----
+
+
+
+
