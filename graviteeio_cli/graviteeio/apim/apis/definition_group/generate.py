@@ -21,7 +21,7 @@ logger = logging.getLogger("command-generate")
               help='Generate templates and value file from existing api', required=False)
 @click.pass_obj
 def generate(obj, config_path, format, from_id):
-    """Generate templates and value files for api definition"""
+    """Generate default templates, setting and value files for api definition"""
     if not os.path.exists(config_path):
         os.mkdir(config_path)
 

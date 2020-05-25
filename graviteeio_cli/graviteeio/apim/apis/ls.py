@@ -25,7 +25,7 @@ logger = logging.getLogger("command-ps")
 @click.pass_obj
 def ls(obj, output, query):
     """
-Displays API list
+Displays the list of API
 
 \b
 API Field:

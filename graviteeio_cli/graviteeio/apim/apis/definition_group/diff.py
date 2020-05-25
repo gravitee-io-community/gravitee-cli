@@ -27,7 +27,7 @@ from .api_schema import ApiSchema
 @click.pass_obj
 def diff(obj, api_id, file, set, diff, config_path):
     """
-    Compare the configuration values with api on the server
+    Compare the api definition generated with api on the server
     """
     api_client : ApiClient = obj['api_client']
 

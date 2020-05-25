@@ -19,7 +19,7 @@ from graviteeio_cli.graviteeio.client.apim.api import ApiClient
 @click.pass_obj
 def apply(obj, api_id, file, set, debug, config_path):
     """
-    This command allow to create/update an API from spec API like Swagger or OpenApiSpec (OAS)
+    Allow to create/update an API from spec API like Swagger or OpenApiSpec (OAS)
     """
     api_client  : ApiClient= obj['api_client']
 

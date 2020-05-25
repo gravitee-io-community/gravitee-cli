@@ -10,11 +10,11 @@ from ....exeptions import GraviteeioError
               required=True)
 @click.pass_obj
 def start(obj, api_id):
-    """Start an API"""
+    """Starts an API"""
     api_client : ApiClient = obj['api_client']
     try:
         response = api_client.start(api_id)
     except GraviteeioError:
-        click.echo("Error: " + click.style("API [{}]could not be started".format(api_id), fg="red"))
+        click.echo("Error: " + click.style("API [{}] could not be started.".format(api_id), fg="red"))
     
     click.echo("API [{}] is started.".format(api_id))
