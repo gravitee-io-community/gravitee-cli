@@ -4,7 +4,6 @@ default_value_file_yaml = \
 'version: "1.0"\n' + \
 'name: My first api\n' +\
 'description: api generated with gio cli\n' +\
-'visibility: public\n' +\
 'context_path: /test\n' +\
 'endpoints:\n' +\
 '   - https://api.gravitee.io/echo\n' +\
@@ -18,7 +17,6 @@ default_value_file_json = \
 '  "version": "1.0",\n' + \
 '  "name": "My first api",\n' + \
 '  "description": "api generated with gio cli",\n' + \
-'  "visibility": "public",\n' + \
 '  "context_path": "/test",\n' + \
 '  "endpoints": [\n' + \
 '    "https://api.gravitee.io/echo"\n' + \
@@ -27,7 +25,7 @@ default_value_file_json = \
 '    {\n' + \
 '      "name": "Plan keyless",\n' + \
 '      "description": "plan keyless",\n' + \
-'      "security": "KEY_LESS"\n' + \
+'      "security": "key_less"\n' + \
 '    }\n' + \
 '  ]\n' + \
 '}'
@@ -78,7 +76,7 @@ default_template_yaml = \
 '          inherit: true\n' +\
 '      {% endfor -%}\n' +\
 '      load_balancing:\n' +\
-'        type: ROUND_ROBIN\n' +\
+'        type: round_robin\n' +\
 '      http: {{ Http | toyaml}}\n' +\
 'paths:\n' +\
 '  "/": []\n' +\
@@ -127,7 +125,7 @@ default_template_json = \
 '                    }{%- if not loop.last -%},{%- endif -%}\n' +\
 '                {% endfor -%}\n' +\
 '                ],\n' +\
-'                "load_balancing": {"type": "ROUND_ROBIN"},\n' +\
+'                "load_balancing": {"type": "round_robin"},\n' +\
 '                "http": {{ Http | tojson}}\n' +\
 '            }\n' +\
 '        ]\n' +\
