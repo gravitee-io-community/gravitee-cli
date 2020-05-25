@@ -13,7 +13,9 @@ from graviteeio_cli.graviteeio.output import OutputFormatType
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.pass_obj
 def ls(obj, output):
-
+    """
+    Display logged in user
+    """
     auth_list = obj['config'].getGraviteeioConfig(GraviteeioModule.APIM).display_auth_list()
 
     outputFormatType = OutputFormatType.value_of(output)
@@ -23,4 +25,4 @@ def ls(obj, output):
     if auth_list:
         outputFormatType.echo(auth_list, header = ["username", "type"])
     else:
-        click.echo("No authication")
+        click.echo("No authentiication.")
