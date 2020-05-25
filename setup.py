@@ -1,18 +1,17 @@
 """Packaging settings."""
 import os
 import sys
-
 from codecs import open
 from os.path import abspath, dirname, join
 from subprocess import call
 
 from setuptools import Command, find_packages, setup
+from setuptools.command.test import test as TestCommand
 
 from graviteeio_cli.__version__ import __version__
 
-
 this_dir = abspath(dirname(__file__))
-with open(join(this_dir, 'README.adoc'), encoding='utf-8') as file:
+with open(join(this_dir, 'README.md'), encoding='utf-8') as file:
     long_description = file.read()
 
 
@@ -32,17 +31,34 @@ class RunTests(Command):
         errno = call(['py.test', '--cov=skele', '--cov-report=term-missing'])
         raise SystemExit(errno)
 
+class PyTest(TestCommand):
+    user_options = [('pytest-args=', 'a', "Arguments to pass to pytest")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
+
 def get_install_requires():
     res = []
-    res.append('urllib3>=1.24.2,<1.25')
-    res.append('requests>=2.20.0')
-    res.append('boto3>=1.9.142')
-    res.append('requests_aws4auth>=0.9')
-    res.append('click>=6.7,<=7.0')
-    res.append('pyyaml==3.13')
-    res.append('voluptuous>=0.9.3')
-    res.append('certifi>=2019.6.16')
-    res.append('six>=1.11.0')
+    res.append('click>=7.0,<8.0')
+    res.append('configparser==3.8.1')
+    res.append('requests>=2.22.0')
+    res.append('click-completion>=0.5.2')
+    res.append('terminaltables>=3.1.0')
+    res.append('pyyaml>=5.1.2')
+    res.append('jinja2>=2.10.1')
+    res.append('dictdiffer>=0.8.0')
+    res.append('jmespath>=0.10.0')
+    res.append('asyncio==3.4.3')
+    res.append('pytimeparse==1.1.8')
+    res.append('termgraph==0.2.1')
+
     return res
 
 try:
@@ -91,21 +107,10 @@ try:
             'Programming Language :: Python :: 3.7'
         ],
         keywords = ["Graviteeio", "gio", "gravitee","configuration", "cli"],
-        packages = ["graviteeio_cli"],
+        # packages = ["graviteeio_cli"],
+        packages = find_packages(exclude=['docs', 'test','dist','build']),
         #packages = find_packages(exclude=['docs', 'tests*']),
-        install_requires = [
-            'click>=7.0,<8.0', 
-            'configparser==3.8.1', 
-            'requests>=2.22.0', 
-            'click-completion>=0.5.1', 
-            'terminaltables>=3.1.0', 
-            'pyyaml>=5.1.2', 
-            'jinja2>=2.10.1',
-            'dictdiffer>=0.8.0',
-            'jmespath>=0.9.4',
-            'asyncio==3.4.3',
-            'pytimeparse==1.1.8',
-            'termgraph==0.2.1'],
+        install_requires = get_install_requires(),
         extras_require = {
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
@@ -115,7 +120,6 @@ try:
                 'gio = graviteeio_cli.cli:main',
             ],
         },
-        cmdclass = {'test': RunTests},
         options = {'build_exe' : buildOptions},
         executables = [graviteeio_exe]
     )
@@ -145,21 +149,9 @@ except ImportError:
             'Programming Language :: Python :: 3.7'
         ],
         keywords = ["Graviteeio", "gio", "gravitee","configuration", "cli"],
-        packages = ["graviteeio_cli"],
-        #packages = find_packages(exclude=['docs', 'tests*']),
-        install_requires = [
-            'click>=7.0,<8.0', 
-            'configparser==3.8.1', 
-            'requests>=2.22.0', 
-            'click-completion>=0.5.1', 
-            'terminaltables>=3.1.0', 
-            'pyyaml>=5.1.2', 
-            'jinja2>=2.10.1',
-            'dictdiffer>=0.8.0',
-            'jmespath>=0.9.4',
-            'asyncio==3.4.3',
-            'pytimeparse==1.1.8',
-            'termgraph==0.2.1'],
+        # packages = ["graviteeio_cli"],
+        packages = find_packages(exclude=['docs', 'test','dist','build']),
+        install_requires = get_install_requires(),
         extras_require = {
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
@@ -168,5 +160,5 @@ except ImportError:
                 'gio = graviteeio_cli.cli:main',
             ],
         },
-        cmdclass = {'test': RunTests},
+        cmdclass = {'test': PyTest},
     )
