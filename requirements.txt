@@ -1,12 +1,12 @@
 click>=7.0,<8.0
 configparser==3.8.1
 requests>=2.22.0
-click-completion>=0.5.1
+click-completion>=0.5.2
 terminaltables>=3.1.0
 pyyaml==5.1.2
 jinja2>=2.10.1
 dictdiffer>=0.8.0
-jmespath>=0.9.4
+jmespath>=0.10.0
 asyncio==3.4.3
 pytimeparse==1.1.8
 termgraph==0.2.1
