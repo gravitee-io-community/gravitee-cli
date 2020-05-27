@@ -1,4 +1,4 @@
-from graviteeio_cli.graviteeio.utils import is_uri_valid
+from graviteeio_cli.graviteeio.extensions.click_paramtype import is_uri_valid
 
 def test_url_valid():
     url_1='https://gravitee.io/'

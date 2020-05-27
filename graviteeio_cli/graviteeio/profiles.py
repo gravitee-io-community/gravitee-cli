@@ -9,6 +9,7 @@ from .client.gio_resources import APIM_Client
 from .config import GraviteeioConfig
 from .output import OutputFormatType
 from .utils import is_uri_valid
+from .extensions.click_paramtype import URL
 
 
 @click.group()
@@ -31,7 +32,7 @@ def profiles():
 
 
 @click.command()
-@click.option('--url', help='graviteeio module url', required=True)
+@click.option('--url', help='graviteeio module url', type=URL, required=True)
 @click.option('--module', 
                         help='graviteeio module', required=True, 
                     type=click.Choice(GraviteeioModule.list_name(), case_sensitive=False))
@@ -43,9 +44,6 @@ def create(obj, profile_name, module, url, environment, organization):
     """This command create a new profile configuration according to module"""
 
     gio_config:GraviteeioConfig = obj['config']
-
-    if not is_uri_valid(url):
-        raise GraviteeioError('URL [%s] not valid.' % url)
 
     data = {
         "address_url": url
@@ -61,7 +59,7 @@ def create(obj, profile_name, module, url, environment, organization):
     click.echo("Data saved for profile [{}].".format(profile_name))
 
 @click.command()
-@click.option('--url', help='graviteeio module url')
+@click.option('--url', help='graviteeio module url', type=URL)
 @click.option('--environment', "--env", help='config graviteeio environment')
 @click.option('--organization', "--org",help='config graviteeio organization')
 @click.option('--module', 
@@ -78,13 +76,9 @@ def set_(obj, profile_name, module, url, environment, organization):
         data = {}
 
         if url:
-            if not is_uri_valid(url):
-                raise GraviteeioError('URL " %s " not valid' % url)
-            
             data["address_url"] = url
         if environment:
             data["env"] = environment
-        
         if organization:
             data["org"] = organization
 
