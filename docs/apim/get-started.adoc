@@ -14,7 +14,6 @@ These steps don't require you to have a API Management cluster. You will be able
 
 see the page link:../install_or_run.adoc[Install or run]
 
-
 == Profiles
 
 The CLI needs to know the gravitee API Management host. The default values are configured for the host `+https://demo.gravitee.io/+`.

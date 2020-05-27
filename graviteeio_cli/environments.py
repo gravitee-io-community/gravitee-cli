@@ -4,9 +4,8 @@ import enum
 def string_to_bool(value):
      return value.lower() in ("yes", "true", "t", "1")
 
-DEFAULT_USER="admin"
-DEFAULT_PASSWORD="admin"
-DEFAULT_ADDRESS_URL="https://demo.gravitee.io"
+DEFAULT_APIM_ADDRESS_URL="https://demo.gravitee.io"
+DEFAULT_AM_ADDRESS_URL="https://auth.gravitee.io"
 
 # GRAVITEEIO_RESOURCES_FOLDER="gio"
 APIM_ENV_FILE_NAME="apim_env.yml"

@@ -9,7 +9,8 @@ def logout(obj):
     """
     Logout
     """
-    config : GraviteeioConfig_apim = obj['config'].getGraviteeioConfig(GraviteeioModule.APIM)
+
+    config : GraviteeioConfig_apim = obj['config'].getGraviteeioConfig(obj['module'])
     auth = config.get_active_auth()
     auth_client = obj['auth_client']
     bearer = auth_client.logout()

@@ -1,11 +1,12 @@
 import click
 
+from graviteeio_cli.graviteeio.modules import GraviteeioModule
+
 from .. import environments
 from ..exeptions import GraviteeioError
-from .apim.auth.logout import logout
+from .auth.logout import logout
 from .client.gio_resources import APIM_Client
 from .config import GraviteeioConfig
-from .modules import GraviteeioModule
 from .output import OutputFormatType
 from .utils import is_uri_valid
 
@@ -171,6 +172,7 @@ def load(ctx, profile_name):
 
     if gio_config.config_module[GraviteeioModule.APIM] and gio_config.config_module[GraviteeioModule.APIM].is_logged_in():
         ctx.obj['auth_client'] = APIM_Client.AUTH.http(ctx.obj['config'])
+        ctx.obj['module'] = GraviteeioModule.APIM
         ctx.invoke(logout)
 
     gio_config.load(profile_name)
@@ -183,4 +185,3 @@ profiles.add_command(set_, name="set")
 profiles.add_command(load)
 profiles.add_command(create)
 profiles.add_command(remove)
-

@@ -1,9 +1,16 @@
 import click
 
+from graviteeio_cli.graviteeio.modules import GraviteeioModule
+
+from .auth.auth import auth
+
+
 @click.group()
-def am():
-    "Access Management action"
+@click.pass_context
+def am(ctx):
+    "Access Management commmands"
+    ctx.obj['module'] = GraviteeioModule.AM
     pass
 
 
-# am.add_command(config)
+am.add_command(auth)
