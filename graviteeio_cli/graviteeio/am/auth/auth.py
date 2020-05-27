@@ -1,7 +1,7 @@
 import click
 
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
-from graviteeio_cli.graviteeio.client.gio_resources import APIM_Client
+from graviteeio_cli.graviteeio.client.gio_resources import AM_Client
 
 from graviteeio_cli.graviteeio.auth.login import login
 from graviteeio_cli.graviteeio.auth.logout import logout
@@ -14,10 +14,9 @@ def auth(ctx):
     """
     authentication commands
     """
-    ctx.obj['auth_client'] = APIM_Client.AUTH.http(ctx.obj['config'])
+    ctx.obj['auth_client'] = AM_Client.AUTH.http(ctx.obj['config'])
 
 auth.add_command(login)
 auth.add_command(logout)
 auth.add_command(ls, "list")
-# auth.add_command(create)
-# auth.add_command(load)
+

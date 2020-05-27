@@ -16,7 +16,7 @@ def ls(obj, output):
     """
     Display logged in user
     """
-    auth_list = obj['config'].getGraviteeioConfig(GraviteeioModule.APIM).display_auth_list()
+    auth_list = obj['config'].getGraviteeioConfig(obj['module']).display_auth_list()
 
     outputFormatType = OutputFormatType.value_of(output)
 

@@ -239,7 +239,7 @@ class GraviteeioConfig_abstract:
         return  self.data["active_auth"] if "active_auth" in self.data else None
     
     def set_active_auth(self, username, type: Auth_Type, bearer):
-        self.save(active_auth = {"username": username, "bearer":bearer, "type": type.name.lower()})
+        self.save(active_auth = {"username": username, "bearer": bearer, "type": type.name.lower()})
     
     def remove_active_auth(self):
         self.save(active_auth = None)
@@ -277,7 +277,14 @@ class GraviteeioConfig_am(GraviteeioConfig_abstract):
         GraviteeioConfig_abstract.__init__(self,GraviteeioModule.AM, config_parser, proxies, graviteeioConfig)
 
     def getInitValues(self):
-        return {}
+        return {
+            "address_url": environments.DEFAULT_AM_ADDRESS_URL
+        }
+
+    def url(self, path):
+        org_and_env = "organizations/{}/environments/{}/".format(self.data["org"], self.data["env"]) if "env" in self.data and "org" in self.data else  ""
+        return self.data["address_url"] + path.format(org_and_env)
+
  
 class GraviteeioConfig_apim(GraviteeioConfig_abstract):
     def __init__(self, config_parser, proxies, graviteeioConfig: GraviteeioConfig):
@@ -285,7 +292,7 @@ class GraviteeioConfig_apim(GraviteeioConfig_abstract):
 
     def getInitValues(self):
         return {
-            "address_url": environments.DEFAULT_ADDRESS_URL
+            "address_url": environments.DEFAULT_APIM_ADDRESS_URL
         }
 
     def display_profile(self):
