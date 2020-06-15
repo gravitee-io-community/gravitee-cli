@@ -8,7 +8,7 @@ from graviteeio_cli.graviteeio.client.gio_resources import APIM_Client
 from .plugins import COMMANDS
 import pkgutil
 
-add_command = ["list", "init", "start", "stop", "deploy", "status", "health", "fetch", "definition", "spec", "get"]
+add_command = ["list", "start", "stop", "deploy", "status", "health", "fetch", "definition", "spec", "get"]
 
 class PluginCommand(click.MultiCommand):
 
