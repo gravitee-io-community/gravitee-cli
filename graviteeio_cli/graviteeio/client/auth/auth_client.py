@@ -11,4 +11,4 @@ class AuthClient:
         return response[token_name]
 
     def logout(self, path):
-        self.httpClient.post(path)
+        self.httpClient.post(path, allow_redirects=False)

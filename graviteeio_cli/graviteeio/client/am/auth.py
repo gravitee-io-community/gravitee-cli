@@ -10,4 +10,4 @@ class AuthAmClient(AuthClient):
         return AuthClient.login(self, "token", "access_token", (username, password))
 
     def logout(self):
-        pass
+        AuthClient.logout(self,"logout")
