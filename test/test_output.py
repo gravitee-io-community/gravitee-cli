@@ -29,6 +29,13 @@ def test_output_list_table_without_header_and_line_header(capsys):
 
     assert captured.out == " demo   \n qualif \n prod   \n"
 
+def test_output_int_table(capsys):
+    data = 2
+    OutputFormatType.TABLE.echo(data)
+    captured = capsys.readouterr()
+
+    assert captured.out == "     \n-----\n 2   \n"
+
 def test_output_dict_tsv(capsys):
     data = {"param1": "value1","param2": "value2"}
     OutputFormatType.TSV.echo(data, header = ["Header1","Header2"])
