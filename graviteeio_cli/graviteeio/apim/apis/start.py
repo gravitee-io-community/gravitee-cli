@@ -10,7 +10,7 @@ from ....exeptions import GraviteeioError
               required=True)
 @click.pass_obj
 def start(obj, api_id):
-    """Starts an API"""
+    """Starts an API."""
     api_client : ApiClient = obj['api_client']
     try:
         response = api_client.start(api_id)

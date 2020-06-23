@@ -30,7 +30,7 @@ colors = {"1xx":"white","2xx":"green","3xx":"white","4xx":"yellow","5xx":"red"}
 @click.pass_obj
 def status(obj, output, query, time_frame, api_id):
     """
-Displays status of API
+Displays status of API.
 
 \b
 Status Field:

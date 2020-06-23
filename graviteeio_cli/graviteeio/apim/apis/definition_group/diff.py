@@ -12,7 +12,7 @@ from ..utils import display_dict_differ, filter_api_values
 from .api_schema import ApiSchema
 
 
-@click.command()
+@click.command(short_help="Compare local and remote api definition.")
 @click.option('--api', 'api_id',
               help='API id',
               required=True)
@@ -27,7 +27,7 @@ from .api_schema import ApiSchema
 @click.pass_obj
 def diff(obj, api_id, file, set, diff, config_path):
     """
-    Compare the api definition generated with api on the server
+    This commande compare the api definition developed on local machine with api configured on the remote server.
     """
     api_client : ApiClient = obj['api_client']
 

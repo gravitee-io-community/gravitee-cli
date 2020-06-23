@@ -11,7 +11,7 @@ from ....exeptions import GraviteeioError
               required=True)
 @click.pass_obj
 def stop(obj, api_id):
-    """Stops an API"""
+    """Stops an API."""
     api_client : ApiClient = obj['api_client']
     try:
         api_client.stop(api_id)

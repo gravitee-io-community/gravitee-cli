@@ -8,7 +8,7 @@ from graviteeio_cli.graviteeio.output import OutputFormatType
 
 from .utils import filter_api_values
 
-logger = logging.getLogger("command-get")
+logger = logging.getLogger("command-apim-get")
 
 @click.command()
 @click.option('--output', '-o', 
@@ -21,7 +21,7 @@ logger = logging.getLogger("command-get")
 @click.pass_obj
 def get(obj, output, api_id):
     """
-    get api configuration
+    Get api configuration.
     """
     api_client: ApiClient = obj['api_client']
 

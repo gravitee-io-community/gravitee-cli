@@ -7,7 +7,7 @@ from graviteeio_cli.graviteeio.config import GraviteeioConfig_apim
 @click.pass_obj
 def logout(obj):
     """
-    Logout
+    Logout.
     """
 
     config : GraviteeioConfig_apim = obj['config'].getGraviteeioConfig(obj['module'])

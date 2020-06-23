@@ -1,10 +1,12 @@
 import click
+import logging
 
 from graviteeio_cli.exeptions import GraviteeioError
 from graviteeio_cli.graviteeio.auth.logout import logout
 from graviteeio_cli.graviteeio.config import Auth_Type, GraviteeioConfig_apim
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
 
+logger = logging.getLogger("command-auth-login")
 
 # def get_username(ctx, param, value):
 #     if not value:
@@ -31,13 +33,13 @@ def get_password(ctx, param, value):
     return value
 
 
-@click.command()
+@click.command(short_help="sign in with username/password")
 @click.option('--username', help="username for login", callback=get_username)
 @click.option('--password', help="password for login", callback=get_password)
 @click.pass_context
 def login(ctx, username, password):
     """
-    sign in
+    Sign in with username/password
     """
     config : GraviteeioConfig_apim = ctx.obj['config'].getGraviteeioConfig(ctx.obj['module'])
     auth = config.get_active_auth()
@@ -59,10 +61,14 @@ def login(ctx, username, password):
 
     bearer = auth_client.login(username, password)
 
-    if config.is_logged_in():
-        ctx.invoke(logout)
+    try:
+        if config.is_logged_in():
+            ctx.invoke(logout)
+    except:
+        logger.exception("invoke logout")
     
     config.set_active_auth(username, Auth_Type.CREDENTIAL, bearer)
 
     click.echo("You are now logged in as [{}].".format(username))
     click.echo("Your current profile is {}".format(ctx.obj['config'].profile))
+    

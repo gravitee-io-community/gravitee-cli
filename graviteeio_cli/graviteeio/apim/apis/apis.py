@@ -44,7 +44,7 @@ class PluginCommand(click.MultiCommand):
 @click.pass_context
 def apis(ctx):
     """
-    apis commands
+    This group includes commands regarding apis.
     """
     ctx.obj['api_client'] = APIM_Client.API.http(ctx.obj['config'])
     # ctx.obj['api_client'] = GioClient.APIM(config=ctx.obj['config'].getGraviteeioConfig(GraviteeioModule.APIM), http_client_type = APIM_client_type.API)

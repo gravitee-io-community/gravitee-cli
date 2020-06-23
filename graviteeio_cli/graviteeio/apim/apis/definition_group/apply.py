@@ -14,12 +14,12 @@ from ..utils import display_dict_differ, filter_api_values
 from .api_schema import ApiSchema
 
 
-@click.command()
+@click.command(short_help="Update API definition.")
 @click.option('--api', 'api_id',
               help='API id',
               required=True)
 @click.option('--file', '-f', type=click.Path(exists=True), required=False,
-              help="Path of value file. By default `apim_values` is loaded in the current directory either with the extension `.json`or `.yaml` or `.yml` depending on the format of the data.")
+              help="Path of value file. By default `apim_values` is loaded in the current directory either with the extension `.json` or `.yaml` or `.yml` depending on the format of the data.")
 @click.option('--set', '-s', multiple=True,
               help="Overload the value(s) of value file eg: `--set proxy.groups[0].name=mynewtest`")
 @click.option('--debug', '-d', is_flag=True,
@@ -31,9 +31,9 @@ from .api_schema import ApiSchema
 @click.pass_context
 def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
     """
-    Allow to update an API definition. 
-    the API definition is managed with the template engine.
-    API values are defined in plain YAML or JSON files.
+    This command allow to update an API definition.
+    The API definition is managed with the template engine.
+    API propetries are defined in plain YAML or JSON files.
     """
     api_client : ApiClient = ctx.obj['api_client']
 

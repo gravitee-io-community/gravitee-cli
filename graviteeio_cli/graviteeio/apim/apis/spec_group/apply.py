@@ -4,7 +4,7 @@ from graviteeio_cli.exeptions import GraviteeioError
 from graviteeio_cli.graviteeio.client.apim.api import ApiClient
 
 
-@click.command()
+@click.command(short_help="Create/Update an API from spec.")
 @click.option('--api', 'api_id',
               help='API id',
               required=False)

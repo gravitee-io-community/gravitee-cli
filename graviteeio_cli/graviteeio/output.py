@@ -29,8 +29,11 @@ class DataAdapter:
             data.extend(list(map(lambda c: [c], obj)))
         elif obj and type(obj) is list and type(obj[0]) is dict:
             data.extend(map(lambda api: api.values(), obj))
-        else:
+        elif type(obj) is object or type(obj) is list:
             data.extend(obj)
+        else:
+            data.append([obj])
+
 
         return data
 
@@ -198,8 +201,8 @@ class OutputFormatType(enum.Enum):
 
     @staticmethod
     def list_name():
-        formatType = list (map (lambda c: c.name, OutputFormatType))
-        formatType.remove("HBAR")
+        formatType = list (map (lambda c: c.name.lower(), OutputFormatType))
+        formatType.remove("hbar")
         return formatType
 
     @staticmethod

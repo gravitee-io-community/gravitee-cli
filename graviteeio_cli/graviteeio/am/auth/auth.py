@@ -12,7 +12,7 @@ from graviteeio_cli.graviteeio.auth.ls import ls
 @click.pass_context
 def auth(ctx):
     """
-    authentication commands
+    This group includes the commands regarding authentication.
     """
     ctx.obj['auth_client'] = AM_Client.AUTH.http(ctx.obj['config'])
 

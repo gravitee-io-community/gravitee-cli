@@ -11,7 +11,7 @@ from graviteeio_cli.graviteeio.output import OutputFormatType
 from ....exeptions import GraviteeioError
 
 
-@click.command()
+@click.command(short_help="api health")
 @click.option('--api', 'api_id',
               help='API id',
               required=True)
@@ -26,8 +26,8 @@ from ....exeptions import GraviteeioError
 #               default="5m",
 #               help="timeframe between now and the vale. Default: `5m`. m -> minute, h -> hour, d -> days")
 @click.pass_obj
-def health(obj, output, query, api_id , time_frame):
-    """API health: return the lastest availability minute, hour, day, week, month"""
+def health(obj, output, query, api_id):
+    """API health: return the lastest availability: minute, hour, day, week, month"""
     api_client : ApiClient = obj['api_client']
 
     health_values = None
