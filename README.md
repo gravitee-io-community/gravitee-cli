@@ -23,7 +23,7 @@ Install cli using `pip`.
 Use pip to install the latest stable version:
 
 ```console
-$ pip3 install graviteeio-cli
+$ pip install graviteeio-cli
 ```
 
 ## Usage
