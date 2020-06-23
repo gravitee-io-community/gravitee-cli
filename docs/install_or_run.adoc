@@ -8,15 +8,15 @@ Install cli using `pip`.
 
 Use pip to install the latest stable version:
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
+
+[source,shell]
 ----
-$ pip3 install graviteeio-cli
+$ pip install graviteeio-cli
 ----
 
 Check that the cli's installed by running:
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
+
+[source,shell]
 ----
 $ gio --version
 ----
@@ -24,23 +24,21 @@ $ gio --version
 == Update - Python
 
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
+[source,shell]
 ----
-$ pip3 install --upgrade graviteeio-cli
+$ pip install --upgrade graviteeio-cli
 ----
 
 ## Run - Docker
 
 Install cli via using `docker run`.
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
+[source,shell]
 ----
-$ docker run -it -v $(pwd):/graviteeio/config graviteeio/cli
+$ docker run --rm -it -v $(pwd):/graviteeio/config graviteeio/cli
 ----
 
-it is recommended to mount volume on host machine `-v` to keep the configuration data.
+It is recommended to mount volume on host machine `-v` to keep the configuration data.
 
 For macOS or linux, you can create an `alias` to run the command with docker
 ----
