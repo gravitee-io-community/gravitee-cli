@@ -1,0 +1,22 @@
+= gio profiles list
+
+Display profiles.
+
+[source,shell]
+----
+$ gio profiles list [OPTIONS]
+----
+
+This command display profile(s) available
+
+== Options
+
+[cols="2a*"]
+
+|===
+
+2+| *-o, --output [table\|json\|yaml\|tsv]*
+
+|Description | Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`.  [default: table]
+
+|===

@@ -1,0 +1,10 @@
+= gio am auth logout
+
+Logout.
+
+[source,shell]
+----
+$ gio am auth logout [OPTIONS]
+----
+
+Logout.

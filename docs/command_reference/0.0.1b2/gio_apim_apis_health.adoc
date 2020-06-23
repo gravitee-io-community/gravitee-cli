@@ -1,0 +1,30 @@
+= gio apim apis health
+
+api health
+
+[source,shell]
+----
+$ gio apim apis health [OPTIONS]
+----
+
+API health: return the lastest availability: minute, hour, day, week, month
+
+== Options
+
+[cols="2a*"]
+
+|===
+
+2+| *--api TEXT*
+
+|Description | API id  [required]
+
+2+| *-o, --output [table\|json\|yaml\|tsv]*
+
+|Description | Set the format for printing command output resources.  [default: table]
+
+2+| *-q, --query TEXT*
+
+|Description | Execute JMESPath query. Default: `[].{Time: time, Percent: percent}` eg: filtered on 5xx status `[?status==`5xx`].{Status: status, Hits: hits, Percent: percent}`
+
+|===

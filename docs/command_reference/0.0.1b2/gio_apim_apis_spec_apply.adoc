@@ -1,0 +1,38 @@
+= gio apim apis spec apply
+
+Create/Update an API from spec.
+
+[source,shell]
+----
+$ gio apim apis spec apply [OPTIONS]
+----
+
+Allow to create/update an API from spec API like Swagger or OpenApiSpec (OAS)
+
+== Options
+
+[cols="2a*"]
+
+|===
+
+2+| *--api TEXT*
+
+|Description | API id
+
+2+| *-f, --file PATH*
+
+|Description | Spec file
+
+2+| *-s, --set TEXT*
+
+|Description | Overload the value(s) of value file eg: `--set proxy.groups[0].name=mynewtest`
+
+2+| *-d, --debug*
+
+|Description | Do not perform any changes. Show the datas genereted
+
+2+| *--config-path PATH*
+
+|Description | Config folder
+
+|===

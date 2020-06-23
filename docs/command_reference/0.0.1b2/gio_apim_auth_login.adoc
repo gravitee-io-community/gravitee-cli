@@ -1,0 +1,26 @@
+= gio apim auth login
+
+sign in with username/password
+
+[source,shell]
+----
+$ gio apim auth login [OPTIONS]
+----
+
+Sign in with username/password
+
+== Options
+
+[cols="2a*"]
+
+|===
+
+2+| *--username TEXT*
+
+|Description | username for login
+
+2+| *--password TEXT*
+
+|Description | password for login
+
+|===
