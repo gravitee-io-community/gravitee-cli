@@ -20,8 +20,7 @@ The CLI needs to know the gravitee API Management host. The default values are c
 
 You can consult profiles list with the command:
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
+[source,shell]
 ----
 gio profiles list
 ----
@@ -39,8 +38,7 @@ The profile `demo` contain configuration for all module (apim and am)
 
 Let's check the current configuration for the profile `demo`
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
+[source,shell]
 ----
 gio profiles get demo
 ----
@@ -77,8 +75,8 @@ Options:
 == Create and deploy your first api
 
 First step, you need to login in on the api management plateform
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
+
+[source,shell]
 ----
 gio apim auth login
 ----
@@ -86,8 +84,8 @@ gio apim auth login
 Now, we are going to generate our templates and the values for our api definition.
 Api definition are managed with the template engine and API values are defined in YAML or JSON file
 
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
+
+[source,shell]
 ----
 gio apim apis definition generate
 ----
@@ -114,7 +112,7 @@ Edit the `apim_value.yml` file and personalize the fields `name` and `context_pa
 
 Now let's start to create and deploy your api
 [.console-input]
-[source,bash,subs="+macros,+attributes"]
+[source,shell]
 ----
 gio apim apis definition create --with-start
 ----
@@ -129,8 +127,8 @@ API [????]. is deployed.
 The `????` is the id of your api created.
 
 If you use the command:
-[.console-input]
-[source,bash,subs="+macros,+attributes"]
+
+[source,shell]
 ----
 gio apim apis list
 ----
