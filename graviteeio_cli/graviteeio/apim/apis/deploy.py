@@ -11,7 +11,7 @@ from ....exeptions import GraviteeioError
               required=True)
 @click.pass_obj
 def deploy(obj, api_id):
-    """Deploys API configuration"""
+    """Deploys API configuration."""
     api_client: ApiClient = obj['api_client']
     try:
         response = api_client.deploy(api_id)

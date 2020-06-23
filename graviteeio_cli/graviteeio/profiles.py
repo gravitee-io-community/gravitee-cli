@@ -31,17 +31,17 @@ def profiles():
     pass
 
 
-@click.command()
+@click.command(short_help="Create profile.")
 @click.option('--url', help='graviteeio module url', type=URL, required=True)
 @click.option('--module', 
                         help='graviteeio module', required=True, 
                     type=click.Choice(GraviteeioModule.list_name(), case_sensitive=False))
 @click.option('--environment', "--env", help='config graviteeio environment')
 @click.option('--organization', "--org",help='config graviteeio organization')
-@click.argument('profile_name', required=True)
+@click.argument('profile', required=True)
 @click.pass_obj
 def create(obj, profile_name, module, url, environment, organization):
-    """This command create a new profile configuration according to module"""
+    """This command create a new profile configuration according to module."""
 
     gio_config:GraviteeioConfig = obj['config']
 
@@ -58,7 +58,7 @@ def create(obj, profile_name, module, url, environment, organization):
 
     click.echo("Data saved for profile [{}].".format(profile_name))
 
-@click.command()
+@click.command(short_help="Write configuration values.")
 @click.option('--url', help='graviteeio module url', type=URL)
 @click.option('--environment', "--env", help='config graviteeio environment')
 @click.option('--organization', "--org",help='config graviteeio organization')
@@ -68,7 +68,7 @@ def create(obj, profile_name, module, url, environment, organization):
 @click.argument('profile_name', required=True)
 @click.pass_obj
 def set_(obj, profile_name, module, url, environment, organization):
-    """This command writes configuration values according to profile and module"""
+    """This command modify one or many configuration values for a module in profile"""
 
     gio_config:GraviteeioConfig = obj['config']
 
@@ -86,7 +86,7 @@ def set_(obj, profile_name, module, url, environment, organization):
         click.echo("Profile data saved")
 
 
-@click.command()
+@click.command(short_help="Display profiles.")
 @click.option('--output', '-o',  
               default="table",
               help='Set the format for printing command output resources. The supported formats are: `table`, `json`, `yaml`, `tsv`.',
@@ -95,7 +95,7 @@ def set_(obj, profile_name, module, url, environment, organization):
 @click.pass_obj
 def ls(obj, output):
     """
-    Display profile list
+    This command display profile(s) available
     """
     gio_config:GraviteeioConfig = obj['config']
 
@@ -110,8 +110,8 @@ def ls(obj, output):
     OutputFormatType.value_of(output).echo(new_profiles, header = ["Profiles"])
 
 
-@click.command()
-@click.argument('profile', required=True, metavar='[PROFILE]')
+@click.command(short_help="Profile detail.")
+@click.argument('profile', required=True)
 @click.option('--output', '-o',  
               default="table",
               help='Output format.', show_default=True,
@@ -119,7 +119,7 @@ def ls(obj, output):
 @click.pass_obj
 def get(obj, profile, output):
     """
-    Display configuration for the filled profile
+    Display configuration registered for a profile.
     """
     # gio_config = obj['config']
     gio_config =  GraviteeioConfig(obj['path-config'])
@@ -143,23 +143,23 @@ def get(obj, profile, output):
     else:
         output.echo(to_display)
 
-@click.command()
+@click.command(short_help="Remove profile.")
 @click.argument('profile_name', required=True)
 @click.pass_obj
 def remove(obj, profile_name):
-    """remove profile"""
+    """Remove profile and all configurations."""
 
     gio_config:GraviteeioConfig = obj['config']
     gio_config.remove(profile = profile_name)
 
     click.echo("Profile [%s] removed." % profile_name)
 
-@click.command()
+@click.command(short_help="Load profile.")
 @click.argument('profile_name', required=True)
 @click.pass_context
 def load(ctx, profile_name):
     """
-    Load current profile
+    This command switches of profile. The configuration of the profile is loaded for the execution of command.
     """
     gio_config:GraviteeioConfig = ctx.obj['config']
     old_profile = gio_config.profile

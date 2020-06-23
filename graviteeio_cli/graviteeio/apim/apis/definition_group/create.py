@@ -3,7 +3,7 @@ import click
 from .apply import apply
 
 
-@click.command()
+@click.command(short_help="Create API definition.")
 @click.option('--file', '-f', type=click.Path(exists=True), required=False,
               help="Path of value file. By default `apim_values` is loaded in the current directory either with the extension `.json`or `.yaml` or `.yml` depending on the format of the data.")
 @click.option('--set', '-s', multiple=True,
@@ -16,5 +16,7 @@ from .apply import apply
               help="Deploy and start api after creation")
 @click.pass_context
 def create(ctx, file, set, debug, config_path, with_start):
-    """This command allow to create api"""
+    """
+    This command allow to create api definition.
+    """
     ctx.invoke(apply, api_id=None, file=file, set=set, debug=debug, config_path=config_path, with_deploy=with_start)

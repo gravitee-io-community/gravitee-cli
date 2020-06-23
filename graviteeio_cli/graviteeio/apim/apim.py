@@ -7,7 +7,7 @@ from graviteeio_cli.graviteeio.modules import GraviteeioModule
 @click.group(invoke_without_command=False)
 @click.pass_context
 def apim(ctx):
-    "Api Management commands"
+    "This group includes all commands regarding Api Management tool."
     ctx.obj['module'] = GraviteeioModule.APIM
     pass
 

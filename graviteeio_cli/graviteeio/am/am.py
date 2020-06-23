@@ -8,7 +8,7 @@ from .auth.auth import auth
 @click.group()
 @click.pass_context
 def am(ctx):
-    "Access Management commmands"
+    "This group includes all commands regarding Access Management tool."
     ctx.obj['module'] = GraviteeioModule.AM
     pass
 

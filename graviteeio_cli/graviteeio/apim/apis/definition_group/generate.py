@@ -8,9 +8,9 @@ from graviteeio_cli.graviteeio.client.apim.api import ApiClient
 from ..utils import filter_api_values
 from .api_schema import ApiSchema, Data_Template_Format
 
-logger = logging.getLogger("command-generate")
+logger = logging.getLogger("command-apim-def-generate")
 
-@click.command()
+@click.command(short_help="Generate api definition.")
 @click.option('--config-path', type=click.Path(exists=False), required=False, default="./",
               help="Configuration folder")
 @click.option('--format', 

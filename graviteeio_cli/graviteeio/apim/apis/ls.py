@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import time
+from datetime import datetime, timedelta
 
 import click
 import jmespath
@@ -12,47 +13,23 @@ from graviteeio_cli.graviteeio.output import OutputFormatType
 
 from ....exeptions import GraviteeioError
 
-logger = logging.getLogger("command-ps")
+logger = logging.getLogger("command-apim-list")
 
-@click.command()
+@click.command(short_help="Displays API list.")
 #@click.option('--deploy-state', help='show if API configuration is synchronized', is_flag=True)
 @click.option('--output', '-o', 
               default="table",
               help='Set the format for printing command output resources.', show_default=True,
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.option('-q','--query',
-               help='Execute JMESPath query. Some function styles are available for the output format `table. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state`' )
+               help='Execute JMESPath query. Some function styles are available for the output format `table`. `style_synchronized()` for value `is_synchronized`, `style_state()` for value `state`, `style_workflow_state()` for value `workflow_state`. This function allows to add color according to the value.',
+               default="[]")
 @click.pass_obj
 def ls(obj, output, query):
     """
-Displays the list of API
+This command lists all API available on Api management platform.
 
-\b
-API Field:
-
-- `id`: string 
-- `name`: string
-- `version`: string
-- `description`: string
-- `visibility`: enum `public`, `private``
-- `state`: enum `initialized`, `stopped`, `started`, `closed`
-- `labels`: string array
-- `manageable`: boolean
-- `numberOfRatings`: num
-- `tags` :string array
-- `created_at`: unix time
-- `updated_at:` unix time
-- `owner`:
-    - `id`: string
-    - `displayName`: string
-- `picture_url`: string url
-- `virtual_hosts`: array
-    - `host`: string
-    - `path`: string
-    - `overrideEntrypoint`: boolean
-- `lifecycle_state`: enum `created`, `published`, `unpublished`, `deprecated`, `archived`
-- `workflow_state`: enum `draft`, ìn_review`, `request_for_changes`, `review_ok`
-- `is_synchronized`: boolean
+Default query with output `table`: `[].{Id: id, Name: name, Tags: style_tags(tags), Synchronized: style_synchronized(is_synchronized), Status: style_state(state), Workflow: style_workflow_state(workflow_state)}`
     """
 
     async def get_apis():
@@ -77,11 +54,11 @@ API Field:
         click.echo("No Api(s) found ")
     
     outputFormatType = OutputFormatType.value_of(output)
-    if not query:
+    if query == "[]":
         if outputFormatType.TABLE == outputFormatType:
             query="[].{Id: id, Name: name, Tags: style_tags(tags), Synchronized: style_synchronized(is_synchronized), Status: style_state(state), Workflow: style_workflow_state(workflow_state)}"
-        else:
-            query="[].{Id: id, Name: name, Tags: tags, Synchronized: is_synchronized, Status: state, Workflow: workflow_state}"
+        # else:
+        #     query="[].{Id: id, Name: name, Tags: tags, Synchronized: is_synchronized, Status: state, Workflow: workflow_state}"
         
     class CustomFunctions(functions.Functions):
     #options= jmespath.Options()
@@ -113,20 +90,31 @@ API Field:
             else:
                 return click.style("X", fg='yellow')
 
+        @functions.signature({'types': ['number']}, {'types': ['string'], })
+        def _func_datetime(self, timestamp, str_format = ""):
+            t = datetime.fromtimestamp(timestamp / 1000)
+            if not str_format or len(str_format) == 0:
+                return t.isoformat()
+            else:
+                return t.strftime(str_format)
+
     try:
         apis_filtered = jmespath.search(query, apis, jmespath.Options(custom_functions=CustomFunctions()))
         header = None
         
         logging.debug("apis_filtered: {}".format(apis_filtered))
+        if not apis_filtered:
+            click.echo("No result")
+            return
         
-        if len(apis_filtered) > 0 and type(apis_filtered) is list and type(apis_filtered[0]) is dict:
+        if type(apis_filtered) is list and type(apis_filtered[0]) is dict and len(apis_filtered) > 0:
             header = apis_filtered[0].keys()
+        
         
         logging.debug("apis_filtered header: {}".format(header))
 
-        
         justify_columns = {}
-        if output == 'table' and header:
+        if output == 'table' and not header is None:
             # TODO: Dynamic table style
             for x in range(2, len(header)):
                 justify_columns[x] = 'center'
@@ -140,4 +128,4 @@ API Field:
         raise GraviteeioError(str(jmespatherr))
     except Exception:
         logging.exception("LIST Exception")
-        raise GraviteeioError("apis filtered {} and the format {}".format(apis_filtered, format))
+        raise GraviteeioError("apis filtered {} and the query {}".format(apis_filtered, query))

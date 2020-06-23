@@ -14,12 +14,13 @@ from graviteeio_cli.graviteeio.modules import GraviteeioModule
 # Enable shell completion.
 click_completion.init()
 
+# \nEnv: GRAVITEEIO_CONF_FILE'
 @click.option(
-    '--config', help='Path for configuration file.\nEnv: GRAVITEEIO_CONF_FILE',
-    type=click.Path(), default=GRAVITEEIO_CONF_FILE
+    '--config', help='Path for configuration file.',
+    type=click.Path(), default=GRAVITEEIO_CONF_FILE, show_default=True
 )
-@click.option('--log', help='displays detailed information', is_flag=True)
-@click.option('--log-level', help='displays detailed information', default= logging._levelToName[logging.INFO],
+@click.option('--log', help='Display detailed information.', is_flag=True)
+@click.option('--log-level', help='Display detailed information.', default= logging._levelToName[logging.INFO],
 type=click.Choice(['CRITICAL','ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET'], case_sensitive=False))
 #@click.option('--username', help='HTTP Basic Authentication username', type=str)
 #@click.option('--password', help='HTTP Basic Authentication password', type=str)
@@ -38,7 +39,7 @@ def main(ctx, config, log, log_level):
         logging.basicConfig(format='%(name)s-%(levelname)s: %(message)s', level=log_level)
         ctx.obj['config'] = GraviteeioConfig(config)
         ctx.obj['path-config'] = config
-        
+
 
 main.add_command(apim)
 main.add_command(am)

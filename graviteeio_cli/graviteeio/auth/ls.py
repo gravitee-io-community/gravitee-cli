@@ -6,7 +6,7 @@ from graviteeio_cli.graviteeio.modules import GraviteeioModule
 from graviteeio_cli.graviteeio.output import OutputFormatType
 
 
-@click.command()
+@click.command(short_help="Display account authenticated")
 @click.option('--output', '-o', 
               default="table", show_default=True,
               help='Set the format for printing command output resources.',
@@ -14,7 +14,7 @@ from graviteeio_cli.graviteeio.output import OutputFormatType
 @click.pass_obj
 def ls(obj, output):
     """
-    Display logged in user
+    This command display the account autenticated.
     """
     auth_list = obj['config'].getGraviteeioConfig(obj['module']).display_auth_list()
 
@@ -23,6 +23,6 @@ def ls(obj, output):
     header = None
 
     if auth_list:
-        outputFormatType.echo(auth_list, header = ["username", "type"])
+        outputFormatType.echo(auth_list, header = ["Name", "Type"])
     else:
         click.echo("No authentiication.")
