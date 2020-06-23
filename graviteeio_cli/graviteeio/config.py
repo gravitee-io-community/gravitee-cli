@@ -12,6 +12,7 @@ from .utils import is_uri_valid
 
 class Auth_Type(enum.IntEnum):
     CREDENTIAL = 0,
+    PERSONAL_ACCESS_TOKEN = 1
     # OIDC = 1,
     # TOKEN_EXCHANGE = 2
 
@@ -222,8 +223,9 @@ class GraviteeioConfig_abstract:
         #             "type": auth["type"],
         #             "is_active": "active" if auth["is_active"] else ""
         #         })
-        if self.is_logged_in():
-            auth = self.get_active_auth()
+        # if self.is_logged_in():
+        auth = self.get_active_auth()
+        if auth:
             to_return.append({
                     "username": auth["username"],
                     "type": auth["type"],
@@ -233,7 +235,7 @@ class GraviteeioConfig_abstract:
         return to_return
     
     def is_logged_in(self):
-        return "active_auth" in self.data and self.data["active_auth"] and "bearer" in self.data["active_auth"] and self.data["active_auth"]["bearer"]
+        return "active_auth" in self.data and self.data["active_auth"] and "bearer" in self.data["active_auth"] and self.data["active_auth"]["bearer"] and self.data["active_auth"]["type"] == Auth_Type.CREDENTIAL.name.lower()
 
     def get_active_auth(self):
         return  self.data["active_auth"] if "active_auth" in self.data else None
@@ -245,10 +247,10 @@ class GraviteeioConfig_abstract:
         self.save(active_auth = None)
 
     def get_bearer(self):
-        return self.data["active_auth"]["bearer"] if self.is_logged_in() else None
+        return self.data["active_auth"]["bearer"] if "bearer" in self.data["active_auth"] else None
 
     def get_bearer_header(self):
-        return {"Authorization": "Bearer {}".format(self.get_bearer())} if self.is_logged_in() else None
+        return {"Authorization": "Bearer {}".format(self.get_bearer())} if self.get_bearer() else None
     
     # def load_auth(self, username):
     #     bearer_old = self.get_bearer()
