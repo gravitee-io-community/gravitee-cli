@@ -237,6 +237,9 @@ class GraviteeioConfig_abstract:
     def is_logged_in(self):
         return "active_auth" in self.data and self.data["active_auth"] and "bearer" in self.data["active_auth"] and self.data["active_auth"]["bearer"] and self.data["active_auth"]["type"] == Auth_Type.CREDENTIAL.name.lower()
 
+    def is_active_bearer(self):
+        return "active_auth" in self.data and self.data["active_auth"] and "bearer" in self.data["active_auth"] and self.data["active_auth"]["bearer"]
+
     def get_active_auth(self):
         return  self.data["active_auth"] if "active_auth" in self.data else None
     
@@ -247,7 +250,7 @@ class GraviteeioConfig_abstract:
         self.save(active_auth = None)
 
     def get_bearer(self):
-        return self.data["active_auth"]["bearer"] if "bearer" in self.data["active_auth"] else None
+        return self.data["active_auth"]["bearer"] if self.is_active_bearer() else None
 
     def get_bearer_header(self):
         return {"Authorization": "Bearer {}".format(self.get_bearer())} if self.get_bearer() else None
