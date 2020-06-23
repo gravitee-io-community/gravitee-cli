@@ -1,0 +1,284 @@
+= Filtering list
+
+Graviteeio CLI uses the `--query` option to filter the lists powered by https://jmespath.org/[JMESPath Query]. JMESPath is a query language for JSON that will alow  you to select and modifiy output data from CLI.
+
+Even though you select an output data other than JSON, the result will be nevertheless modified because the native format result is JSON format.
+
+== Filter
+
+Thanks to JMESHPath, we can filter and modify the result.
+
+Filering is done with [? expression]. expression is composed of JSON element selected on a comparison to another expression. JMESHPath support the operators `<``, `<=``, `>`, `>=`, `==,` and `!=` and also logical conjunction and (`&&`), or (`||`) and not (`!``). More information https://jmespath.org/specification.html#filterexpressions[JMESHPath specification].
+
+*Filter apis list and display the apis synchronized*
+
+[.console-input]
+[source,shell]
+----
+$ gio apim apis list --query="[?is_synchronized]" -o json
+----
+
+*Display apis list with state `started`*
+[.console-input]
+[source,shell]
+----
+$ gio apim apis list --query="[?state == 'started'].{Id: id, Name: name, Tags: style_tags(tags), Synchronized: style_synchronized(is_synchronized), Status: style_state(state), Workflow: style_workflow_state(workflow_state)}"
+----
+
+
+== Select and rename the properties of apis list.
+
+[.console-input]
+[source,shell]
+----
+$ gio apim apis list --query="[].{Name: name, Owner: owner.displayName} -o json"
+----
+
+When the ouput format `--output table`, the column name match with properties of apis.
+If you use multiselect list, the keys of hash will be display in header.
+
+[.console-input]
+[source,shell]
+----
+$ gio apim apis list --query="[].{Name: name, Owner: owner.displayName} -o table"
+----
+
+----
+ Name              Owner 
+-------------------------
+ api cli           admin 
+ Swagger.Petstore  admin 
+----
+
+
+
+== Functions
+
+JMESPath includes some Functional Expressions. Built-in Functions for the string type include contains, ends_with, join, length, reverse, sort, sort_by, and starts_with. More information
+https://jmespath.org/specification.html#functions [JMESHPath specification]
+
+
+*sort_by*
+
+[.console-input]
+[source,shell]
+----
+$ gio apim apis list --query="sort_by(@,&updated_at)[*].{Id: id, Name: name, Update_data: updated_at}"
+----
+
+
+*contains*
+
+[.console-input]
+[source,shell]
+----
+$ gio apim apis list --query="[?contains(name,'Pet')].{Id: id, Name: name}"
+----
+
+== Graviteeio CLI Function
+
+*datetime*
+
+For the command `apim apis list`, graviteeio provide the function `datetime`.
+
+----
+datetime(number $value, string $format)
+----
+Return a string representing the date.
+$value is linux timestamp.
+$format is format codes referring to hours, minutes, seconds, days ...
+
+if no $format is specified '', `isoformat` is used.
+
+[cols="3", options="header"]
+|===
+|Directive
+|Meaning
+|Example
+
+|`%a`
+|Weekday as locale’s abbreviated name.
+|Sun, Mon, …, Sat (en_US); So, Mo, …, Sa (de_DE)
+
+|`%A`
+|Weekday as locale’s full name.
+|Sunday, Monday, …, Saturday (en_US); Sonntag, Montag, …, Samstag (de_DE)
+
+|`%w`
+|Weekday as a decimal number, where 0 is Sunday and 6 is Saturday.
+|0, 1, …,
+
+|`%d`
+|Day of the month as a zero-padded decimal number.
+|01, 02, …, 31
+
+|`%b`
+|Month as locale’s abbreviated name.
+|Jan, Feb, …, Dec (en_US);
+Jan, Feb, …, Dez (de_DE)
+
+|`%B`
+|Month as locale’s full name.
+|January, February, …, December (en_US);
+Januar, Februar, …, Dezember (de_DE)
+
+|`%m`
+|Month as a zero-padded decimal number.
+|01, 02, …, 12
+
+|`%y`
+|Year without century as a zero-padded decimal number.
+|00, 01, …, 99
+
+|`%Y`
+|Year with century as a decimal number.
+|0001, 0002, …, 2013, 2014, …, 9998, 9999
+
+|`%H`
+|Hour (24-hour clock) as a zero-padded decimal number.
+|00, 01, …, 23
+
+|`%I`
+|Hour (12-hour clock) as a zero-padded decimal number.
+|01, 02, …, 12
+
+|`%p`
+|Locale’s equivalent of either AM or PM.
+|AM, PM (en_US);
+am, pm (de_DE)
+
+
+|`%M`
+|Minute as a zero-padded decimal number.
+|00, 01, …, 59
+
+|`%S`
+|Second as a zero-padded decimal number.
+|00, 01, …, 59
+
+|`%f`
+|Microsecond as a decimal number, zero-padded on the left.
+|000000, 000001, …, 999999
+
+|`%z`
+|UTC offset in the form ±HHMM[SS[.ffffff]] (empty string if the object is naive).
+|(empty), +0000, -0400, +1030, +063415, -030712.345216
+
+|`%Z`
+|Time zone name (empty string if the object is naive).
+|(empty), UTC, EST, CST
+
+|`%j`
+|Day of the year as a zero-padded decimal number.
+|001, 002, …, 366
+
+|`%U`
+|Week number of the year (Sunday as the first day of the week) as a zero padded decimal number. All days in a new year preceding the first Sunday are considered to be in week 0.
+|00, 01, …, 53
+
+|`%W`
+|Week number of the year (Monday as the first day of the week) as a decimal number. All days in a new year preceding the first Monday are considered to be in week 0.
+|00, 01, …, 53
+
+
+|`%c`
+|Locale’s appropriate date and time representation.
+|Tue Aug 16 21:30:00 1988 (en_US);
+Di 16 Aug 21:30:00 1988 (de_DE)
+
+
+|`%x`
+|Locale’s appropriate date representation.
+|08/16/88 (None);
+08/16/1988 (en_US);
+16.08.1988 (de_DE)
+
+|`%X`
+|Locale’s appropriate time representation.
+|21:30:00 (en_US);
+21:30:00 (de_DE)
+
+|`%%`
+|A literal '%' character.
+|%
+
+|===
+
+
+[.console-input]
+[source,shell]
+----
+$ gio apim apis list --query="[].{Id: id, Name: name, Update_data: datetime(updated_at,':%d-%m-%Y %H:%M')}"
+----
+
+For the command `apim apis list` with the output `table`, graviteeio provide some fonction for display:
+----
+style_tags(array $tags)
+----
+Returns string $tags join with `<none>` if not $tags.
+
+----
+style_synchronized(boolean $is_synchronized)
+----
+Returns `V`green id synchronized else `X`red.
+
+----
+style_state(string $state)
+----
+Returns uppercase $state green if `started`else red.
+
+----
+style_workflow_state(string $workflow_state)
+----
+Returns uppercase $workflow_state blue and `-` if not $workflow_state.
+
+
+
+[.console-input]
+[source,shell]
+----
+$ gio apim apis list --query="[?state == 'started'].{Id: id, Name: name, Tags: style_tags(tags), Synchronized: style_synchronized(is_synchronized), Status: style_state(state), Workflow: style_workflow_state(workflow_state)}"
+----
+
+[.console-input]
+[source,shell]
+----
+$ gio apim apis list --query="[?is_synchronized].{Id: id, Name: name, Tags: style_tags(tags), Synchronized: style_synchronized(is_synchronized), Status: style_state(state), Workflow: style_workflow_state(workflow_state)}"
+----
+
+
+== Object filtered
+
+=== API Fields:
+- id: string 
+- name: string
+- version: string
+- description: string
+- visibility: enum [public, private]
+- state: enum [initialized, stopped, started, closed]
+- labels: string array
+- manageable: boolean
+- numberOfRatings: num
+- tags :string array
+- created_at: unix time
+- updated_at: unix time
+- owner:
+* id: string
+* displayName: string
+* picture_url: string url
+- virtual_hosts: array
+* host: string
+* path: string
+* overrideEntrypoint: boolean
+- lifecycle_state: enum [created, published, unpublished, deprecated, archived]
+- workflow_state: enum [draft, ìn_review, request_for_changes, review_ok]
+- is_synchronized: boolean
+
+=== Status Fields:
+- status: string 
+- hits: numerate
+- percent: string
+
+=== Health Fields:
+- time: enum [1d, 1w, 1h, 1m, 1M]
+- percent: numerate
