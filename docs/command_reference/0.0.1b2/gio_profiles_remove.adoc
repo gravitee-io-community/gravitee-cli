@@ -1,0 +1,10 @@
+= gio profiles remove
+
+Remove profile.
+
+[source,shell]
+----
+$ gio profiles remove [OPTIONS] PROFILE_NAME
+----
+
+Remove profile and all configurations.

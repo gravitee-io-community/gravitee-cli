@@ -1,0 +1,26 @@
+= gio apim apis get
+
+Get api configuration.
+
+[source,shell]
+----
+$ gio apim apis get [OPTIONS]
+----
+
+Get api configuration.
+
+== Options
+
+[cols="2a*"]
+
+|===
+
+2+| *-o, --output [yaml\|json]*
+
+|Description | Output format.  [default: yaml]
+
+2+| *--api TEXT*
+
+|Description | API id  [required]
+
+|===

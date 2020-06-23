@@ -1,0 +1,22 @@
+= gio apim apis start
+
+Starts an API.
+
+[source,shell]
+----
+$ gio apim apis start [OPTIONS]
+----
+
+Starts an API.
+
+== Options
+
+[cols="2a*"]
+
+|===
+
+2+| *--api TEXT*
+
+|Description | API id  [required]
+
+|===

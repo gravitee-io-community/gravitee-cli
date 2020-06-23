@@ -1,0 +1,41 @@
+= gio apim apis status
+
+Displays status of API.
+
+[source,shell]
+----
+$ gio apim apis status [OPTIONS]
+----
+
+Displays status of API.
+
+
+Status Field:
+- `status`: string 
+- `hits`: numerate
+- `percent`: string
+    
+
+== Options
+
+[cols="2a*"]
+
+|===
+
+2+| *--api TEXT*
+
+|Description | API id  [required]
+
+2+| *-o, --output [TABLE\|JSON\|YAML\|TSV\|HBAR]*
+
+|Description | Set the format for printing command output resources.  [default: table]
+
+2+| *-q, --query TEXT*
+
+|Description | Execute JMESPath query. Default: `reverse(@)[].{Status: status, Hits: hits, Percent: percent}` eg: filtered on 5xx status `[?status==`5xx`].{Status: status, Hits: hits, Percent: percent}`
+
+2+| *-tf, --time-frame TEXT*
+
+|Description | Timeframe between now and the vale. m -> minute, h -> hour, d -> days  [default: 5m]
+
+|===

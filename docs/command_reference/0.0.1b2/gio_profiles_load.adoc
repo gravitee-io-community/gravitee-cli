@@ -1,0 +1,10 @@
+= gio profiles load
+
+Load profile.
+
+[source,shell]
+----
+$ gio profiles load [OPTIONS] PROFILE_NAME
+----
+
+This command switches of profile. The configuration of the profile is loaded for the execution of command.

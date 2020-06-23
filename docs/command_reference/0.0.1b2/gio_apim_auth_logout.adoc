@@ -1,0 +1,10 @@
+= gio apim auth logout
+
+Logout.
+
+[source,shell]
+----
+$ gio apim auth logout [OPTIONS]
+----
+
+Logout.
