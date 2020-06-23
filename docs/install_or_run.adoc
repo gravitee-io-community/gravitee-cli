@@ -42,7 +42,7 @@ It is recommended to mount volume on host machine `-v` to keep the configuration
 
 For macOS or linux, you can create an `alias` to run the command with docker
 ----
-alias gio="docker run -it --rm -v ~:/graviteeio/config graviteeio/cli gio"
+alias gio="docker run -it --rm -v ~/:/graviteeio/config graviteeio/cli gio"
 
 $ gio --version
 ----
