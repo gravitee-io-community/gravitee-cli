@@ -11,3 +11,8 @@ class AuthApimClient(AuthClient):
 
     def logout(self):
         AuthClient.logout(self,"logout")
+
+    def tokens(self):
+        response = self.httpClient.get("tokens")
+        json_body = response.json()
+        return json_body
