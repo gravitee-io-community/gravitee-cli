@@ -1,6 +1,6 @@
 = Filtering list
 
-Graviteeio CLI uses the `--query` option to filter the lists powered by https://jmespath.org/[JMESPath Query]. JMESPath is a query language for JSON that will alow  you to select and modifiy output data from CLI.
+Graviteeio CLI uses the `--query` option to filter the lists powered by https://jmespath.org/[JMESPath Query]. JMESPath is a query language for JSON that will alow  you to select and modify output data from CLI.
 
 Even though you select an output data other than JSON, the result will be nevertheless modified because the native format result is JSON format.
 
@@ -8,7 +8,7 @@ Even though you select an output data other than JSON, the result will be nevert
 
 Thanks to JMESHPath, we can filter and modify the result.
 
-Filering is done with [? expression]. expression is composed of JSON element selected on a comparison to another expression. JMESHPath support the operators `<``, `<=``, `>`, `>=`, `==,` and `!=` and also logical conjunction and (`&&`), or (`||`) and not (`!``). More information https://jmespath.org/specification.html#filterexpressions[JMESHPath specification].
+Filtering is done with [? expression]. expression is composed of JSON element selected on a comparison to another expression. JMESHPath support the operators `<``, `<=``, `>`, `>=`, `==,` and `!=` and also logical conjunction and (`&&`), or (`||`) and not (`!``). More information https://jmespath.org/specification.html#filterexpressions[JMESHPath specification].
 
 *Filter apis list and display the apis synchronized*
 
@@ -208,7 +208,7 @@ Di 16 Aug 21:30:00 1988 (de_DE)
 [.console-input]
 [source,shell]
 ----
-$ gio apim apis list --query="[].{Id: id, Name: name, Update_data: datetime(updated_at,':%d-%m-%Y %H:%M')}"
+$ gio apim apis list --query="[].{Id: id, Name: name, Update_data: datetime(updated_at,'%d-%m-%Y %H:%M')}"
 ----
 
 For the command `apim apis list` with the output `table`, graviteeio provide some fonction for display:
