@@ -6,12 +6,14 @@ from jmespath import exceptions
 from pytimeparse import parse
 
 from graviteeio_cli.graviteeio.client.apim.api import ApiClient
+from graviteeio_cli.graviteeio.extensions.jmespath_functions import \
+    GioFunctions
 from graviteeio_cli.graviteeio.output import OutputFormatType
 
 from ....exeptions import GraviteeioError
 
 
-@click.command(short_help="api health")
+@click.command(short_help="API health.")
 @click.option('--api', 'api_id',
               help='API id',
               required=True)
@@ -49,7 +51,7 @@ def health(obj, output, query, api_id):
         )
     
     try:
-        health_filtered = jmespath.search(query, to_return)
+        health_filtered = jmespath.search(query, to_return, jmespath.Options(custom_functions=GioFunctions()))
             
         header = None
         if len(health_filtered) > 0 and type(health_filtered[0]) is dict:

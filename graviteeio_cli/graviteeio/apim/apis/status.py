@@ -7,6 +7,8 @@ from jmespath import exceptions
 from pytimeparse import parse
 
 from graviteeio_cli.graviteeio.client.apim.api import ApiClient
+from graviteeio_cli.graviteeio.extensions.jmespath_functions import \
+    GioFunctions
 from graviteeio_cli.graviteeio.output import OutputFormatType
 
 from ....exeptions import GraviteeioError
@@ -67,7 +69,7 @@ Status Field:
         query = "reverse(@)[].{Status: status, Percent: percent}"
     # start_time = time.time()
     try:
-        status_filtered = jmespath.search(query, to_return)
+        status_filtered = jmespath.search(query, to_return, jmespath.Options(custom_functions=GioFunctions()))
 
         header = None
         if len(status_filtered) > 0 and type(status_filtered[0]) is dict:

@@ -79,7 +79,7 @@ $ gio apim apis list --query="[?contains(name,'Pet')].{Id: id, Name: name}"
 
 *datetime*
 
-For the command `apim apis list`, graviteeio provide the function `datetime`.
+The function `datetime` is available for all query with JMESHPath in the CLI.
 
 ----
 datetime(number $value, string $format)

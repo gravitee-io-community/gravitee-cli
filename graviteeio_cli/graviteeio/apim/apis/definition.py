@@ -8,7 +8,7 @@ from .definition_group.create import create
 @click.group()
 @click.pass_context
 def definition(ctx):
-    """This group allow handling api definition commands from templating and value files"""
+    """This group allow handling API definition commands from templating and value files"""
     pass
 
 definition.add_command(apply)
