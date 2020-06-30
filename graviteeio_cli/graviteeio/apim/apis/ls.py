@@ -10,6 +10,7 @@ from jmespath import exceptions, functions
 from graviteeio_cli.graviteeio.client.apim.api_async import ApiClientAsync
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
 from graviteeio_cli.graviteeio.output import OutputFormatType
+from graviteeio_cli.graviteeio.extensions.jmespath_functions import GioFunctions
 
 from ....exeptions import GraviteeioError
 
@@ -60,7 +61,7 @@ Default query with output `table`: `[].{Id: id, Name: name, Tags: style_tags(tag
         # else:
         #     query="[].{Id: id, Name: name, Tags: tags, Synchronized: is_synchronized, Status: state, Workflow: workflow_state}"
         
-    class CustomFunctions(functions.Functions):
+    class CustomFunctions(GioFunctions):
     #options= jmespath.Options()
         @functions.signature({'types': ['string']})
         def _func_style_state(self, state):
@@ -89,14 +90,6 @@ Default query with output `table`: `[].{Id: id, Name: name, Tags: style_tags(tag
                 return click.style("V", fg='green')
             else:
                 return click.style("X", fg='yellow')
-
-        @functions.signature({'types': ['number']}, {'types': ['string'], })
-        def _func_datetime(self, timestamp, str_format = ""):
-            t = datetime.fromtimestamp(timestamp / 1000)
-            if not str_format or len(str_format) == 0:
-                return t.isoformat()
-            else:
-                return t.strftime(str_format)
 
     try:
         apis_filtered = jmespath.search(query, apis, jmespath.Options(custom_functions=CustomFunctions()))

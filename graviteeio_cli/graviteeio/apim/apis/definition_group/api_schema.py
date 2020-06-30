@@ -4,7 +4,6 @@ import os
 from enum import Enum
 from io import StringIO
 
-import jmespath
 import yaml
 from jinja2 import (Environment, FileSystemLoader, TemplateNotFound,
                     select_autoescape)
