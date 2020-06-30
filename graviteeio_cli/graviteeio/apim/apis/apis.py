@@ -8,7 +8,7 @@ from graviteeio_cli.graviteeio.client.gio_resources import APIM_Client
 from .plugins import COMMANDS
 import pkgutil
 
-add_command = ["list", "start", "stop", "deploy", "status", "health", "fetch", "definition", "spec", "get"]
+add_command = ["list", "start", "stop", "deploy", "status", "health", "fetch", "definition", "spec", "get", "logs"]
 
 class PluginCommand(click.MultiCommand):
 
@@ -44,7 +44,7 @@ class PluginCommand(click.MultiCommand):
 @click.pass_context
 def apis(ctx):
     """
-    This group includes commands regarding apis.
+    This group includes the commands regarding apis.
     """
     ctx.obj['api_client'] = APIM_Client.API.http(ctx.obj['config'])
     # ctx.obj['api_client'] = GioClient.APIM(config=ctx.obj['config'].getGraviteeioConfig(GraviteeioModule.APIM), http_client_type = APIM_client_type.API)
