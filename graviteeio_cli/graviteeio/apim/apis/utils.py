@@ -70,6 +70,11 @@ def filter_api_values(api_data):
 
 def display_dict_differ(dict_differ):
     has_diff = False
+    summary = {
+        "created": 0,
+        "updated": 0,
+        "deleted": 0
+    }
     for diff_tuple in dict_differ:
         has_diff = True
         if diff_tuple[0] is 'change':
@@ -77,6 +82,9 @@ def display_dict_differ(dict_differ):
             click.echo(click.style('- {}: {}'.format(format_key(diff_tuple[1]), diff_tuple[2][0]), fg='red'))
             click.echo(click.style('+ {}: {}'.format(format_key(diff_tuple[1]), diff_tuple[2][1]), fg='green'))
             click.echo()
+
+            summary["updated"] = summary["updated"] + 1
+
         elif diff_tuple[0] is 'add' or diff_tuple[0] is 'remove':
             char_action = '+'
             color_action = 'green'
@@ -84,6 +92,9 @@ def display_dict_differ(dict_differ):
             if diff_tuple[0] is 'remove':
                 char_action = '-'
                 color_action = 'red'
+                summary["deleted"] = summary["deleted"] + 1
+            else:
+                summary["created"] = summary["created"] + 1
 
             if len(diff_tuple[1]) > 0:
                 click.echo(click.style('{} {}:'.format(char_action, format_key(diff_tuple[1])), fg=color_action))
@@ -109,6 +120,13 @@ def display_dict_differ(dict_differ):
             click.echo()
         else:
             click.echo("diff_key {}".format(diff_tuple))
+    
+    click.echo(click.style("--------", fg="green"))
+    click.echo(click.style("Summary:", fg="green"))
+    click.echo(click.style("- Created:{}".format(summary["created"]), fg="green"))
+    click.echo(click.style("- Updated:{}".format(summary["updated"]), fg="green"))
+    click.echo(click.style("- deleted:{}".format(summary["deleted"]), fg="green"))
+
     
     if not has_diff:
         click.echo("No diff")
