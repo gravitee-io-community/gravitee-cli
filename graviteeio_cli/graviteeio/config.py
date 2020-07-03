@@ -7,8 +7,7 @@ from .. import environments
 from ..exeptions import GraviteeioError
 from .modules import GraviteeioModule
 from .output import OutputFormatType
-from .utils import is_uri_valid
-
+from .utils import is_uri_valid, is_env_value, get_env_value
 
 class Auth_Type(enum.IntEnum):
     CREDENTIAL = 0,
@@ -250,7 +249,15 @@ class GraviteeioConfig_abstract:
         self.save(active_auth = None)
 
     def get_bearer(self):
-        return self.data["active_auth"]["bearer"] if self.is_active_bearer() else None
+        #env
+        bearer = None
+        if self.is_active_bearer() :
+            bearer = self.data["active_auth"]["bearer"]
+
+            if is_env_value(bearer):
+                bearer = get_env_value(bearer)
+                
+        return bearer
 
     def get_bearer_header(self):
         return {"Authorization": "Bearer {}".format(self.get_bearer())} if self.get_bearer() else None
@@ -335,6 +342,11 @@ class GraviteeioConfig_apim(GraviteeioConfig_abstract):
     #     return (data, other_data)
     
     def url(self, path):
+        address_url = self.data["address_url"]
+
+        if is_env_value(address_url):
+            address_url = get_env_value(address_url)
+        
         # https://nightly.gravitee.io/api/management/organizations/DEFAULT/environments/DEFAULT/apis/
         org_and_env = "organizations/{}/environments/{}/".format(self.data["org"], self.data["env"]) if "env" in self.data and "org" in self.data else  ""
-        return self.data["address_url"] + path.format(org_and_env)
+        return address_url + path.format(org_and_env)

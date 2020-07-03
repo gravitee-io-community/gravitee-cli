@@ -18,8 +18,8 @@ def get_token(ctx, param, value):
         if not env_value:
             click.echo('No environement value found for [{}].'.format(value[4:]))
             return click.prompt('Personal access token')
-        else:
-            return env_value
+        # else:
+        #     return env_value
     
     return value
 
