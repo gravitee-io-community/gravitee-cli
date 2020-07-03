@@ -91,7 +91,7 @@ default_template_yaml = \
 '    security: {{ plan.security}}\n' +\
 '    type: api\n' +\
 '    status: {{ plan.status | default("published")}}\n' +\
-'    order: {{loop.index}}\n' +\
+'    order: {{loop.index - 1}}\n' +\
 '    paths:\n' +\
 '      "/": []\n' +\
 '    comment_required: False\n' +\
@@ -143,7 +143,7 @@ default_template_json = \
 '            "security": "{{ plan.security}}",\n' +\
 '            "type": "api",\n' +\
 '            "status": "{{ plan.status | default("published")}}",\n' +\
-'            "order": {{loop.index}},\n' +\
+'            "order": {{loop.index - 1}},\n' +\
 '            "paths": {"/": []},\n' +\
 '            "comment_required": false,\n' +\
 '            "characteristics": []\n' +\
