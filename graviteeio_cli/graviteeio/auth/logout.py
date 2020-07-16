@@ -1,7 +1,7 @@
 import click
 
 from graviteeio_cli.graviteeio.modules import GraviteeioModule
-from graviteeio_cli.graviteeio.config import GraviteeioConfig_apim
+from graviteeio_cli.graviteeio.config import GraviteeioConfig_apim, Auth_Type
 
 @click.command()
 @click.pass_obj
@@ -11,10 +11,13 @@ def logout(obj):
     """
 
     config : GraviteeioConfig_apim = obj['config'].getGraviteeioConfig(obj['module'])
-    auth = config.get_active_auth()
-    auth_client = obj['auth_client']
-    bearer = auth_client.logout()
 
-    config.remove_active_auth()
+    if config.is_logged_in:
+        authn_name = config.get_authn_name()
+        auth_client = obj['auth_client']
+        bearer = auth_client.logout()
 
-    click.echo("[{}] is now logged out.".format(auth["username"]))
+        config.remove_active_auth()
+        click.echo("[{}] is now logged out.".format(authn_name))
+    else :
+        click.echo("No Authentication [{}] found.".format(Auth_Type.CREDENTIAL.name.lower()))
