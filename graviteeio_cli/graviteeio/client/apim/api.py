@@ -66,11 +66,11 @@ class ApiClient:
             "with_documentation": True,
             "with_path_mapping": True,
             "with_policy_paths": False,
-            "with_policies":[],
+            "with_policies":[], # 0: "mock"1: "policy-request-validation"
             "type": "INLINE",
             "payload": oas
         }
-        return self.httpClient.post("{}/import/swagger".format(id), data = data).json()
+        return self.httpClient.post("{}/import/swagger".format(id), data = json.dumps(data))
 
     def action(self, id, action_type: Api_Action):
         # params = {
