@@ -8,8 +8,8 @@ from graviteeio_cli.graviteeio.client.apim.api import ApiClient
 @click.option('--api', 'api_id',
               help='API id',
               required=False)
-@click.option('--file', '-f', type=click.Path(exists=True), required=False,
-              help="Spec file")
+@click.option('--file', '-f', type=click.Path(exists=True), required=True,
+              help="Spec file (Swagger 2.0 / OAS 3.0)")
 @click.option('--set', '-s', multiple=True,
               help="Overload the value(s) of value file eg: `--set proxy.groups[0].name=mynewtest`")
 @click.option('--debug', '-d', is_flag=True,
