@@ -34,7 +34,6 @@ def token(ctx, token, name):
     if token start with `env:` the token will retrieve from environment variable. i.e: `env:TOKEN`.
     """
     config: GraviteeioConfig_apim = ctx.obj['config'].getGraviteeioConfig(ctx.obj['module'])
-    auth = config.get_active_auth()
     auth_client = ctx.obj['auth_client']
 
     if not click.get_text_stream('stdin').isatty():
@@ -50,7 +49,7 @@ def token(ctx, token, name):
     except:
         logger.exception("invoke logout")
     
-    config.set_active_auth(name, Auth_Type.PERSONAL_ACCESS_TOKEN, token)
+    config.save_active_auth(name, Auth_Type.PERSONAL_ACCESS_TOKEN, token)
 
     try:
         tokens_pat_list = auth_client.tokens()

@@ -40,7 +40,7 @@ def profiles():
 @click.option('--organization', "--org",help='config graviteeio organization')
 @click.argument('profile', required=True)
 @click.pass_obj
-def create(obj, profile_name, module, url, environment, organization):
+def create(obj, profile, module, url, environment, organization):
     """This command create a new profile configuration according to module."""
 
     gio_config:GraviteeioConfig = obj['config']
@@ -54,9 +54,9 @@ def create(obj, profile_name, module, url, environment, organization):
     if organization:
         data["org"] = organization
 
-    gio_config.save(profile = profile_name, module = module, **data)
+    gio_config.save(profile = profile, module = module, **data)
 
-    click.echo("Data saved for profile [{}].".format(profile_name))
+    click.echo("Data saved for profile [{}].".format(profile))
 
 @click.command(short_help="Write configuration values.")
 @click.option('--url', help='graviteeio module url', type=URL)

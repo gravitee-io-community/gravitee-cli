@@ -42,7 +42,6 @@ def login(ctx, username, password):
     Sign in with username/password
     """
     config : GraviteeioConfig_apim = ctx.obj['config'].getGraviteeioConfig(ctx.obj['module'])
-    auth = config.get_active_auth()
     auth_client = ctx.obj['auth_client']
 
     if not click.get_text_stream('stdin').isatty():
@@ -67,7 +66,7 @@ def login(ctx, username, password):
     except:
         logger.exception("invoke logout")
     
-    config.set_active_auth(username, Auth_Type.CREDENTIAL, bearer)
+    config.save_active_auth(username, Auth_Type.CREDENTIAL, bearer)
 
     click.echo("You are now logged in as [{}].".format(username))
     click.echo("Your current profile is {}".format(ctx.obj['config'].profile))
