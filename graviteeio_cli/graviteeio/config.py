@@ -7,8 +7,10 @@ from .. import environments
 from ..exeptions import GraviteeioError
 from .modules import GraviteeioModule
 from .output import OutputFormatType
-from .utils import is_uri_valid, is_env_value, get_env_value
+from .utils import is_uri_valid
+from graviteeio_cli.graviteeio.extensions.configparser_interpolation import GioInterpolation
 
+DEFAULT_ENV_PROFILE = 'env'
 class Auth_Type(enum.IntEnum):
     CREDENTIAL = 0,
     PERSONAL_ACCESS_TOKEN = 1
@@ -28,7 +30,7 @@ class Auth_Type(enum.IntEnum):
 class GraviteeioConfig:
     def __init__(self, config_file=environments.GRAVITEEIO_CONF_FILE):
         self.config_file = config_file
-        self.config = configparser.ConfigParser()
+        self.config = configparser.ConfigParser(interpolation=GioInterpolation())
 
         self.proxies = {
             "http": os.environ.get("http_proxy"),
@@ -39,18 +41,21 @@ class GraviteeioConfig:
         self.config_module[GraviteeioModule.APIM] = GraviteeioConfig_apim(self.config, self.proxies, self)
         self.config_module[GraviteeioModule.AM] = GraviteeioConfig_am(self.config, self.proxies, self)
 
+
+
         if not os.path.isfile(config_file):
 
-            self.profile = "demo"
+            self.profile = DEFAULT_ENV_PROFILE
             self.config['DEFAULT'] = {
                 "current_profile": self.profile
             }
 
             for key in self.config_module:
-                self.config_module[key].init_values(self.profile)
+                # self.config_module[key].init_values(self.profile)
+                self.config_module[key].load_env_values()
 
-            with open(self.config_file, 'w') as fileObj:
-                self.config.write(fileObj)
+            # with open(self.config_file, 'w') as fileObj:
+            #     self.config.write(fileObj)
         else:
             self.config.read(config_file)
             self._load_config()
@@ -62,12 +67,14 @@ class GraviteeioConfig:
         return self.config_module[module]
         
     def profiles(self):
-        return self.config.sections()
+        profiles = [DEFAULT_ENV_PROFILE]
+        profiles.extend(self.config.sections())
+        return profiles
 
     def load(self, profile, no_save = False):
         if profile is "DEFAULT":
             raise GraviteeioError('No profile [%s] accepted.' % profile)
-        if not self.config.has_section(profile):
+        if not self.config.has_section(profile) and profile != DEFAULT_ENV_PROFILE:
             raise GraviteeioError('No profile [%s] found.' % profile)
         
         self.config.set("DEFAULT", "current_profile", profile)
@@ -85,9 +92,11 @@ class GraviteeioConfig:
     def save(self, profile, module, **kwargs):
         if not profile:
             profile = self.profile
+        
+        if profile == DEFAULT_ENV_PROFILE:
+            raise GraviteeioError('Profile [%s] can be modified.' % DEFAULT_ENV_PROFILE)
 
         if (not self.config.has_section(profile)):
-            
             self.config.add_section(profile)
             current_data = kwargs
         else:
@@ -104,6 +113,9 @@ class GraviteeioConfig:
             self._load_config()
 
     def remove(self, profile):
+        if profile == DEFAULT_ENV_PROFILE:
+            raise GraviteeioError('Profile [%s] can be removed.' % DEFAULT_ENV_PROFILE)
+
         if not self.config.has_section(profile):
             raise GraviteeioError('No profile [%s] found.' % profile)
 
@@ -169,9 +181,12 @@ class GraviteeioConfig_abstract:
         self.graviteeioConfig = graviteeioConfig
         self.data = {}
     
-    def init_values(self, profile):
-        self.data = self.getInitValues()
-        self._apply_config(profile, self.data)
+    # def init_values(self, profile):
+    #     self.data = self.get_init_values()
+    #     self._apply_config(profile, self.data)
+
+    def load_env_values(self):
+        self.data = self.get_env_values()
 
     def _apply_config(self, profile, data = None):
         if (not self.config.has_section(profile)) :
@@ -180,13 +195,18 @@ class GraviteeioConfig_abstract:
         if data:
             self.config.set(profile, self.module, json.dumps(data))
     
-    def getInitValues(self):
+    def get_init_values(self):
+        pass
+
+    def get_env_values(self):
         pass
 
     def load_config(self, profile):
-        if self.config.has_section(profile) :
+        if profile != DEFAULT_ENV_PROFILE and self.config.has_section(profile) :
             data_str = self.config.get(profile, self.module, fallback="{}")
             self.data = json.loads(data_str)
+        elif profile == DEFAULT_ENV_PROFILE:
+            self.load_env_values()
         else:
             raise GraviteeioError('No profile [%s] found.' % profile)
     
@@ -208,9 +228,6 @@ class GraviteeioConfig_abstract:
 
     def credential(self):
         pass
-
-    def get_auth_list(self):
-        return self.data["auth"] if "auth" in self.data else None
     
     def display_auth_list(self):
         to_return = []
@@ -223,39 +240,42 @@ class GraviteeioConfig_abstract:
         #             "is_active": "active" if auth["is_active"] else ""
         #         })
         # if self.is_logged_in():
-        auth = self.get_active_auth()
+        auth = {}
+
+        if "authn_name" in self.data and self.data["authn_name"]:
+            auth["name"] = self.data["authn_name"]
+
+        if "authn_type" in self.data and self.data["authn_type"]:
+            auth["type"] = self.data["authn_type"]
+
+        if self.is_active_bearer():
+            auth["is_active"] = "active"
+            auth["Token"] = "***"
+
         if auth:
-            to_return.append({
-                    "username": auth["username"],
-                    "type": auth["type"],
-                    "is_active": "active"
-                })
+            to_return.append(auth)
 
         return to_return
     
     def is_logged_in(self):
-        return "active_auth" in self.data and self.data["active_auth"] and "bearer" in self.data["active_auth"] and self.data["active_auth"]["bearer"] and self.data["active_auth"]["type"] == Auth_Type.CREDENTIAL.name.lower()
+        return self.is_active_bearer() and self.data["authn_type"] == Auth_Type.CREDENTIAL.name.lower()
 
     def is_active_bearer(self):
-        return "active_auth" in self.data and self.data["active_auth"] and "bearer" in self.data["active_auth"] and self.data["active_auth"]["bearer"]
+        return "bearer" in self.data and self.data["bearer"]
 
-    def get_active_auth(self):
-        return  self.data["active_auth"] if "active_auth" in self.data else None
+    def get_authn_name(self):
+        return  self.data["authn_name"] if "authn_name" in self.data else None
     
-    def set_active_auth(self, username, type: Auth_Type, bearer):
-        self.save(active_auth = {"username": username, "bearer": bearer, "type": type.name.lower()})
+    def save_active_auth(self, authn_name, type: Auth_Type, bearer):
+        self.save(authn_name= authn_name, bearer= bearer, authn_type= type.name.lower())
     
     def remove_active_auth(self):
-        self.save(active_auth = None)
+        self.save(authn_name=None, bearer=None, authn_type=None)
 
     def get_bearer(self):
-        #env
         bearer = None
         if self.is_active_bearer() :
-            bearer = self.data["active_auth"]["bearer"]
-
-            if is_env_value(bearer):
-                bearer = get_env_value(bearer)
+            bearer = self.data["bearer"]
                 
         return bearer
 
@@ -285,13 +305,39 @@ class GraviteeioConfig_abstract:
 
 
 class GraviteeioConfig_am(GraviteeioConfig_abstract):
+
     def __init__(self, config_parser, proxies, graviteeioConfig: GraviteeioConfig):
         GraviteeioConfig_abstract.__init__(self,GraviteeioModule.AM, config_parser, proxies, graviteeioConfig)
 
-    def getInitValues(self):
-        return {
-            "address_url": environments.DEFAULT_AM_ADDRESS_URL
-        }
+    # def get_init_values(self):
+    #     if environments.DEFAULT_AM_TOKEN:
+    #         default_value = {
+    #             "address_url": environments.DEFAULT_AM_ADDRESS_URL,
+    #             "bearer": environments.DEFAULT_AM_TOKEN,
+    #             "authn_type": Auth_Type.PERSONAL_ACCESS_TOKEN.name.lower(),
+    #             "authn_name": "Environment Token"
+    #         }
+    #     else:
+    #         default_value = {
+    #             "address_url": environments.DEFAULT_AM_ADDRESS_URL
+    #         }
+
+    #     return default_value
+    
+    def get_env_values(self):
+        if environments.DEFAULT_AM_TOKEN:
+            default_value = {
+                "address_url": environments.DEFAULT_AM_ADDRESS_URL,
+                "bearer": environments.DEFAULT_AM_TOKEN,
+                "authn_type": Auth_Type.PERSONAL_ACCESS_TOKEN.name.lower(),
+                "authn_name": "Environment Token"
+            }
+        else:
+            default_value = {
+                "address_url": environments.DEFAULT_AM_ADDRESS_URL
+            }
+
+        return default_value
 
     def url(self, path):
         org_and_env = "organizations/{}/environments/{}/".format(self.data["org"], self.data["env"]) if "env" in self.data and "org" in self.data else  ""
@@ -299,26 +345,67 @@ class GraviteeioConfig_am(GraviteeioConfig_abstract):
 
  
 class GraviteeioConfig_apim(GraviteeioConfig_abstract):
+
+
     def __init__(self, config_parser, proxies, graviteeioConfig: GraviteeioConfig):
         GraviteeioConfig_abstract.__init__(self,GraviteeioModule.APIM, config_parser, proxies, graviteeioConfig)
 
-    def getInitValues(self):
-        return {
-            "address_url": environments.DEFAULT_APIM_ADDRESS_URL
-        }
+    def get_init_values(self):
+        if environments.DEFAULT_APIM_TOKEN:
+            default_value = {
+                "address_url": environments.DEFAULT_APIM_ADDRESS_URL,
+                "bearer": environments.DEFAULT_APIM_TOKEN,
+                "authn_type": Auth_Type.PERSONAL_ACCESS_TOKEN.name.lower(),
+                "authn_name": "Environment Token"
+            }
+
+            if environments.DEFAULT_APIM_ORG:
+                default_value["org"] = environments.DEFAULT_APIM_ORG
+            
+            if environments.DEFAULT_APIM_ENV:
+                default_value["env"] = environments.DEFAULT_APIM_ENV
+
+        else:
+            default_value = {
+                "address_url": environments.DEFAULT_APIM_ADDRESS_URL
+            }
+
+        return default_value
+
+    def get_env_values(self):
+        if environments.DEFAULT_APIM_TOKEN:
+            default_value = {
+                "address_url": environments.DEFAULT_APIM_ADDRESS_URL,
+                "bearer": environments.DEFAULT_APIM_TOKEN,
+                "authn_type": Auth_Type.PERSONAL_ACCESS_TOKEN.name.lower(),
+                "authn_name": "Environment Token"
+            }
+
+            if environments.DEFAULT_APIM_ORG:
+                default_value["org"] = environments.DEFAULT_APIM_ORG
+            
+            if environments.DEFAULT_APIM_ENV:
+                default_value["env"] = environments.DEFAULT_APIM_ENV
+
+        else:
+            default_value = {
+                "address_url": environments.DEFAULT_APIM_ADDRESS_URL
+            }
+        
+        return default_value
 
     def display_profile(self):
         to_return = {}
 
-        if "address_url" in self.data:
+        if self.data and "address_url" in self.data:
             to_return = {
                 "address_url": self.data["address_url"],
                 "authentification": self.display_auth_list()
             }
-        if "env" in self.data:
+        if self.data and "env" in self.data:
             to_return["environments"] = self.data["env"]
         
-        if "org" in self.data:
+        if self.data and "org" in self.data:
             to_return["organisations"] = self.data["org"]
 
         return to_return
@@ -343,10 +430,6 @@ class GraviteeioConfig_apim(GraviteeioConfig_abstract):
     
     def url(self, path):
         address_url = self.data["address_url"]
-
-        if is_env_value(address_url):
-            address_url = get_env_value(address_url)
         
-        # https://nightly.gravitee.io/api/management/organizations/DEFAULT/environments/DEFAULT/apis/
         org_and_env = "organizations/{}/environments/{}/".format(self.data["org"], self.data["env"]) if "env" in self.data and "org" in self.data else  ""
         return address_url + path.format(org_and_env)

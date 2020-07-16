@@ -4,8 +4,15 @@ import enum
 def string_to_bool(value):
      return value.lower() in ("yes", "true", "t", "1")
 
-DEFAULT_APIM_ADDRESS_URL="https://demo.gravitee.io"
-DEFAULT_AM_ADDRESS_URL="https://auth.gravitee.io"
+
+DEFAULT_APIM_ADDRESS_URL=os.getenv("GIO_APIM_URL", "https://demo.gravitee.io")
+DEFAULT_AM_ADDRESS_URL=os.getenv("GIO_AM_URL", "https://auth.gravitee.io")
+
+DEFAULT_APIM_TOKEN=os.getenv("GIO_APIM_TOKEN", None)
+DEFAULT_AM_TOKEN=os.getenv("GIO_AM_TOKEN", None)
+
+DEFAULT_APIM_ORG=os.getenv("GIO_APIM_ORG", None)
+DEFAULT_APIM_ENV=os.getenv("GIO_APIM_ENV", None)
 
 # GRAVITEEIO_RESOURCES_FOLDER="gio"
 APIM_ENV_FILE_NAME="apim_env.yml"
