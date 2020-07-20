@@ -52,9 +52,10 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
         if api_id:
             click.echo("Starting to apply API: [{}] '{}'.".format(api_id, api_data["name"]))
             resp = api_client.update_import(api_id, api_data)
-            click.echo("API {} is updated".format(api_id))
+            click.echo("API [{}] is updated".format(api_id))
 
-            ctx.invoke(deploy, api_id=api_id)
+            if with_deploy:
+                ctx.invoke(deploy, api_id=api_id)
 
         else:
             click.echo("Starting to create API [{}].".format(api_data["name"]))
