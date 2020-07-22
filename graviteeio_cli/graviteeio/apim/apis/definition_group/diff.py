@@ -20,12 +20,10 @@ from .api_schema import ApiSchema
               help="Value file")
 @click.option('--set', '-s', multiple=True,
               help="Overload the value(s) of value file eg: `--set proxy.groups[0].name=mynewtest`")
-@click.option('--diff', '-df', is_flag=True,
-              help="Compare the configuration values with api on the server")
 @click.option('--config-path', type=click.Path(exists=True), required=False, default="./",
               help="Config folder")
 @click.pass_obj
-def diff(obj, api_id, file, set, diff, config_path):
+def diff(obj, api_id, file, set, config_path):
     """
     This commande compare the api definition developed on local machine with api configured on the remote server.
     """
