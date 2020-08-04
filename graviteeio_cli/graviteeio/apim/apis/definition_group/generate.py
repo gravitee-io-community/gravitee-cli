@@ -11,8 +11,8 @@ from .api_schema import ApiSchema, Data_Template_Format
 logger = logging.getLogger("command-apim-def-generate")
 
 @click.command(short_help="Generate api definition.")
-@click.option('--config-path', type=click.Path(exists=False), required=False, default="./",
-              help="Configuration folder")
+@click.option('--def-path', 'config_path', type=click.Path(exists=False), required=False, default="./",
+              help="Path where api definition is generated. The default value is the current directory")
 @click.option('--format', 
               default="yaml", show_default= True,
               help='Generated format.',
