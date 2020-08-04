@@ -24,8 +24,8 @@ from .api_schema import ApiSchema
               help="Overload the value(s) of value file eg: `--set proxy.groups[0].name=mynewtest`")
 @click.option('--debug', '-d', is_flag=True,
               help="Do not perform any changes. Display the datas generated")
-@click.option('--config-path', type=click.Path(exists=True), required=False, default="./",
-              help="Path of all configuration foldes and setting files. The default value is the current directory")
+@click.option('--def-path', 'config_path', type=click.Path(exists=True), required=False, default="./",
+              help="Path of all configuration folders and setting files for api definition. The default value is the current directory")
 @click.option('--with-deploy', is_flag=True, required=False,
               help="Deploy api after applying")
 @click.pass_context
