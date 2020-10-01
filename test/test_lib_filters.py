@@ -1,5 +1,6 @@
 from jinja2 import Environment
-from graviteeio_cli.graviteeio.extensions.jinja_filters import filter_loader
+from graviteeio_cli.extensions.jinja_filters import filter_loader
+
 
 def test_to_yaml():
     env = Environment(autoescape=True)

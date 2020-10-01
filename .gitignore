@@ -7,3 +7,4 @@ gravitee.egg-info/
 .vscode/*
 .venv/*
 graviteeio_cli.egg-info/*
+.eggs/*

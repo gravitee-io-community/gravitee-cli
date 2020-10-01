@@ -1,8 +1,0 @@
-= gio apim apis test
-
-
-
-[source,shell]
-----
-$ gio apim apis test [OPTIONS]
-----
