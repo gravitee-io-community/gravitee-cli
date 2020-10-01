@@ -31,6 +31,7 @@ class RunTests(Command):
         errno = call(['py.test', '--cov=skele', '--cov-report=term-missing'])
         raise SystemExit(errno)
 
+
 class PyTest(TestCommand):
     user_options = [('pytest-args=', 'a', "Arguments to pass to pytest")]
 
@@ -39,10 +40,11 @@ class PyTest(TestCommand):
         self.pytest_args = []
 
     def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
+        # import here, cause outside the eggs aren't loaded
         import pytest
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
+
 
 def get_install_requires():
     res = []
@@ -58,8 +60,21 @@ def get_install_requires():
     res.append('asyncio==3.4.3')
     res.append('pytimeparse==1.1.8')
     res.append('termgraph==0.2.1')
+    res.append('jsonschema==3.2.0')
 
     return res
+
+
+def get_packages_exclude():
+    res = []
+    res.append('docs')
+    res.append('test')
+    res.append('dist')
+    res.append('build')
+    res.append('doc-gen')
+
+    return res
+
 
 try:
     from cx_Freeze import setup, Executable
@@ -70,33 +85,33 @@ try:
     if os.path.exists('Graviteeio.ico'):
         icon = 'Graviteeio.ico'
 
-    graviteeio_exe = Executable (
+    graviteeio_exe = Executable(
         "run_graviteeio.py",
         base=base,
-        targetName = "gio"
+        targetName="gio"
     )
 
-    buildOptions = dict(packages=["asyncio","ctypes","appdirs", "packaging", "graviteeio_cli.graviteeio.apim.apis"], excludes=["unittest"], includes=["idna.idnadata"])
+    buildOptions = dict(packages=["asyncio", "ctypes", "appdirs", "packaging", "graviteeio_cli.commands.apim.apis"], excludes=["unittest"], includes=["idna.idnadata"])
 
     if sys.platform == "win32":
         graviteeio_exe = Executable(
             "run_graviteeio.py",
             base=base,
-            targetName = "gio.exe",
-            icon = icon
+            targetName="gio.exe",
+            icon=icon
         )
 
     setup(
-        name = 'graviteeio-cli',
-        version = __version__,
-        description = 'Command line Client program in Python for graviteeio plateform',
-        long_description = long_description,
+        name='graviteeio-cli',
+        version=__version__,
+        description='Command line Client program in Python for graviteeio plateform',
+        long_description=long_description,
         long_description_content_type="text/markdown",
-        url = 'https://github.com/gravitee-io/graviteeio-cli',
-        author = 'Guillaume Gillon',
-        author_email = 'guillaume.gillon@outlook.com',
-        license = 'Apache License Version 2.0',
-        classifiers = [
+        url='https://github.com/gravitee-io/graviteeio-cli',
+        author='Guillaume Gillon',
+        author_email='guillaume.gillon@outlook.com',
+        license='Apache License Version 2.0',
+        classifiers=[
             'Intended Audience :: Developers',
             'Topic :: Utilities',
             'License :: OSI Approved :: Apache Software License',
@@ -106,39 +121,41 @@ try:
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7'
         ],
-        keywords = ["Graviteeio", "gio", "gravitee","configuration", "cli"],
+        keywords=["Graviteeio", "gio", "gravitee", "configuration", "cli"],
         # packages = ["graviteeio_cli"],
-        packages = find_packages(exclude=['docs', 'test','dist','build']),
-        #packages = find_packages(exclude=['docs', 'tests*']),
-        install_requires = get_install_requires(),
-        extras_require = {
+        packages=find_packages(exclude=get_packages_exclude()),
+        # packages = find_packages(exclude=['docs', 'tests*']),
+        install_requires=get_install_requires(),
+        extras_require={
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
         include_package_data=True,
-        entry_points = {
+        package_data={
+            'graviteeio_cli': ['lint/rulesets/*.json']
+        },
+        entry_points={
             'console_scripts': [
                 'gio = graviteeio_cli.cli:main',
             ],
         },
-        options = {'build_exe' : buildOptions},
-        executables = [graviteeio_exe]
+        options={'build_exe': buildOptions},
+        executables=[graviteeio_exe]
     )
-
 
 
 except ImportError:
 
     setup(
-        name = 'graviteeio-cli',
-        version = __version__,
-        description = 'Command line Client program in Python for graviteeio plateform',
-        long_description = long_description,
+        name='graviteeio-cli',
+        version=__version__,
+        description='Command line Client program in Python for graviteeio plateform',
+        long_description=long_description,
         long_description_content_type="text/markdown",
-        url = 'https://github.com/gravitee-io/graviteeio-cli',
-        author = 'Guillaume Gillon',
-        author_email = 'guillaume.gillon@outlook.com',
-        license = 'Apache License Version 2.0',
-        classifiers = [
+        url='https://github.com/gravitee-io/graviteeio-cli',
+        author='Guillaume Gillon',
+        author_email='guillaume.gillon@outlook.com',
+        license='Apache License Version 2.0',
+        classifiers=[
             'Intended Audience :: Developers',
             'Topic :: Utilities',
             'License :: OSI Approved :: Apache Software License',
@@ -148,17 +165,21 @@ except ImportError:
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7'
         ],
-        keywords = ["Graviteeio", "gio", "gravitee","configuration", "cli"],
-        # packages = ["graviteeio_cli"],
-        packages = find_packages(exclude=['docs', 'test','dist','build']),
-        install_requires = get_install_requires(),
-        extras_require = {
+        keywords=["Graviteeio", "gio", "gravitee", "configuration", "cli"],
+        # packages=["graviteeio_cli"],
+        packages=find_packages(exclude=get_packages_exclude()),
+        install_requires=get_install_requires(),
+        extras_require={
             'test': ['coverage', 'pytest', 'pytest-cov'],
         },
-        entry_points = {
+        entry_points={
             'console_scripts': [
-                'gio = graviteeio_cli.cli:main',
+                'gio=graviteeio_cli.cli:main',
             ],
         },
-        cmdclass = {'test': PyTest},
+        nclude_package_data=True,
+        package_data={
+            'graviteeio_cli': ['lint/rulesets/*.json']
+        },
+        cmdclass={'test': PyTest},
     )

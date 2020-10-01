@@ -4,7 +4,6 @@ import click
 
 from graviteeio_cli.__version__ import __version__ as VERSION
 from graviteeio_cli.cli import main
-from graviteeio_cli.graviteeio.apim.apis.apis import PluginCommand
 
 from .doc_page import DocPage
 
@@ -14,9 +13,9 @@ def generate_page(name, ctx, version=None):
     return str(doc_page)
 
 # def write_man_pages(name, cli, parent_ctx=None, version=None, target_dir=None):
-def write_pages(name, cli, version, parent_ctx = None, target_dir = None):
+def write_pages(name, cli, version, parent_ctx=None, target_dir=None):
 
-    ctx =  click.Context(cli, info_name=name, parent=parent_ctx)
+    ctx = click.Context(cli, info_name=name, parent=parent_ctx)
     doc_page = generate_page(name, ctx, version)
 
 
@@ -45,7 +44,7 @@ def cli():
         os.mkdir(path)
     # if os.path.exists("./docs/command_reference")
 
-    write_pages("gio", main, VERSION, target_dir = path)
+    write_pages("gio", main, VERSION, target_dir=path)
 
 
 if __name__ == '__main__':

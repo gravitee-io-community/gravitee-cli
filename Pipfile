@@ -21,6 +21,7 @@ jmespath = "*"
 asyncio = "*"
 pytimeparse = "*"
 termgraph = "*"
+'jsonschema = "*"
 
 [requires]
 python_version = "3.7"

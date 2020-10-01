@@ -1,0 +1,168 @@
+{
+    "version": "1.1",
+    "name": "1-My test api",
+    "description": "this my test api",
+    "labels": [
+        "test",
+        "test2"
+    ],
+    "views": [
+        "product"
+    ],
+    "visibility": "public",
+    "categories": [
+        "categorie1",
+        "categorie2"
+    ],
+    "tags": [
+        "tags1",
+        "tags2"
+    ],
+    "path_mappings": [],
+    "paths": {
+        "/": [
+            {
+                "enabled": true,
+                "description": "my description",
+                "methods": [
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "DELETE",
+                    "HEAD",
+                    "PATCH",
+                    "OPTIONS",
+                    "TRACE",
+                    "CONNECT"
+                ],
+                "transform-headers": {
+                    "removeHeaders": [
+                        "hello"
+                    ],
+                    "scope": "REQUEST"
+                }
+            }
+        ]
+    },
+    "proxy": {
+        "context_path": "/mytest",
+        "strip_context_path": false,
+        "cors": {
+            "allowCredentials": false,
+            "allowHeaders": [
+                "auth",
+                "api-key"
+            ],
+            "allowMethods": [
+                "GET"
+            ],
+            "allowOrigin": ["'*'"],
+            "enabled": true,
+            "exposeHeaders": null,
+            "maxAge": -1
+        },
+        "groups": [
+            {
+                "name": "default-group",
+                "endpoints": [
+                    {
+                        "name": "default",
+                        "target": "https://api.gravitee.io/echo",
+                        "weight": 1,
+                        "backup": false,
+                        "type": "HTTP",
+                        "inherit": true
+                    },
+                    {
+                        "name": "what",
+                        "target": "https://api.gravitee.io/whattimeisit",
+                        "weight": 1,
+                        "backup": false,
+                        "type": "HTTP",
+                        "inherit": true
+                    }
+                ],
+                "load_balancing": {
+                    "type": "ROUND_ROBIN"
+                },
+                "http": {
+                    "connectTimeout": 5000,
+                    "idleTimeout": 60000,
+                    "keepAlive": true,
+                    "readTimeout": 11111,
+                    "pipelining": false,
+                    "maxConcurrentConnections": 100,
+                    "useCompression": true,
+                    "followRedirects": false
+                },
+                "headers": {},
+                "proxy": {
+                    "enabled": false
+                },
+                "ssl": {
+                    "trustAll": false
+                }
+            }
+        ],
+        "failover" : {
+            "maxAttempts" : 1,
+            "retryTimeout" : 25,
+            "cases" : [ "TIMEOUT" ]
+        }
+    },
+    "response_templates": {
+        "aze": {
+            "application/json": {
+                "body": "test response",
+                "headers": {},
+                "status": 400
+            }
+        }
+    },
+    "services": {
+        "health-check": {
+            "enabled": true,
+            "trigger": {
+                "rate": 1,
+                "unit": "SECONDS"
+            },
+            "steps": [
+                {
+                    "name": "default-step",
+                    "request": {
+                        "path": "/",
+                        "method": "GET",
+                        "fromRoot": false,
+                        "headers": {}
+                    },
+                    "response": {
+                        "assertions": [
+                            "#response.status == 200"
+                        ]
+                    }
+                }
+            ]
+        },
+        "dynamic-property": {
+            "configuration": {
+                "specification": {
+                    "operation": "shift"
+                },
+                "url": "http://localhost/test"
+            },
+            "provider": "HTTP",
+            "enabled": true,
+            "trigger": {
+                "rate": 1,
+                "unit": "SECONDS"
+            }
+        }
+    },
+    "plans": [
+        {
+            "name": "Plan keyless",
+            "description": "plan keyless",
+            "security": "key_less"
+        }
+    ]
+}
