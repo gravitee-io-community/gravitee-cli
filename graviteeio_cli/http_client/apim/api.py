@@ -109,22 +109,6 @@ class ApiClient:
         }
         return self.httpClient.get("{}/health".format(id), params).json()
 
-    def pages_fetch(self, api_id):
-        return self.httpClient.post("{}/pages/_fetch".format(api_id))
-
-    def pages_update(self, api_id, page_id, page_name, page_order, page_data, published=False, homepage=False):
-        data = {
-            "name": page_name,
-            "order": page_order,
-            "content": page_data,
-            "published": published,
-            "homepage": homepage
-        }
-
-        return self.httpClient.put(
-            "{}/pages/{}".format(api_id, page_id), data=page_data
-        )
-
     def logs(self, id, line, from_time=None, to_time=None, time_frame_seconds=None, order=False):
         if not from_time and not to_time and not time_frame_seconds:
             return None

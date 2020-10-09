@@ -1,6 +1,7 @@
 import click
 
 from .apis.apis import apis
+from .pages.pages import pages
 from .auth.auth import auth
 from graviteeio_cli.modules.gio_module import GioModule
 
@@ -15,3 +16,4 @@ def apim(ctx):
 
 apim.add_command(apis)
 apim.add_command(auth)
+apim.add_command(pages)
