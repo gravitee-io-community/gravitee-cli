@@ -3,6 +3,7 @@ import logging
 from graviteeio_cli.modules.gio_module import GioModule
 from .apim.api import ApiClient
 from .apim.auth import AuthApimClient
+from .apim.page import PageClient
 from .am.auth import AuthAmClient
 
 from graviteeio_cli.core.config import GraviteeioConfig
@@ -19,6 +20,11 @@ class APIM_Client(enum.Enum):
     AUTH = {
         'num': 2,
         'client': AuthApimClient
+    }
+
+    PAGE = {
+        'num': 3,
+        'client': PageClient
     }
 
     def __init__(self, values):

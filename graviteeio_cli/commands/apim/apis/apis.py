@@ -12,7 +12,6 @@ add_command = [
     "deploy",
     "status",
     "health",
-    "fetch",
     "definition",
     "spec",
     "get",
