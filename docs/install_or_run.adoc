@@ -35,14 +35,47 @@ Install cli via using `docker run`.
 
 [source,shell]
 ----
+$ docker run --rm -it graviteeio/cli gio
+----
+
+[source,shell]
+----
 $ docker run --rm -it -v $(pwd):/graviteeio/config graviteeio/cli
 ----
 
 It is recommended to mount volume on host machine `-v` to keep the configuration data.
-
 For macOS or linux, you can create an `alias` to run the command with docker
 ----
 alias gio="docker run -it --rm -v ~/:/graviteeio/config graviteeio/cli gio"
 
 $ gio --version
 ----
+
+To change the default values, you can use the environment variables
+source,shell]
+----
+$ docker run --rm -it --env GIO_APIM_TOKEN=**** --env GIO_APIM_URL=http://mygio.com graviteeio/cli
+----
+
+## Environment Variables
+|===
+
+|GIO_APIM_URL
+| Api management URL
+
+|GIO_APIM_TOKEN
+| Identification Token from API Management. Personal Access token can be generated in "User information" on API Management tool.
+
+|GIO_APIM_ORG
+| Organisation. If you use the V3 version, the value must be "DEFAULT"
+
+|GIO_APIM_ENV
+| Environment. If you use the V3 version, the value must be "DEFAULT"
+
+|http_proxy
+| Define http proxy for the http requests of gio. ex: `http://server-ip:port/` `http://USERNAME:PASSWORD@server-ip:port`
+
+|https_proxy
+| Define https proxy for the http requests of gio. ex: `https://server-ip:port/` `https://USERNAME:PASSWORD@server-ip:port`
+
+|===
