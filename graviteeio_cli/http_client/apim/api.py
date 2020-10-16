@@ -21,8 +21,8 @@ class ApiClient:
         self.httpClient = HttpClient("/management/{}apis/", config)
 
     def get(self, id=None, response_filter=None):
-        response = self.httpClient.get("{}".format(id) if id else "")
-        json_body = response.json()
+        json_body = self.httpClient.get("{}".format(id) if id else "").json()
+
         if response_filter:
             response_filter(json_body)
         return json_body
@@ -139,7 +139,9 @@ class ApiClient:
             from_timestamp = int(new_date.timestamp() * 1000)
             to_timestamp = int(now.timestamp() * 1000)
 
-        logs_total_metadata = self.httpClient.get("{}/logs?page=1&size={}&from={}&to={}&field=@timestamp&order={}".format(id, line, from_timestamp, to_timestamp, order)).json()
+        logs_total_metadata = self.httpClient.get(
+            "{}/logs?page=1&size={}&from={}&to={}&field=@timestamp&order={}".format(id, line, from_timestamp, to_timestamp, order)
+        ).json()
 
         logs = None
         # total = None
