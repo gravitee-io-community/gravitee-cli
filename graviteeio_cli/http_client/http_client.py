@@ -2,9 +2,19 @@ import requests
 import logging
 from requests import RequestException
 
-from graviteeio_cli.exeptions import GraviteeioRequestError
+from graviteeio_cli.exeptions import GraviteeioRequestError, GraviteeioError
 
 logger = logging.getLogger("client.HttpClient")
+
+
+def decorator_json_function(fn):
+    def new_json(**kwargs):
+        try:
+            return fn(**kwargs)
+        except ValueError:
+            raise GraviteeioError(msg="Response could not be decoded. (Check APIM url configuration)")
+
+    return new_json
 
 
 class HttpClient:
@@ -33,10 +43,24 @@ class HttpClient:
 
             if self.config.get_bearer():
                 self.headers["Authorization"] = self.config.get_bearer_header()["Authorization"]
+            else:
+                logger.debug("No Bearer found")
 
             params["headers"] = self.headers
             response = requests.request(verbe, self.config.url(self.context + path), **params)
             self._check(response)
+
+            # if params["toJson"]:
+            #     try:
+            #         return response.json()
+            #     except ValueError:
+            #         raise GraviteeioError(msg="Response could not be decoded. (Check APIM url configuration)")
+
+            # json_function = response.json
+
+            # new_json_function = (self, **kwargs):
+            #     json_function
+            response.json = decorator_json_function(response.json)
             return response
         except RequestException:
             logger.exception("api_client Request exception")
