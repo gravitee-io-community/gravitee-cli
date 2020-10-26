@@ -1,6 +1,7 @@
 import click
 
 from .spec_group.apply import apply
+from .spec_group.lint import lint
 
 
 @click.group(short_help="Manage API Configuration from API spec")
@@ -11,3 +12,4 @@ def spec(ctx):
 
 
 spec.add_command(apply)
+spec.add_command(lint)
