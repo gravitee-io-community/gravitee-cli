@@ -191,7 +191,7 @@ class ApiConfigResolver:
 
         root_template_file = None
         value_file = None
-        
+
         if os.path.exists(self.files["value_file"]):
             value_file = self.files["value_file"]
 
