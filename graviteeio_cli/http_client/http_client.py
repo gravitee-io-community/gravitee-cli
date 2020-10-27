@@ -2,7 +2,7 @@ import requests
 import logging
 from requests import RequestException
 
-from graviteeio_cli.exeptions import GraviteeioRequestError, GraviteeioError
+from graviteeio_cli.exeptions import GraviteeioRequestError, GraviteeioError, AuthenticationError
 
 logger = logging.getLogger("client.HttpClient")
 
@@ -34,37 +34,33 @@ class HttpClient:
         return self.request("PUT", path=path, data=data, **kwargs)
 
     def request(self, verbe, path="", **kwargs):
+
+        params = kwargs
+
+        params["proxies"] = self.config.proxies
+        params["timeout"] = self.timeout
+
+        if self.config.get_bearer():
+            self.headers["Authorization"] = self.config.get_bearer_header()["Authorization"]
+        else:
+            logger.debug("No Bearer found")
+
+        params["headers"] = self.headers
         try:
-
-            params = kwargs
-
-            params["proxies"] = self.config.proxies
-            params["timeout"] = self.timeout
-
-            if self.config.get_bearer():
-                self.headers["Authorization"] = self.config.get_bearer_header()["Authorization"]
-            else:
-                logger.debug("No Bearer found")
-
-            params["headers"] = self.headers
             response = requests.request(verbe, self.config.url(self.context + path), **params)
             self._check(response)
 
-            # if params["toJson"]:
-            #     try:
-            #         return response.json()
-            #     except ValueError:
-            #         raise GraviteeioError(msg="Response could not be decoded. (Check APIM url configuration)")
-
-            # json_function = response.json
-
-            # new_json_function = (self, **kwargs):
-            #     json_function
             response.json = decorator_json_function(response.json)
             return response
         except RequestException:
             logger.exception("api_client Request exception")
             raise GraviteeioRequestError(msg="Error Connecting to server")
+        except AuthenticationError:
+            msg = "Unauthorized access to the resource."
+            auth = self.config.get_bearer_header()
+            if not auth or "Authorization" not in auth:
+                msg = msg + " No authentication found."
+            raise AuthenticationError(msg)
 
     def _check(self, response):
 
