@@ -42,8 +42,6 @@ paths:
     post:
       summary: Create a pet
       operationId: createPets
-      tags:
-        - pets
       responses:
         '201':
           description: Null response
@@ -59,6 +57,7 @@ paths:
       operationId: showPetById
       tags:
         - pets
+        - pets2
       parameters:
         - name: petId
           in: path

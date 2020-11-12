@@ -4,9 +4,6 @@ from graviteeio_cli.lint.types.function_result import FunctionResult
 def lenght(value, **kwargs):
     """Count the length of a string an or array, the number of properties in an object, or a numeric value, and define minimum and/or maximum values."""
 
-    if not value:
-        return
-
     min = None
     max = None
     if "min" in kwargs and type(kwargs["min"]) is int:
@@ -16,12 +13,11 @@ def lenght(value, **kwargs):
         max = kwargs["max"]
 
     value_length = 0
-    if type(value) is (int or float):
-        value_length = value
-    if type(value) is list:
-        value_length = len(value) + 1
-    else:
-        value_length = len(value)
+    if value:
+        if type(value) is (int or float):
+            value_length = value
+        else:
+            value_length = len(value)
 
     results = []
 

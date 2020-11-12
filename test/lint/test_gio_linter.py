@@ -52,17 +52,17 @@ def test_oas_v3_0():
     assert len(diagResult) == 0
 
 
-def test_oas_v3_1():
-    linter = Gio_linter()
+# def test_oas_v3_1():
+#     linter = Gio_linter()
 
-    source = read_oas_yml("petstore_spec_V3_1.yml")
-    document = Document(source, DocumentType.oas)
-    diagResult = linter.run(document)
+#     source = read_oas_yml("petstore_spec_V3_1.yml")
+#     document = Document(source, DocumentType.oas)
+#     diagResult = linter.run(document)
 
-    for error in diagResult:
-        print('%s %s %s' % (error.severity, error.path, error.message))
+#     for error in diagResult:
+#         print('%s %s %s' % (error.severity, error.path, error.message))
 
-    assert len(diagResult) == 0
+#     assert len(diagResult) == 0
 
 # def test_validation_api_def():
 #     oas = None

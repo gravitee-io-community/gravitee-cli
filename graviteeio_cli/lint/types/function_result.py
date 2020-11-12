@@ -6,19 +6,14 @@ class FunctionResult:
     ):
 
         super().__init__()
+        if path:
+            new_path = []
+            for p in path:
+                if type(p) is str:
+                    new_path.append(p)
+                elif p:
+                    new_path.append(str(p))
+            path = new_path
 
-        new_path = []
-        for p in path:
-            if type(p) is str:
-                new_path.append(p)
-            elif p:
-                new_path.append(str(p))
-
-        self.path = new_path
+        self.path = path
         self.message = message
-
-    def printPath(self):
-        return ".".join(self.path)
-        # if self.path and len(self.path) > 0:
-        # else:
-        #     return ""

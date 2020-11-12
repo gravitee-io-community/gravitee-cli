@@ -1,96 +1,19 @@
-import json
 import logging
 import os
-from enum import Enum
-from io import StringIO
 
-import yaml
 from jinja2 import (Environment, FileSystemLoader, TemplateNotFound)
 
 from graviteeio_cli.exeptions import GraviteeioError
 from graviteeio_cli.extensions.jinja_filters import filter_loader
 from graviteeio_cli.commands.apim.apis.utils import update_dic_with_set
+from graviteeio_cli.core.file_format import File_Format_Enum
 
 from graviteeio_cli import environments
-from . import init_template as init
+from . import init_template as init_tpl
 
 logger = logging.getLogger("class-ApiConfigResolver")
 
-
-def load_yaml(stream):
-    return yaml.load(stream, Loader=yaml.SafeLoader)
-
-
-def load_json(stream):
-    io = StringIO(stream)
-    return json.load(io)
-
-
-def dump_yaml(data):
-    return yaml.dump(data)
-
-
-def dump_json(data):
-    io = StringIO()
-    json.dump(data, io, indent=2)
-    return io.getvalue()
-
-
-map_extention = {}
-
-
-class Data_Template_Format(Enum):
-    YAML = {
-        'num': 1,
-        'extentions': ['.yml', '.yaml'],
-        'load': load_yaml,
-        'dump': dump_yaml
-    }
-    JSON = {
-        'num': 2,
-        'extentions': ['.json'],
-        'load': load_json,
-        'dump': dump_json
-    }
-
-    def __init__(self, values):
-        self.num = values['num']
-        self.extentions = values['extentions']
-        self.load = values['load']
-        self.dump = values['dump']
-
-        for extention in values['extentions']:
-            map_extention[extention] = self
-
-    @staticmethod
-    def find(extention):
-        to_return = None
-        if extention in map_extention:
-            to_return = map_extention[extention]
-        return to_return
-
-    @staticmethod
-    def list_name():
-        return list(map(lambda c: c.name, Data_Template_Format))
-
-    @staticmethod
-    def value_of(value):
-        for data_type in Data_Template_Format:
-            if data_type.name == value.upper():
-                return data_type
-
-    @staticmethod
-    def extention_list():
-        tuple_to_return = []
-
-        for format in Data_Template_Format:
-            if type(format.extentions) is tuple:
-                for extention in format.extentions:
-                    tuple_to_return.append(extention)
-            else:
-                tuple_to_return.append(format.extentions)
-
-        return tuple(tuple_to_return)
+TEMPLATE_FORMAT = [File_Format_Enum.JSON, File_Format_Enum.YAML]
 
 
 class ApiConfigResolver:
@@ -106,11 +29,14 @@ class ApiConfigResolver:
         self.files["root_template_path_file"] = "{}/{}".format(self.folders["templates_folder"], environments.APIM_API_TEMPLATE_FILE)
 
         if not value_file or len(value_file) == 0:
-            value_file = '{}/{}'.format(resources_folder, environments.APIM_API_VALUE_FILE_NAME)
+            value_file = '{}/{}'.format(
+                resources_folder,
+                environments.APIM_API_VALUE_FILE_NAME
+            )
 
         self.files["value_file"] = value_file
 
-    def generate_init(self, format=Data_Template_Format.YAML, api_def=None, debug=False):
+    def generate_init(self, format=File_Format_Enum.YAML, api_def=None, debug=False):
         for key in self.folders:
             if debug:
                 print("mkdir {}".format(self.folders[key]))
@@ -123,9 +49,9 @@ class ApiConfigResolver:
                     print("Successfully created directory %s " % self.folders[key])
 
         write_files = {
-            self.files["root_template_path_file"].format(format.extentions[0]): init.templates[format.name.lower()]["template"],
-            self.files["value_file"].format(format.extentions[0]): init.templates[format.name.lower()]["value_file"],
-            "{}/{}".format(self.folders["settings_folder"], "Http{}".format(format.extentions[0])): init.templates[format.name.lower()]["setting_http"]
+            self.files["root_template_path_file"].format(format.extentions[0]): init_tpl.templates[format.name.lower()]["template"],
+            self.files["value_file"].format(format.extentions[0]): init_tpl.templates[format.name.lower()]["value_file"],
+            "{}/{}".format(self.folders["settings_folder"], "Http{}".format(format.extentions[0])): init_tpl.templates[format.name.lower()]["setting_http"]
         }
 
         if api_def:
@@ -196,7 +122,7 @@ class ApiConfigResolver:
             value_file = self.files["value_file"]
 
         root_template_path_file = self.files["root_template_path_file"]
-        for (data_format, extention) in ((data_format, extention) for data_format in Data_Template_Format for extention in data_format.extentions):
+        for (data_format, extention) in ((data_format, extention) for data_format in TEMPLATE_FORMAT for extention in data_format.extentions):
             if not root_template_file and os.path.exists(root_template_path_file.format(extention)):
                 self.template_format = data_format
                 root_template_file = environments.APIM_API_TEMPLATE_FILE.format(extention)
@@ -221,7 +147,6 @@ class ApiConfigResolver:
         self.api_vars["Values"] = value_file_format.load(api_value_string)
 
         settings_folder = self.folders["settings_folder"]
-        # config_files = []
 
         for file in os.listdir(settings_folder):
             if not file.startswith(('_', ".")):
@@ -232,7 +157,7 @@ class ApiConfigResolver:
                     raise GraviteeioError("Cannot open {}".format(file))
 
                 filename, file_extension = os.path.splitext(file)
-                file_format = Data_Template_Format.find(file_extension)
+                file_format = File_Format_Enum.find(file_extension)
 
                 if file_format:
                     self.api_vars[filename] = file_format.load(config_string)
