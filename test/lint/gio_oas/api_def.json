@@ -9,7 +9,7 @@
     "views": [
         "product"
     ],
-    "visibility": "public",
+    "visibility": "PUBLIC",
     "categories": [
         "categorie1",
         "categorie2"
