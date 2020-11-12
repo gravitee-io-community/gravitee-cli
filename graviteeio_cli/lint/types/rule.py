@@ -3,10 +3,12 @@ class Rule:
         self,
         name,
         description,
+        rule_type,
         message,
         severity,
         formats,
         selector,
+        field,
         validator,
         args
     ):
@@ -14,11 +16,13 @@ class Rule:
         super().__init__()
         self.name = name
         self.description = description
+        self.type = rule_type
         self.message = message
 
         self.formats = formats
         self.severity = severity
         self.selector = selector
+        self.field = field
         self.validator = validator
         self.args = args
 

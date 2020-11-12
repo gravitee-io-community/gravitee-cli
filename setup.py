@@ -61,6 +61,7 @@ def get_install_requires():
     res.append('pytimeparse==1.1.8')
     res.append('termgraph==0.2.1')
     res.append('jsonschema==3.2.0')
+    res.append('jsonpath-ng==1.5.2')
 
     return res
 
@@ -104,7 +105,7 @@ try:
     setup(
         name='graviteeio-cli',
         version=__version__,
-        description='Command line Client program in Python for graviteeio plateform',
+        description='Command line Client program in Python for graviteeio platform',
         long_description=long_description,
         long_description_content_type="text/markdown",
         url='https://github.com/gravitee-io/graviteeio-cli',
@@ -148,7 +149,7 @@ except ImportError:
     setup(
         name='graviteeio-cli',
         version=__version__,
-        description='Command line Client program in Python for graviteeio plateform',
+        description='Command line Client program in Python for graviteeio platform',
         long_description=long_description,
         long_description_content_type="text/markdown",
         url='https://github.com/gravitee-io/graviteeio-cli',
