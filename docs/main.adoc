@@ -4,7 +4,7 @@ The Graviteeio CLI is command-line interce (CLI) which helps you to manage Gravi
 
 == Current version
 
-Current version is 0.1. If you need to update, run `gio --version`
+Current version is 0.2. If you need to update, run `gio --version`
 
 == Install or run gravitee cli - gios
 
