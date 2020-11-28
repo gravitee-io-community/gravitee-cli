@@ -46,11 +46,13 @@ class File_Format_Enum(Enum):
 
     @staticmethod
     def find(extention):
+        toReturn = None
         for file_format in File_Format_Enum:
             if extention in file_format.extentions:
-                return file_format
-            else:
-                return None
+                toReturn = file_format
+                break
+
+        return toReturn
 
     @staticmethod
     def list_name():
