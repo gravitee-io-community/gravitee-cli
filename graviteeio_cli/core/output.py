@@ -148,7 +148,7 @@ class TsvOutput(Output):
         for obj in obj_list:
             items = []
             for item in obj:
-                items.appends("{}".format(item))
+                items.append("{}".format(item))
             data.append(items)
 
         click.echo("\n".join(['\t'.join(item) for item in data]))
