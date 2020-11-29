@@ -21,6 +21,10 @@ def convert_to_path_array(current_path):
 
         return path_array
 
-    toReturn = inner_convert(current_path, [])
-    toReturn.reverse()
+    if "fields" in current_path.__dict__:
+        toReturn = [current_path.fields[0]]
+    else:
+        toReturn = inner_convert(current_path, [])
+        toReturn.reverse()
+
     return toReturn

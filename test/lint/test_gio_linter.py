@@ -29,7 +29,7 @@ def test_gio_apim_api_def():
         print('%s %s %s' % (error.severity, error.path, error.message))
 
     # error with lower case of visibility
-    assert len(diagResult) == 1
+    assert len(diagResult) == 0
 
 
 def test_oas_v2():
