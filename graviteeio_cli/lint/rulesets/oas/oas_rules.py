@@ -14,9 +14,11 @@ oas_rules = {
             "message": "{error}, path: {path}",
             "formats": ["oas2"],
             "severity": "Error",
-            "validator": "oasDocumentSchema",
-            "validator_args": {
-                "schema": "oas/schemas/schema_oas2.json"
+            "validator": {
+                "func": "oasDocumentSchema",
+                "args": {
+                    "schema": "oas/schemas/schema_oas2.json"
+                }
             }
         },
         "oas3-schema": {
@@ -24,9 +26,11 @@ oas_rules = {
             "message": "{error}, path: {path}",
             "formats": ["oas3"],
             "severity": "Error",
-            "validator": "oasDocumentSchema",
-            "validator_args": {
-                "schema": "oas/schemas/schema_oas3.json"
+            "validator": {
+                "func": "oasDocumentSchema",
+                "args": {
+                    "schema": "oas/schemas/schema_oas3.json"
+                }
             }
         },
         "x-gravitee-schema": {
@@ -34,9 +38,11 @@ oas_rules = {
             "message": "{error}",
             "formats": ["oas2", "oas3"],
             "severity": "Error",
-            "validator": "oasExtGravitee",
-            "validator_args": {
-                "schema": "oas/schemas/ext_gravitee/xGraviteeIODefinition.json"
+            "validator": {
+                "func": "oasExtGravitee",
+                "args": {
+                    "schema": "oas/schemas/ext_gravitee/xGraviteeIODefinition.json"
+                }
             }
         }
     }

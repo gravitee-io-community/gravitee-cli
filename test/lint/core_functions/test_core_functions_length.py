@@ -26,17 +26,20 @@ def test_lenght_max():
     source = read_yml("petstore_spec_V3_0.yml")
     document = Document(source, DocumentType.oas)
 
-    linter.setValidator(lenght)
+    linter.setFunction(lenght)
     linter.setRules({
         "operation-singular-tag": {
             "description": "Operation may only have one tag.",
             "message": "{error}, path: {path}",
             "formats": ["oas3"],
-            "selector": "paths.*.(get, put, post, delete, options, head, patch, trace).tags",
+            "query": "paths.*.(get, put, post, delete, options, head, patch, trace)",
+            "field": "tags",
             "severity": "Error",
-            "validator": "lenght",
-            "validator_args": {
-                "max": 1
+            "validator": {
+                "func": "lenght",
+                "args": {
+                    "max": 1
+                }
             }
         }
     })
@@ -46,25 +49,30 @@ def test_lenght_max():
     assert len(diagResult) == 0
 
 
-def test_lenght_with_error():
+def test_lenght_with_error_max_min():
     linter = Gio_linter()
 
-    source = read_yml("petstore_spec_V3_0_with_error.yml")
+    source = read_yml("petstore_spec_V3_0.yml")
+    source["paths"]["/pets/{petId}"]["get"]["tags"].append("pets2")
+    del(source["paths"]["/pets"]["post"]["tags"])
+
     document = Document(source, DocumentType.oas)
 
-    linter.setValidator(lenght)
+    linter.setFunction(lenght)
     linter.setRules({
         "operation-singular-tag": {
             "description": "Operation may only have one tag.",
             "message": "{error}, path: {path}",
             "formats": ["oas3"],
             "severity": "Error",
-            "selector": "paths.*.(get, put, post, delete, options, head, patch, trace)",
+            "query": "paths.*.(get, put, post, delete, options, head, patch, trace)",
             "field": "tags",
-            "validator": "lenght",
-            "validator_args": {
-                "max": 1,
-                "min": 1
+            "validator": {
+                "func": "lenght",
+                "args": {
+                    "max": 1,
+                    "min": 1
+                }
             }
         }
     })
@@ -76,24 +84,28 @@ def test_lenght_with_error():
     assert diagResult[0].path == ['paths', '/pets', 'post', 'tags']
     assert diagResult[1].path == ['paths', '/pets/{petId}', 'get', 'tags']
 
-def test_lenght_with_error():
+
+def test_lenght_with_error_min():
     linter = Gio_linter()
 
-    source = read_yml("petstore_spec_V3_0_with_error.yml")
+    source = read_yml("petstore_spec_V3_0.yml")
+    del(source["paths"]["/pets"]["post"]["tags"])
     document = Document(source, DocumentType.oas)
 
-    linter.setValidator(lenght)
+    linter.setFunction(lenght)
     linter.setRules({
         "operation-singular-tag": {
             "description": "Operation may only have one tag.",
             "message": "{error}, path: {path}",
             "formats": ["oas3"],
             "severity": "Error",
-            "selector": "paths.*.(get, put, post, delete, options, head, patch, trace)",
+            "query": "paths.*.(get, put, post, delete, options, head, patch, trace)",
             "field": "tags",
-            "validator": "lenght",
-            "validator_args": {
-                "min": 1
+            "validator": {
+                "func": "lenght",
+                "args": {
+                    "min": 1
+                }
             }
         }
     })

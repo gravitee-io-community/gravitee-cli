@@ -2,7 +2,6 @@
 import os
 import json
 import yaml
-import jmespath
 
 from graviteeio_cli.lint.rulesets.oas.functions.oasDocumentSchema import oasDocumentSchema
 from graviteeio_cli.lint.rulesets.oas.functions.oasExtGravitee import oasExtGravitee
@@ -42,10 +41,7 @@ def test_petstore_spec_v3():
 
 
 def test_petstore_spec_x_gravitee():
-    # query = '"x-graviteeio-definition"'
     source = read_oas_yml("petstore_spec_gravitee.yml")
-
-    # result = jmespath.search(query, source)
 
     errors = oasExtGravitee(source, schema="oas/schemas/ext_gravitee/xGraviteeIODefinition.json")
 
@@ -56,10 +52,7 @@ def test_petstore_spec_x_gravitee():
 
 
 def test_petstore_spec_with_none_x_gravitee():
-    # query = '"x-graviteeio-definition"'
     source = read_oas_json("petstore_spec_v3_0.json")
-
-    # result = jmespath.search(query, source)
 
     errors = oasExtGravitee(source, schema="oas/schemas/ext_gravitee/xGraviteeIODefinition.json")
 
@@ -67,12 +60,3 @@ def test_petstore_spec_with_none_x_gravitee():
         print('%s %s' % (error.path, error.message))
 
     assert len(errors) == 0
-
-
-def test_petstore_spec_oasOpIdUnique():
-    query = "paths.*.*.operationId[]"
-    source = read_oas_json("petstore_spec_v3_0.json")
-
-    result = jmespath.search(query, source)
-
-    print("test")
