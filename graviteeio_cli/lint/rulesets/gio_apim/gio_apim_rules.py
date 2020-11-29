@@ -11,9 +11,11 @@ gio_apim_rules = {
             "message": "{error}, path: {path}",
             "formats": ["gio_apim"],
             "severity": "Error",
-            "validator": "gio_apim_Document_Schema",
-            "validator_args": {
-                "schema": "gio_apim/schemas/schema_gio_apimv3.json"
+            "validator": {
+                "func": "gio_apim_Document_Schema",
+                "args": {
+                    "schema": "gio_apim/schemas/schema_gio_apimv3.json"
+                }
             }
         }
     }
