@@ -1,30 +1,35 @@
+from graviteeio_cli.exeptions import GraviteeioError
+from graviteeio_cli.lint.types.enums import DiagSeverity
+
+
 class Rule:
     def __init__(
         self,
         name,
-        description,
-        rule_type,
-        message,
-        severity,
-        formats,
-        selector,
-        field,
-        validator,
-        args
+        validator_obj,
+        **params,
     ):
 
         super().__init__()
-        self.name = name
-        self.description = description
-        self.type = rule_type
-        self.message = message
 
-        self.formats = formats
-        self.severity = severity
-        self.selector = selector
-        self.field = field
-        self.validator = validator
-        self.args = args
+        rule_params_required = ["severity", "formats", "description"]
+
+        for param_required in rule_params_required:
+            if param_required not in params:
+                raise GraviteeioError("Error loading rulset. No [{}] found for rule [{}]".format(param_required, name))
+
+        self.name = name
+        self.description = params["description"]
+
+        self.type = params["type"] if "type" in params else None
+        self.message = params["description"] if "message" not in params else params["message"]
+
+        self.formats = params["formats"]
+        self.severity = DiagSeverity.value_of(params["severity"])
+        self.query = params["query"] if "query" in params else None
+        self.field = params["field"] if "field" in params else None
+
+        self.validator = validator_obj
 
 
 
