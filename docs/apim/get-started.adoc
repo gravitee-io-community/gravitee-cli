@@ -93,8 +93,8 @@ gio apim apis definition generate
 ----
 Successfully created directory ./templates 
 Successfully created directory ./settings 
-Successfully created file ./templates/apim_config.yml.j2 
-Successfully created file ./apim_values.yml 
+Successfully created file ./templates/api_config.yml.j2 
+Successfully created file ./Graviteeio.yml 
 Successfully created file ./settings/Http.yml 
 ----
 
@@ -102,8 +102,8 @@ When you execute this command, the folders and files are created in the current 
 
 you can see:
 
-* `./templates/apim_config.yml.j2`: api definition template.
-* `./apim_values.yml`: this file contains the values for the api definition template.
+* `./templates/api_config.yml.j2`: api definition template.
+* `./Graviteeio.yml`: this file contains the values for the api definition template.
 * `./settings`: this folder contains setting values. In the folder, you can find the file `Http.yml` that contains default value http. These values are inserted in the api definition template.
 
 If you are still on the profile `demo` your api definition must certainly already exist.
@@ -142,7 +142,7 @@ Usage: gio apim apis definition apply [OPTIONS]
 
 Options:
   --api TEXT          API id  [required]
-  -f, --file PATH     Path of value file. By default `apim_values` is loaded
+  -f, --file PATH     Path of value file. By default `Graviteeio` is loaded
                       in the current directory either with the extension
                       `.json`or `.yaml` or `.yml` depending on the format of
                       the data.
