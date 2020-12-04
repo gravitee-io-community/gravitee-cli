@@ -6,7 +6,7 @@ from .apply import apply
 @click.command(short_help="Create API definition.")
 @click.option(
     '--file', '-f', type=click.Path(exists=True), required=False,
-    help="Path of value file. By default `apim_values` is loaded in the current directory either with the extension `.json`or `.yaml` or `.yml` depending on the format of the data."
+    help="Path of value file. By default `Graviteeio` is loaded in the current directory either with the extension `.json`or `.yaml` or `.yml` depending on the format of the data."
 )
 @click.option(
     '--set', '-s', multiple=True,
