@@ -2,7 +2,6 @@ import os
 import json
 import yaml
 
-from graviteeio_cli.lint.rulesets.oas.functions.oasOpIdUnique import oasOpIdUnique
 from graviteeio_cli.lint.gio_linter import Gio_linter
 from graviteeio_cli.lint.types.document import Document, DocumentType
 
@@ -27,8 +26,7 @@ def test_OpIdUnique():
     source["paths"]["/pets"]["post"]["operationId"] = "listPets"
 
     document = Document(source, DocumentType.oas)
-
-    linter.setFunction(oasOpIdUnique)
+    
     linter.setRules({
         "operation-singular-tag": {
             "description": "Every operation must have a unique `operationId`.",

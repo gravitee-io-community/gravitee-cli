@@ -1,12 +1,15 @@
-from graviteeio_cli.lint.types.enums import DiagSeverity
 from .functions.oasDocumentSchema import oasDocumentSchema
 from .functions.oasExtGravitee import oasExtGravitee
+from .functions.oasOp2xxResponse import oasOp2xxResponse
+from .functions.oasOpIdUnique import oasOpIdUnique
 
 oas_rules = {
     "formats": ["oas2", "oas3"],
     "functions": [
         oasDocumentSchema,
-        oasExtGravitee
+        oasExtGravitee,
+        oasOp2xxResponse,
+        oasOpIdUnique
     ],
     "rules": {
         "oas2-schema": {
