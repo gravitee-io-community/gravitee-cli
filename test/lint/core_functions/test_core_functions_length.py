@@ -3,7 +3,6 @@ import json
 import yaml
 
 import jsonpath_ng as jsonpath
-from graviteeio_cli.lint.functions.length import lenght
 from graviteeio_cli.lint.gio_linter import Gio_linter
 from graviteeio_cli.lint.types.document import Document, DocumentType
 
@@ -26,7 +25,6 @@ def test_lenght_max():
     source = read_yml("petstore_spec_V3_0.yml")
     document = Document(source, DocumentType.oas)
 
-    linter.setFunction(lenght)
     linter.setRules({
         "operation-singular-tag": {
             "description": "Operation may only have one tag.",
@@ -58,7 +56,6 @@ def test_lenght_with_error_max_min():
 
     document = Document(source, DocumentType.oas)
 
-    linter.setFunction(lenght)
     linter.setRules({
         "operation-singular-tag": {
             "description": "Operation may only have one tag.",
@@ -92,7 +89,6 @@ def test_lenght_with_error_min():
     del(source["paths"]["/pets"]["post"]["tags"])
     document = Document(source, DocumentType.oas)
 
-    linter.setFunction(lenght)
     linter.setRules({
         "operation-singular-tag": {
             "description": "Operation may only have one tag.",

@@ -2,7 +2,6 @@ import os
 import json
 import yaml
 
-from graviteeio_cli.lint.functions.defined import defined
 from graviteeio_cli.lint.gio_linter import Gio_linter
 from graviteeio_cli.lint.types.document import Document, DocumentType
 
@@ -28,7 +27,6 @@ def setup_linter(source, rule):
 
     document = Document(source, DocumentType.oas)
 
-    linter.setFunction(defined)
     linter.setRules(rule)
 
     diagResult = linter.run(document)
