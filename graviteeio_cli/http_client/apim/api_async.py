@@ -17,7 +17,7 @@ class ApiClientAsync:
 
         api_list = self.api_client.get()
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=40) as executor:
             loop = asyncio.get_event_loop()
             futures = [
                 loop.run_in_executor(
@@ -32,5 +32,6 @@ class ApiClientAsync:
         return api_list
 
     def complete_state(self, api):
-        deploy_state = self.api_client.state(api["id"])
+        id = api["id"]
+        deploy_state = self.api_client.state(id)
         api["is_synchronized"] = deploy_state["is_synchronized"]

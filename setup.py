@@ -118,9 +118,9 @@ try:
             'License :: OSI Approved :: Apache Software License',
             'Natural Language :: English',
             'Operating System :: OS Independent',
-            'Programming Language :: Python :: 3.5',
-            'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7'
+            'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9'
         ],
         keywords=["Graviteeio", "gio", "gravitee", "configuration", "cli"],
         # packages = ["graviteeio_cli"],
@@ -166,9 +166,9 @@ except ImportError:
             'License :: OSI Approved :: Apache Software License',
             'Natural Language :: English',
             'Operating System :: OS Independent',
-            'Programming Language :: Python :: 3.5',
-            'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7'
+            'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9'
         ],
         keywords=["Graviteeio", "gio", "gravitee", "configuration", "cli"],
         # packages=["graviteeio_cli"],
