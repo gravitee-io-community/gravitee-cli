@@ -7,6 +7,8 @@ from graviteeio_cli.http_client.apim.api import ApiClient
 from graviteeio_cli.commands.apim.apis.deploy import deploy
 from graviteeio_cli.commands.apim.apis.start import start
 from graviteeio_cli.resolvers.api_conf_resolver import ApiConfigResolver
+from graviteeio_cli.services import lint_service
+from graviteeio_cli.lint.types.document import DocumentType
 
 
 @click.command(short_help="Update API definition.")
@@ -18,7 +20,7 @@ from graviteeio_cli.resolvers.api_conf_resolver import ApiConfigResolver
 @click.option(
     '--file', '-f',
     type=click.Path(exists=True), required=False,
-    help="Path of value file. By default `apim_values` is loaded in the current directory either with the extension `.json` or `.yaml` or `.yml` depending on the format of the data."
+    help="Path of value file. By default `Graviteeio` is loaded in the current directory either with the extension `.json` or `.yaml` or `.yml` depending on the format of the data."
 )
 @click.option(
     '--set', '-s', multiple=True,
@@ -49,6 +51,12 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
 
     api_resolver = ApiConfigResolver(config_path, file)
     api_data = api_resolver.get_api_data(debug=debug, set_values=set)
+
+    # Lint
+    valid = lint_service.validate(api_data, DocumentType.gio_apim)
+    if not valid:
+        click.echo(click.style(" API definition has not been applied", fg="red"))
+        return
 
     if debug:
         click.echo("Data sent.")

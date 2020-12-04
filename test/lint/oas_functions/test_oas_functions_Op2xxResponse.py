@@ -2,7 +2,6 @@ import os
 import json
 import yaml
 
-from graviteeio_cli.lint.rulesets.oas.functions.oasOp2xxResponse import oasOp2xxResponse
 from graviteeio_cli.lint.gio_linter import Gio_linter
 from graviteeio_cli.lint.types.document import Document, DocumentType
 
@@ -42,7 +41,6 @@ def test_Op2xxResponse():
 
     document = Document(source, DocumentType.oas)
 
-    linter.setFunction(oasOp2xxResponse)
     linter.setRules(RULE)
 
     diagResult = linter.run(document)
@@ -60,7 +58,6 @@ def test_Op2xxResponse_with_error():
 
     document = Document(source, DocumentType.oas)
 
-    linter.setFunction(oasOp2xxResponse)
     linter.setRules(RULE)
 
     diagResult = linter.run(document)
