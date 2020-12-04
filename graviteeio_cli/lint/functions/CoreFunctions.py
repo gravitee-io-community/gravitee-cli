@@ -6,6 +6,7 @@ from .casing import casing
 from .pattern import pattern
 from .starts_with import starts_with
 from .value_of import value_of
+from .compare import compare
 
 CoreFunctions = [
     length,
@@ -15,5 +16,6 @@ CoreFunctions = [
     casing,
     pattern,
     starts_with,
-    value_of
+    value_of,
+    compare
 ]
