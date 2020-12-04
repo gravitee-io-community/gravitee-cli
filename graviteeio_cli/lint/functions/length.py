@@ -1,7 +1,7 @@
 from graviteeio_cli.lint.types.function_result import FunctionResult
 
 
-def lenght(value, **kwargs):
+def length(value, **kwargs):
     """Count the length of a string an or array, the number of properties in an object, or a numeric value, and define minimum and/or maximum values."""
 
     min = None
