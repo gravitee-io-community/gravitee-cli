@@ -20,7 +20,7 @@ def logout(obj):
         auth_client = obj['auth_client']
         try:
             auth_client.logout()
-        except AuthenticationError:
+        except Exception:
             logger.exception("request logout")
 
         config.remove_active_auth()

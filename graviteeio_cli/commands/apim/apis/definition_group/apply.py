@@ -9,6 +9,7 @@ from graviteeio_cli.commands.apim.apis.start import start
 from graviteeio_cli.resolvers.api_conf_resolver import ApiConfigResolver
 from graviteeio_cli.services import lint_service
 from graviteeio_cli.lint.types.document import DocumentType
+from graviteeio_cli.core.config import GraviteeioConfig
 
 
 @click.command(short_help="Update API definition.")
@@ -48,12 +49,13 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
     API propetries are defined in plain YAML or JSON files.
     """
     api_client: ApiClient = ctx.obj['api_client']
+    gio_config: GraviteeioConfig = ctx.obj['config']
 
     api_resolver = ApiConfigResolver(config_path, file)
     api_data = api_resolver.get_api_data(debug=debug, set_values=set)
 
     # Lint
-    valid = lint_service.validate(api_data, DocumentType.gio_apim)
+    valid = lint_service.validate(api_data, DocumentType.gio_apim, gio_config.linter_conf)
     if not valid:
         click.echo(click.style(" API definition has not been applied", fg="red"))
         return
@@ -63,18 +65,18 @@ def apply(ctx, api_id, file, set, debug, config_path, with_deploy):
         click.echo(json.dumps(api_data))
     else:
         if api_id:
-            click.echo("Starting to apply API: [{}] '{}'.".format(api_id, api_data["name"]))
+            click.echo(f"Starting to apply API: [{api_id}] '{api_data['name']}'.")
             resp = api_client.update_import(api_id, api_data)
-            click.echo("API [{}] is updated".format(api_id))
+            click.echo(f"API [{api_id}] is updated")
 
             if with_deploy:
                 ctx.invoke(deploy, api_id=api_id)
 
         else:
-            click.echo("Starting to create API [{}].".format(api_data["name"]))
+            click.echo(f"Starting to create API [{api_data['name']}].")
             resp = api_client.create_import(api_data)
             api_id = resp["id"]
-            click.echo("API has been created with id [{}].".format(api_id))
+            click.echo(f"API has been created with id [{api_id}].")
 
             if with_deploy:
                 ctx.invoke(start, api_id=api_id)

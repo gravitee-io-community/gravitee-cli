@@ -4,6 +4,7 @@ from graviteeio_cli.exeptions import GraviteeioError
 from graviteeio_cli.http_client.apim.api import ApiClient
 from graviteeio_cli.services import lint_service
 from graviteeio_cli.lint.types.document import DocumentType
+from graviteeio_cli.core.config import GraviteeioConfig
 
 
 @click.command(short_help="Create/Update an API from spec.")
@@ -18,6 +19,7 @@ def apply(obj, api_id, file):
     Allow to create/update an API from spec API like Swagger or OpenApiSpec (OAS)
     """
     api_client: ApiClient = obj['api_client']
+    gio_config: GraviteeioConfig = obj['config']
 
     try:
         with open(file, 'r') as f:
@@ -26,7 +28,7 @@ def apply(obj, api_id, file):
         raise GraviteeioError("Missing values file {}".format(file))
 
     #lint
-    valid = lint_service.validate_from_file(file, api_spec, DocumentType.oas)
+    valid = lint_service.validate_from_file(file, api_spec, DocumentType.oas, gio_config.linter_conf)
     if not valid:
         click.echo(click.style(" oas specification has not been applied", fg="red"))
         return

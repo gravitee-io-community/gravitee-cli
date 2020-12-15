@@ -8,6 +8,7 @@ from .environments import GRAVITEEIO_CONF_FILE
 from graviteeio_cli.commands.apim.apim import apim
 from graviteeio_cli.commands.am.am import am
 from graviteeio_cli.commands.profiles import profiles
+from graviteeio_cli.commands.linter import linter
 from graviteeio_cli.core.config import GraviteeioConfig
 
 # Enable shell completion.
@@ -55,6 +56,7 @@ def main(ctx, config, log, log_level):
 main.add_command(apim)
 main.add_command(am)
 main.add_command(profiles)
+main.add_command(linter)
 
 if __name__ == '__main__':
     main()

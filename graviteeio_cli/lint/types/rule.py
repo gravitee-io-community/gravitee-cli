@@ -16,7 +16,7 @@ class Rule:
 
         for param_required in rule_params_required:
             if param_required not in params:
-                raise GraviteeioError("Error loading rulset. No [{}] found for rule [{}]".format(param_required, name))
+                raise GraviteeioError("Error loading ruleset. No [{}] found for rule [{}]".format(param_required, name))
 
         self.name = name
         self.description = params["description"]

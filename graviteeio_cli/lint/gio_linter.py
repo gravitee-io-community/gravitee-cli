@@ -52,9 +52,9 @@ class Gio_linter:
             logger.info("Load ruleSet {}".format(name))
 
             if "validator" not in rule:
-                raise GraviteeioError("Error loading rulset. No [{}] found for rule [{}]".format("validator", name))
+                raise GraviteeioError("Error loading ruleset. No [{}] found for rule [{}]".format("validator", name))
             elif "func" not in rule["validator"]:
-                raise GraviteeioError("Error loading rulset. No [{}] found for rule [{}]".format("validator.func", name))
+                raise GraviteeioError("Error loading ruleset. No [{}] found for rule [{}]".format("validator.func", name))
 
             if not rule["validator"]["func"] in self.functions:
                 logger.warning("Rule {} is not applied. Not validator [{}] found.".format(name, rule["validator"]["func"]))
@@ -132,7 +132,11 @@ class Gio_linter:
 
             result_message = None
             if result.message:
-                result_message = result.message.format(field=path[-1] if path and len(path) > 0 else "")
+                if path and len(path) > 0:
+                    result_message = result.message.replace("{", "{{").replace("}", "}}")
+                    result_message = result_message.format(field="path[-1]")
+                else:
+                    result_message = result.message
 
             message = rule.message.format(
                 error=result_message,
