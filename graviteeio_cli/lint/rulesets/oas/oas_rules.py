@@ -2,6 +2,7 @@ from .functions.oasDocumentSchema import oasDocumentSchema
 from .functions.oasExtGravitee import oasExtGravitee
 from .functions.oasOp2xxResponse import oasOp2xxResponse
 from .functions.oasOpIdUnique import oasOpIdUnique
+from .functions.oasOpParams import oasOpParams
 
 oas_rules = {
     "formats": ["oas2", "oas3"],
@@ -9,7 +10,8 @@ oas_rules = {
         oasDocumentSchema,
         oasExtGravitee,
         oasOp2xxResponse,
-        oasOpIdUnique
+        oasOpIdUnique,
+        oasOpParams
     ],
     "rules": {
         "oas2-schema": {
