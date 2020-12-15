@@ -17,3 +17,15 @@ def test_lint_service():
     api_spec = read_yml("petstore_spec.yml")
 
     assert not lint_service.validate(api_spec, DocumentType.oas)
+
+
+def test_lint_service_with_ruleset_path():
+    api_spec = read_yml("petstore_spec.yml")
+
+    assert not lint_service.validate(api_spec, DocumentType.oas, {"ruleset_files": ["{}/resources/{}".format(dir_name, "ruleset.yml")], "ruleset_ttl": 5})
+
+
+# def test_lint_service():
+#     api_spec = read_yml("petstore_spec.yml")
+
+#     assert not lint_service.validate(api_spec, DocumentType.oas, {"rulset_file": "https://raw.githubusercontent.com/GGui/graviteeio-lint-ruleset/main/ruleset.yml","rulset_ttl":5})

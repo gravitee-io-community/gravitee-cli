@@ -23,7 +23,7 @@ from ....exeptions import GraviteeioError
               type=click.Choice(OutputFormatType.list_name(), case_sensitive=False))
 @click.option('-q', '--query',
               default="[].{Time: time, Percent: percent}",
-              help='Execute JMESPath query. Default: `[].{Time: time, Percent: percent}` eg: filtered on 5xx status `[?status==`5xx`].{Status: status, Hits: hits, Percent: percent}`')
+              help='Execute JMESPath query. Default: `[].{Time: time, Percent: percent}`')
 # @click.option('-tf','--time-frame',
 #               default="5m",
 #               help="timeframe between now and the vale. Default: `5m`. m -> minute, h -> hour, d -> days")

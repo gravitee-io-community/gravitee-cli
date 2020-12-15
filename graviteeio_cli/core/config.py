@@ -62,6 +62,8 @@ class GraviteeioConfig:
             self.config.read(config_file)
             self._load_config()
 
+        self._load_linter_conf()
+
     def getGraviteeioConfigData(self, module: GioModule):
         return self.config_module[module].data
 
@@ -90,6 +92,23 @@ class GraviteeioConfig:
         self.profile = self.config['DEFAULT']['current_profile']
         for key in self.config_module:
             self.config_module[key].load_config(self.profile)
+
+    def _load_linter_conf(self):
+        if "linter_conf" in self.config['DEFAULT']:
+            self.linter_conf = json.loads(self.config['DEFAULT']['linter_conf'])
+        else:
+            self.linter_conf = {
+                "ruleset_files": environments.DEFAULT_LINTER_RULESET_FILES,
+                "ruleset_ttl": environments.DEFAULT_LINTER_RULESET_TTL
+            }
+
+    def save_linter_conf(self, **kwargs):
+        for key in kwargs:
+            self.linter_conf[key] = kwargs[key]
+
+        self.config.set("DEFAULT", "linter_conf", json.dumps(self.linter_conf))
+        with open(self.config_file, 'w') as fileObj:
+            self.config.write(fileObj)
 
     def save(self, profile, module, **kwargs):
         if not profile:
@@ -132,7 +151,6 @@ class GraviteeioConfig:
             self.config.write(fileObj)
 
     def display_profile(self):
-
         to_return = {
             "profile": "{}".format(self.profile),
             "modules": []

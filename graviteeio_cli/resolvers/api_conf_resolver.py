@@ -135,6 +135,12 @@ class ApiConfigResolver:
             if root_template_file and value_file:
                 break
 
+        if not root_template_file:
+            raise GraviteeioError("Missing file {} or {}".format(
+                environments.APIM_API_TEMPLATE_FILE.format(".yml"),
+                environments.APIM_API_TEMPLATE_FILE.format(".json"))
+            )
+
         self.template = self._get_template(root_template_file, self.folders["templates_folder"])
 
         try:
