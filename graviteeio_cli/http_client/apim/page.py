@@ -35,8 +35,8 @@ class PageClient:
     def update_content(self, page_id, api_id, content):
         return self.httpClient.put(
             self._build_url(page_id, api_id, "content"),
-            data=json.dumps(content)
-        ).json()
+            data=content
+        )
 
     def get(self, page_id, api_id):
         return self.httpClient.get(
