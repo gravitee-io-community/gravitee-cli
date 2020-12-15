@@ -16,6 +16,15 @@ paths:
       tags:
         - pets
       parameters:
+        - name: tags
+          in: query
+          description: tags to filter by
+          required: false
+          style: form
+          schema:
+            type: array
+            items:
+              type: string
         - name: limit
           in: query
           description: How many items to return at one time (max 100)
