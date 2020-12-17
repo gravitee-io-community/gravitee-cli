@@ -15,7 +15,6 @@ def stop(obj, api_id):
     api_client: ApiClient = obj['api_client']
     try:
         api_client.stop(api_id)
+        click.echo(f"API [{api_id}] is stopped.")
     except GraviteeioError:
-        click.echo("Error: " + click.style("API [{}]could not be stopped.".format(api_id), fg="red"))
-
-    click.echo("API [{}] is stopped.".format(api_id))
+        click.echo("Error: " + click.style(f"API [{api_id}]could not be stopped.", fg="red"))
