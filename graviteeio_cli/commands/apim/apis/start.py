@@ -14,7 +14,6 @@ def start(obj, api_id):
     api_client: ApiClient = obj['api_client']
     try:
         api_client.start(api_id)
+        click.echo(f"API [{api_id}] is started.")
     except GraviteeioError:
-        click.echo("Error: " + click.style("API [{}] could not be started.".format(api_id), fg="red"))
-
-    click.echo("API [{}] is started.".format(api_id))
+        click.echo("Error: " + click.style(f"API [{api_id}] could not be started.", fg="red"))
