@@ -47,17 +47,17 @@ class ApiClient:
             "version": "default"
         }
 
-        response = self.httpClient.get("{}/export".format(id), params=params).json()
+        response = self.httpClient.get(f"{id}/export", params=params).json()
         if response_filter:
             response_filter(response)
 
         return response
 
     def update(self, id, api_data):
-        return self.httpClient.put("{}".format(id), data=json.dumps(api_data)).json()
+        return self.httpClient.put(f"{id}", data=json.dumps(api_data)).json()
 
     def update_import(self, id, api_data):
-        return self.httpClient.post("{}/import".format(id), data=json.dumps(api_data)).json()
+        return self.httpClient.put(f"{id}/import", data=json.dumps(api_data)).json()
 
     def update_oas(self, id, oas):
         data = {
@@ -76,7 +76,7 @@ class ApiClient:
         # }
         # return self.httpClient.post("{}".format(id), params)
         return self.httpClient.post(
-            "{}?action={}".format(id, action_type.name)
+            f"{id}?action={action_type.name}"
         )
 
     def start(self, id):
@@ -86,10 +86,10 @@ class ApiClient:
         return self.action(id, Api_Action.STOP)
 
     def state(self, id):
-        return self.httpClient.get("{}/state".format(id)).json()
+        return self.httpClient.get(f"{id}/state").json()
 
     def deploy(self, id):
-        return self.httpClient.post("{}/deploy".format(id))
+        return self.httpClient.post(f"{id}/deploy")
 
     def status(self, id, time_frame_seconds=300):
         now = datetime.now()
@@ -99,15 +99,14 @@ class ApiClient:
         now_millisec = int(now.timestamp() * 1000)
 
         return self.httpClient.get(
-            "{}/analytics?type=group_by&field=status&ranges=100:199%3B200:299%3B300:399%3B400:499%3B500:599&interval=600000&from={}&to={}&"\
-            .format(id, new_date_millisec, now_millisec)
+            f"{id}/analytics?type=group_by&field=status&ranges=100:199%3B200:299%3B300:399%3B400:499%3B500:599&interval=600000&from={new_date_millisec}&to={now_millisec}&"
         ).json()
 
     def health(self, id):
         params = {
             "type": "availability"
         }
-        return self.httpClient.get("{}/health".format(id), params).json()
+        return self.httpClient.get(f"{id}/health", params).json()
 
     def logs(self, id, line, from_time=None, to_time=None, time_frame_seconds=None, order=False):
         if not from_time and not to_time and not time_frame_seconds:
@@ -124,7 +123,7 @@ class ApiClient:
             to_timestamp = int(now.timestamp() * 1000)
 
         logs_total_metadata = self.httpClient.get(
-            "{}/logs?page=1&size={}&from={}&to={}&field=@timestamp&order={}".format(id, line, from_timestamp, to_timestamp, order)
+            f"{id}/logs?page=1&size={line}&from={from_timestamp}&to={to_timestamp}&field=@timestamp&order={order}"
         ).json()
 
         logs = None

@@ -1,27 +1,5 @@
 import click
 
-EXCLUDED_API_VALUES = [
-    'owner',
-    'picture_url',
-    'deployed_at',
-    'created_at',
-    'updated_at',
-    'lifecycle_state',
-    'id',
-    'state',
-    'entrypoints',
-    'workflow_state',
-    'picture'
-]
-
-EXLUDED_API_PLAN_VALUES = [
-    'id',
-    'apis',
-    'created_at',
-    'updated_at',
-    'published_at'
-]
-
 
 def update_dic_with_set(set_value, dic):
     (key, value) = set_value.split('=')
@@ -53,18 +31,6 @@ def __update_dict(key, value, dic):
             __update_dict(keys[1], value, dic[new_key])
         else:
             __update_dict(keys[1], value, dic[new_key][index_list])
-
-
-def filter_api_values(api_data):
-    for key in EXCLUDED_API_VALUES:
-        if key in api_data:
-            del api_data[key]
-
-    if 'plans' in api_data:
-        for plan in api_data['plans']:
-            for key in EXLUDED_API_PLAN_VALUES:
-                if key in plan:
-                    del plan[key]
 
 
 def display_dict_differ(dict_differ):
