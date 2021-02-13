@@ -11,7 +11,7 @@ from graviteeio_cli.extensions.jmespath_functions import GioFunctions
 
 from ....exeptions import GraviteeioError
 
-logger = logging.getLogger("command-apim-list")
+logger = logging.getLogger("command-apim-api-list")
 
 
 @click.command(short_help="Displays API list.")

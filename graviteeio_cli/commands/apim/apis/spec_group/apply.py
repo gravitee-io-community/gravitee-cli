@@ -11,10 +11,10 @@ from graviteeio_cli.core.config import GraviteeioConfig
 @click.option('--api', 'api_id',
               help='API id',
               required=False)
-@click.option('--file', '-f', type=click.Path(exists=True), required=True,
+@click.option('--spec', '-sf', 'spec_file', type=click.Path(exists=True), required=True,
               help="Spec file (Swagger 2.0 / OAS 3.0)")
 @click.pass_obj
-def apply(obj, api_id, file):
+def apply(obj, api_id, spec_file):
     """
     Allow to create/update an API from spec API like Swagger or OpenApiSpec (OAS)
     """
@@ -22,13 +22,13 @@ def apply(obj, api_id, file):
     gio_config: GraviteeioConfig = obj['config']
 
     try:
-        with open(file, 'r') as f:
+        with open(spec_file, 'r') as f:
             api_spec = f.read()
     except FileNotFoundError:
-        raise GraviteeioError("Missing values file {}".format(file))
+        raise GraviteeioError("Missing values file {}".format(spec_file))
 
     #lint
-    valid = lint_service.validate_from_file(file, api_spec, DocumentType.oas, gio_config.linter_conf)
+    valid = lint_service.validate_from_file(spec_file, api_spec, DocumentType.oas, gio_config.linter_conf)
     if not valid:
         click.echo(click.style(" oas specification has not been applied", fg="red"))
         return

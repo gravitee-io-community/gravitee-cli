@@ -41,6 +41,7 @@ class File_Format_Enum(Enum):
     def __init__(self, values):
         self.num = values['num']
         self.extentions = values['extentions']
+        self.extention = values['extentions'][0]
         self.load = values['load']
         self.dump = values['dump']
 
