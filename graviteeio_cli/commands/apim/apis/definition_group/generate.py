@@ -5,8 +5,8 @@ import click
 
 from graviteeio_cli.http_client.apim.api import ApiClient
 
-from ..utils import filter_api_values
-from graviteeio_cli.resolvers.api_conf_resolver import ApiConfigResolver, TEMPLATE_FORMAT
+from graviteeio_cli.core.dic_filter_data import filter_api_values
+from graviteeio_cli.resolvers.conf_resolver import ConfigResolver, Config_Type, CONFIG_FORMATS
 from graviteeio_cli.core.file_format import File_Format_Enum
 
 logger = logging.getLogger("command-apim-def-generate")
@@ -22,7 +22,7 @@ logger = logging.getLogger("command-apim-def-generate")
 @click.option(
     '--format', default="yaml",
     show_default=True,
-    type=click.Choice(list(map(lambda f: f.name.lower(), TEMPLATE_FORMAT)), case_sensitive=False),
+    type=click.Choice(list(map(lambda f: f.name.lower(), CONFIG_FORMATS)), case_sensitive=False),
     help='Generated format.',
 )
 @click.option(
@@ -40,9 +40,10 @@ def generate(obj, config_path, format, from_id):
         api_client: ApiClient = obj['api_client']
         api_def_string = api_client.get_export(from_id, filter_api_values)
 
-    api_resolver = ApiConfigResolver(config_path)
+    resolver = ConfigResolver(config_path)
 
-    api_resolver.generate_init(
+    resolver.generate_init(
+        Config_Type.API,
         format=File_Format_Enum.value_of(format),
-        api_def=api_def_string
+        config_values=api_def_string
     )

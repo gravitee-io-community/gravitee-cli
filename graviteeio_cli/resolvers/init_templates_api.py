@@ -1,4 +1,3 @@
-
 default_value_file_yaml = \
  'version: "1.0"\n' + \
  'name: My first api\n' +\
@@ -54,6 +53,7 @@ default_setting_http_json = \
  '}'
 
 default_template_yaml = \
+ 'gravitee: 1.0.0\n' +\
  'version: {{ Values.version}}\n' +\
  'name: {{ Values.name}}\n' +\
  'description: {{ Values.description}}\n' +\
@@ -99,6 +99,7 @@ default_template_yaml = \
 
 default_template_json = \
  '{\n' +\
+ '    "gravitee": "1.0.0",\n' +\
  '    "version": "{{ Values.version}}",\n' +\
  '    "name": "{{ Values.name}}",\n' +\
  '    "description": "{{ Values.description}}",\n' +\
@@ -150,16 +151,3 @@ default_template_json = \
  '    {% endfor -%}\n' +\
  '    ]\n' +\
  '}'
-
-templates = {
-    "json": {
-        "value_file": default_value_file_json,
-        "setting_http": default_setting_http_json,
-        "template": default_template_json
-    },
-    "yaml": {
-        "value_file": default_value_file_yaml,
-        "setting_http": default_setting_http_yaml,
-        "template": default_template_yaml
-    }
-}
