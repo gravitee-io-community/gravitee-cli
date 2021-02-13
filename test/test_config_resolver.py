@@ -1,4 +1,4 @@
-from graviteeio_cli.resolvers.api_conf_resolver import ApiConfigResolver
+from graviteeio_cli.resolvers.conf_resolver import ConfigResolver, Config_Type
 import os
 import json
 
@@ -22,8 +22,8 @@ def return_json_data_and_expected(api_data, result_file):
 
 
 def test_generate_simple_api_yaml():
-    api_sch = ApiConfigResolver(resources_folder_yaml)
-    api_data = api_sch.get_api_data()
+    api_sch = ConfigResolver(resources_folder_yaml)
+    api_data = api_sch.get_data(Config_Type.API)
 
     json_data, json_data_expected = return_json_data_and_expected(api_data, "result_api.json")
 
@@ -32,8 +32,8 @@ def test_generate_simple_api_yaml():
 
 
 def test_generate_simple_api_json():
-    api_sch = ApiConfigResolver(resources_folder_json)
-    api_data = api_sch.get_api_data()
+    api_sch = ConfigResolver(resources_folder_json)
+    api_data = api_sch.get_data(Config_Type.API)
 
     json_data, json_data_expected = return_json_data_and_expected(api_data, "result_api.json")
 
@@ -42,8 +42,8 @@ def test_generate_simple_api_json():
 
 
 def test_generate_api_overide():
-    api_sch = ApiConfigResolver(resources_folder_yaml)
-    api_data = api_sch.get_api_data(set_values=["name=test", "endpoints[0]=https://api.gravitee.io/echo2"])
+    api_sch = ConfigResolver(resources_folder_yaml)
+    api_data = api_sch.get_data(Config_Type.API, set_values=["name=test", "endpoints[0]=https://api.gravitee.io/echo2"])
 
     json_data, json_data_expected = return_json_data_and_expected(api_data, "result_api_set.json")
 
@@ -51,8 +51,8 @@ def test_generate_api_overide():
 
 
 def test_generate_api_overide_with_add_value():
-    api_sch = ApiConfigResolver(resources_folder_yaml)
-    api_data = api_sch.get_api_data(set_values=["name=test", "endpoints[1]=https://api.gravitee.io/echo2"])
+    api_sch = ConfigResolver(resources_folder_yaml)
+    api_data = api_sch.get_data(Config_Type.API, set_values=["name=test", "endpoints[1]=https://api.gravitee.io/echo2"])
 
     json_data, json_data_expected = return_json_data_and_expected(api_data, "result_api_set_add_value.json")
 

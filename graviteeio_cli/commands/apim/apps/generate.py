@@ -3,21 +3,21 @@ import os
 
 import click
 
-from graviteeio_cli.http_client.apim.api import ApiClient
+from graviteeio_cli.http_client.apim.app import AppClient
 
-from graviteeio_cli.core.dic_filter_data import filter_api_values
+from graviteeio_cli.core.dic_filter_data import filter_app_values
 from graviteeio_cli.resolvers.conf_resolver import ConfigResolver, Config_Type, CONFIG_FORMATS
 from graviteeio_cli.core.file_format import File_Format_Enum
 
-logger = logging.getLogger("command-apim-def-generate")
+logger = logging.getLogger("command-apps-generate")
 
 
-@click.command(short_help="Generate api definition.")
+@click.command(short_help="Generate application.")
 @click.option(
     '--def-path', 'config_path', default=".",
     type=click.Path(exists=False),
     required=False,
-    help="Path where api definition is generated. The default value is the current directory"
+    help="Path where app definition is generated. The default value is the current directory"
 )
 @click.option(
     '--format', default="yaml",
@@ -27,7 +27,7 @@ logger = logging.getLogger("command-apim-def-generate")
 )
 @click.option(
     '--from-id',
-    help='Generate templates and value file from existing api', required=False
+    help='Generate templates and value file from existing app', required=False
 )
 @click.pass_obj
 def generate(obj, config_path, format, from_id):
@@ -35,15 +35,15 @@ def generate(obj, config_path, format, from_id):
     if not os.path.exists(config_path):
         os.mkdir(config_path)
 
-    api_def_string = None
+    app_string = None
     if from_id:
-        api_client: ApiClient = obj['api_client']
-        api_def_string = api_client.get_export(from_id, filter_api_values)
+        app_client: AppClient = obj['app_client']
+        app_string = app_client.get_export(from_id, filter_app_values)
 
     resolver = ConfigResolver(config_path)
 
     resolver.generate_init(
-        Config_Type.API,
+        Config_Type.APP,
         format=File_Format_Enum.value_of(format),
-        config_values=api_def_string
+        config_values=app_string
     )

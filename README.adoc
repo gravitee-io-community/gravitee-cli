@@ -15,7 +15,7 @@ Gravitee cli documentation is published on https://docs.gravitee.io/cli/cli_intr
 
 == Requirements
 
-* Python 3.5 or more
+* Python 3.7 or more
 
 == Setup
 

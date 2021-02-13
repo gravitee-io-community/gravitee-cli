@@ -20,10 +20,11 @@ DEFAULT_LINTER_RULESET_TTL = os.getenv("GIO_TTL_RULESET", 5)
 # GRAVITEEIO_RESOURCES_FOLDER="gio"
 APIM_ENV_FILE_NAME = "apim_env.yml"
 # APIM_API_VALUE_FILE_NAME = "_values.yml"
-APIM_API_VALUE_FILE_NAME = "Graviteeio{}"
-APIM_API_SETTING_FOLDER = "settings"
-APIM_API_TEMPLATES_FOLDER = "templates"
-APIM_API_TEMPLATE_FILE = "api_config{}.j2"
+GIO_VALUE_FILE_NAME = "Graviteeio{}"
+GIO_SETTING_FOLDER = "settings"
+GIO_TEMPLATES_FOLDER = "templates"
+API_CONFIG_FILE_NAME = "api_config{}.j2"
+APP_CONFIG_FILE_NAME = "app_config{}.j2"
 APIM_API_TEMPLATE_VERSION_FILE = "versions"
 
 GRAVITEEIO_CONF_FILE = os.getenv("GRAVITEEIO_CONF_FILE", os.path.expanduser("~") + "/.graviteeio")
