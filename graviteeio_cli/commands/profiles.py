@@ -25,8 +25,8 @@ def profiles():
     Default environment: `env`. To config this profile, you can use the following environment variables:
     * `GIO_APIM_URL`: Api management url. Default `https://demo.gravitee.io`.
     * `GIO_APIM_TOKEN`: Api mangement token to authentication. Default `None`.
-    * `GIO_APIM_ORG`: Api mangement organisation. Default `None`.
-    * `GIO_APIM_ENV`: Api mangement environment. Default `None`.
+    * `GIO_APIM_ORG`: Api mangement organisation. Default `DEFAULT`.
+    * `GIO_APIM_ENV`: Api mangement environment. Default `DEFAULT`.
     """
     pass
 
@@ -38,8 +38,16 @@ def profiles():
     help='graviteeio module', required=True,
     type=click.Choice(GioModule.list_name(), case_sensitive=False)
 )
-@click.option('--environment', "--env", help='config graviteeio environment')
-@click.option('--organization', "--org", help='config graviteeio organization')
+@click.option(
+    '--environment', "--env",
+    default="DEFAULT",
+    help='config graviteeio environment'
+)
+@click.option(
+    '--organization', "--org",
+    default="DEFAULT",
+    help='config graviteeio organization'
+)
 @click.argument('profile', required=True)
 @click.pass_obj
 def create(obj, profile, module, url, environment, organization):

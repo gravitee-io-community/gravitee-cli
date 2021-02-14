@@ -5,14 +5,14 @@ def string_to_bool(value):
     return value.lower() in ("yes", "true", "t", "1")
 
 
-DEFAULT_APIM_ADDRESS_URL = os.getenv("GIO_APIM_URL", "https://demo.gravitee.io")
+DEFAULT_APIM_ADDRESS_URL = os.getenv("GIO_APIM_URL", "https://nightly.gravitee.io")
 DEFAULT_AM_ADDRESS_URL = os.getenv("GIO_AM_URL", "https://auth.gravitee.io")
 
 DEFAULT_APIM_TOKEN = os.getenv("GIO_APIM_TOKEN", None)
 DEFAULT_AM_TOKEN = os.getenv("GIO_AM_TOKEN", None)
 
-DEFAULT_APIM_ORG = os.getenv("GIO_APIM_ORG", None)
-DEFAULT_APIM_ENV = os.getenv("GIO_APIM_ENV", None)
+DEFAULT_APIM_ORG = os.getenv("GIO_APIM_ORG", "DEFAULT")
+DEFAULT_APIM_ENV = os.getenv("GIO_APIM_ENV", "DEFAULT")
 
 DEFAULT_LINTER_RULESET_FILES = os.getenv("GIO_RULESET_FILE", None)
 DEFAULT_LINTER_RULESET_TTL = os.getenv("GIO_TTL_RULESET", 5)
