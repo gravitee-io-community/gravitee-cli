@@ -23554,7 +23554,10 @@
             "description": "a map where you can associate a path to a configuration (the policies configuration)"
           },
           "properties": {
-            "$ref": "#/components/schemas/Properties"
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Property"
+            }
           },
           "path_mappings": {
             "type": "array",

@@ -80,7 +80,7 @@ class ConfigResolver:
         if "Values" not in self.vars:
             self._load_conf_directories()
 
-        if name in self.vars["Values"]:
+        if self.vars["Values"] and name in self.vars["Values"]:
             return self.vars["Values"][name]
         else:
             return None

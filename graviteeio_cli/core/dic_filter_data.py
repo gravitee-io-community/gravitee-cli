@@ -20,6 +20,11 @@ EXLUDED_API_PLAN_VALUES = [
     'published_at'
 ]
 
+EXLUDED_API_METADATA_VALUES = [
+    'apiId',
+    'defaultValue'
+]
+
 EXLUDED_APP_VALUES = [
     'id',
     'created_at',
@@ -43,6 +48,10 @@ def filter_api_values(api_data):
     if 'plans' in api_data:
         for plan in api_data['plans']:
             filter_dic_values(plan, EXLUDED_API_PLAN_VALUES)
+
+    if 'metadata' in api_data:
+        for metadata in api_data['metadata']:
+            filter_dic_values(metadata, EXLUDED_API_METADATA_VALUES)
 
 
 def filter_app_values(app_data):

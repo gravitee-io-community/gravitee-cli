@@ -30,6 +30,9 @@ class ApiClient:
     def create_import(self, api_data):
         return self.httpClient.post("import", data=json.dumps(api_data)).json()
 
+    def update_import(self, id, api_data):
+        return self.httpClient.put(f"{id}/import", data=json.dumps(api_data)).json()
+
     def create_oas(self, oas):
         data = {
             "with_documentation": True,
@@ -43,7 +46,7 @@ class ApiClient:
 
     def get_export(self, id, response_filter=None):
         params = {
-            "exclude": "groups,members,pages,metadata",
+            "exclude": "groups,members,pages",
             "version": "default"
         }
 
@@ -55,9 +58,6 @@ class ApiClient:
 
     def update(self, id, api_data):
         return self.httpClient.put(f"{id}", data=json.dumps(api_data)).json()
-
-    def update_import(self, id, api_data):
-        return self.httpClient.put(f"{id}/import", data=json.dumps(api_data)).json()
 
     def update_oas(self, id, oas):
         data = {
@@ -138,3 +138,6 @@ class ApiClient:
                 log["plan_name"] = metadata[log["plan"]]["name"]
 
         return (logs_total_metadata, from_timestamp, to_timestamp)
+
+    def get_metadata(self, id, metadata_key=""):
+        return self.httpClient.get(f"{id}/metadata/{metadata_key}").json()
