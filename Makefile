@@ -4,7 +4,7 @@ PROJECT_NAME=graviteeio/cli
 PACKAGE_NAME=graviteeio_cli
 # PACKAGE_NAME=$(subst -,_,${PROJECT_NAME})
 # VERSION=`git describe --abbrev=0`
-VERSION=0.3
+VERSION=0.4
 
 DOCKER_REGISTRY=p1c2u
 
