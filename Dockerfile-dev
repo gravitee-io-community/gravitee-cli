@@ -9,7 +9,7 @@ RUN ln -s /lib /lib64
 RUN pip3 install -r requirements.txt
 RUN python3 setup.py build_exe
 
-FROM alpine:3.10
+FROM alpine:3.13.7
 RUN apk --no-cache upgrade && apk --no-cache add wget libffi expat
 COPY --from=builder build/exe.linux-x86_64-3.7 /graviteeio/
 RUN mkdir /graviteeio/config && chown -R nobody:nobody /graviteeio
