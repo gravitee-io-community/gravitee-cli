@@ -9,6 +9,6 @@ dictdiffer>=0.8.0
 jmespath>=0.10.0
 asyncio==3.4.3
 pytimeparse==1.1.8
-termgraph==0.2.1
+termgraph==0.5.3
 jsonschema==3.2.0
 jsonpath-ng==1.5.3
