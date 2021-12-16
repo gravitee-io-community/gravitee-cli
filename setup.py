@@ -48,7 +48,7 @@ class PyTest(TestCommand):
 
 def get_install_requires():
     res = []
-    res.append('click>=7.0,<8.0')
+    res.append('click>=7.0,<8.1')
     res.append('configparser==3.8.1')
     res.append('requests>=2.22.0')
     res.append('click-completion>=0.5.2')
