@@ -9,6 +9,8 @@ A command line client for https://gravitee.io/[Gravitee.io] API Platform.
 ``graviteeio-cli`` is a CLI (Command Line Interface) which helps you to manage Gravitee.io eco-system.
 It allows to automate actions for all modules of the platform by calling their Management API.
 
+:github-repo: https://raw.githubusercontent.com/gravitee-io/graviteeio-cli/master
+
 == Gravitee cli Documentation
 
 Gravitee cli documentation is published on https://docs.gravitee.io/cli/cli_introduction.html
@@ -42,10 +44,10 @@ gio <module> <command>
 |Platform module
 |Module
 
-| link:docs/apim/README.adoc[API Management]
+| link:https://raw.githubusercontent.com/gravitee-io/graviteeio-cli/master/docs/apim/get-started.adoc[API Management]
 | `apim`
 
-| link:docs/am/README.adoc[Access Management]
+| link:https://raw.githubusercontent.com/gravitee-io/graviteeio-cli/master/docs/am/main.adoc[Access Management]
 | `am`
 
 |===
