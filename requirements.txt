@@ -10,5 +10,5 @@ jmespath>=0.10.0
 asyncio==3.4.3
 pytimeparse==1.1.8
 termgraph==0.5.3
-jsonschema==3.2.0
+jsonschema==4.4.0
 jsonpath-ng==1.5.3
