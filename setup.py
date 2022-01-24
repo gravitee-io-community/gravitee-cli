@@ -61,7 +61,7 @@ def get_install_requires():
     res.append('pytimeparse==1.1.8')
     res.append('termgraph==0.2.1')
     res.append('jsonschema==3.2.0')
-    res.append('jsonpath-ng==1.5.2')
+    res.append('jsonpath-ng==1.5.3')
 
     return res
 

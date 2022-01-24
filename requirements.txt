@@ -11,4 +11,4 @@ asyncio==3.4.3
 pytimeparse==1.1.8
 termgraph==0.2.1
 jsonschema==3.2.0
-jsonpath-ng==1.5.2
+jsonpath-ng==1.5.3
