@@ -1,4 +1,4 @@
-FROM python:3.7-alpine3.10 as builder
+FROM python:3.8-alpine3.10 as builder
 
 RUN apk --no-cache upgrade && apk --no-cache add build-base tar musl-utils openssl-dev && pip3 install --upgrade pip
 RUN pip3 install setuptools appdirs packaging cx_Freeze==6.1
