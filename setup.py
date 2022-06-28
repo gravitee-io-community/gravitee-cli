@@ -60,7 +60,7 @@ def get_install_requires():
     res.append('asyncio==3.4.3')
     res.append('pytimeparse==1.1.8')
     res.append('termgraph==0.5.3')
-    res.append('jsonschema==4.6.0')
+    res.append('jsonschema==4.6.1')
     res.append('jsonpath-ng==1.5.3')
 
     return res
