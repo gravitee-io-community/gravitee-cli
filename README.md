@@ -9,7 +9,7 @@ It allows to automate actions for all modules of the platform.
 
 ## Gravitee CLI Documentation
 
-Gravitee cli documentation has been deprecated on https://docs.gravitee.io and will be migrated here soon.
+The Gravitee CLI documentation is available [here](/docs) has been deprecated on https://docs.gravitee.io.
 
 ## Requirements
 
