@@ -11,7 +11,7 @@ It allows to automate actions for all modules of the platform by calling their M
 
 == Gravitee cli Documentation
 
-Gravitee cli documentation is published on https://docs.gravitee.io/cli/cli_introduction.html
+The Gravitee CLI documentation is available in the `/docs` folder in this repo and has been deprecated on https://docs.gravitee.io.
 
 == Requirements
 
